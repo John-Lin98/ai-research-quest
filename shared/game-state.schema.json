@@ -1,0 +1,1788 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/John-Lin98/ai-research-quest/main/shared/game-state.schema.json",
+  "title": "AI Research Quest Shared Game State",
+  "description": "网页 Demo、Research Quest Skill 与自动测试共同使用的冻结语义契约。正式认知得分只能使用 verified 知识；公开案例必须显式标记为模拟、改编或脱敏。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "state_id",
+    "revision",
+    "session",
+    "project_goal",
+    "mode",
+    "interaction_mode",
+    "phase",
+    "prologue",
+    "current_campaign",
+    "current_level",
+    "overall_progress",
+    "estimated_remaining_time",
+    "campaigns",
+    "player_choices",
+    "goal_versions",
+    "known_knowns",
+    "known_unknowns",
+    "unknown_knowns",
+    "unknown_unknowns",
+    "prompt_clues",
+    "artifacts",
+    "decisions",
+    "metrics",
+    "exam",
+    "auto_demo",
+    "exports",
+    "privacy",
+    "next_question",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "state_id": {
+      "$ref": "#/$defs/nonEmptyId"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "session": {
+      "$ref": "#/$defs/sessionLifecycle"
+    },
+    "project_goal": {
+      "$ref": "#/$defs/projectGoal"
+    },
+    "mode": {
+      "const": "controlled-loop"
+    },
+    "interaction_mode": {
+      "type": "string",
+      "enum": [
+        "interactive",
+        "auto-demo"
+      ]
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "prologue",
+        "campaign",
+        "final-exam",
+        "goal-forge",
+        "completed"
+      ]
+    },
+    "prologue": {
+      "$ref": "#/$defs/prologueState"
+    },
+    "current_campaign": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "learning-cognition",
+        "research-decision",
+        null
+      ]
+    },
+    "current_level": {
+      "type": "string",
+      "enum": [
+        "prologue",
+        "level-1",
+        "level-2",
+        "level-3",
+        "level-4",
+        "level-5",
+        "level-6",
+        "level-7",
+        "final-exam",
+        "goal-forge",
+        "complete"
+      ]
+    },
+    "overall_progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "estimated_remaining_time": {
+      "$ref": "#/$defs/timeEstimate"
+    },
+    "campaigns": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "learning_cognition",
+        "research_decision"
+      ],
+      "properties": {
+        "learning_cognition": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/campaignState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "campaign_id": {
+                  "const": "learning-cognition"
+                }
+              }
+            }
+          ]
+        },
+        "research_decision": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/campaignState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "campaign_id": {
+                  "const": "research-decision"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "player_choices": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/playerChoice"
+      }
+    },
+    "goal_versions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/goalVersion"
+      }
+    },
+    "known_knowns": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate",
+        "confirmed",
+        "verified"
+      ],
+      "properties": {
+        "candidate": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateKnowledge"
+          }
+        },
+        "confirmed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/confirmedKnowledge"
+          }
+        },
+        "verified": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/verifiedKnowledge"
+          }
+        }
+      }
+    },
+    "known_unknowns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cognitiveItem"
+      }
+    },
+    "unknown_knowns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cognitiveItem"
+      }
+    },
+    "unknown_unknowns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cognitiveItem"
+      }
+    },
+    "prompt_clues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/promptClue"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "metrics": {
+      "$ref": "#/$defs/understandingMetrics"
+    },
+    "exam": {
+      "$ref": "#/$defs/examState"
+    },
+    "auto_demo": {
+      "$ref": "#/$defs/autoDemo"
+    },
+    "exports": {
+      "$ref": "#/$defs/exports"
+    },
+    "privacy": {
+      "$ref": "#/$defs/privacyEnvelope"
+    },
+    "next_question": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/question"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "nonEmptyId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "nonEmptyText": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nullableDateTime": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "campaignId": {
+      "type": "string",
+      "enum": [
+        "learning-cognition",
+        "research-decision"
+      ]
+    },
+    "levelId": {
+      "type": "string",
+      "enum": [
+        "level-1",
+        "level-2",
+        "level-3",
+        "level-4",
+        "level-5",
+        "level-6",
+        "level-7"
+      ]
+    },
+    "projectGoal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "success_criteria",
+        "constraints",
+        "status"
+      ],
+      "properties": {
+        "summary": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "success_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/nonEmptyText"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyText"
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "reviewed",
+            "frozen",
+            "executed"
+          ]
+        }
+      }
+    },
+    "sessionLifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "started_at",
+        "reset_count",
+        "last_reset_at",
+        "can_restart"
+      ],
+      "properties": {
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reset_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_reset_at": {
+          "$ref": "#/$defs/nullableDateTime"
+        },
+        "can_restart": {
+          "const": true
+        }
+      }
+    },
+    "timeEstimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "max",
+        "unit"
+      ],
+      "properties": {
+        "min": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "const": "minutes"
+        }
+      }
+    },
+    "prologueState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "task",
+        "estimated_time",
+        "question",
+        "choices",
+        "selected_choice_id",
+        "goal_preview",
+        "cognition_map_delta",
+        "reward",
+        "next_level_id"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/levelStatus"
+        },
+        "task": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "estimated_time": {
+          "$ref": "#/$defs/timeEstimate"
+        },
+        "question": {
+          "$ref": "#/$defs/question"
+        },
+        "choices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/choiceOption"
+          }
+        },
+        "selected_choice_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "goal_preview": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "cognition_map_delta": {
+          "$ref": "#/$defs/cognitionDelta"
+        },
+        "reward": {
+          "$ref": "#/$defs/reward"
+        },
+        "next_level_id": {
+          "const": "level-1"
+        }
+      }
+    },
+    "campaignState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "campaign_id",
+        "title",
+        "description",
+        "status",
+        "progress",
+        "provenance",
+        "levels"
+      ],
+      "properties": {
+        "campaign_id": {
+          "$ref": "#/$defs/campaignId"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "description": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "locked",
+            "available",
+            "active",
+            "completed"
+          ]
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "provenance": {
+          "$ref": "#/$defs/scenarioProvenance"
+        },
+        "levels": {
+          "$ref": "#/$defs/sevenLevels"
+        }
+      }
+    },
+    "sevenLevels": {
+      "type": "array",
+      "description": "每个战役严格包含七个有序主线关卡；序章与最终考试单独建模。",
+      "minItems": 7,
+      "maxItems": 7,
+      "prefixItems": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/levelState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "level_id": {
+                  "const": "level-1"
+                },
+                "order": {
+                  "const": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/levelState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "level_id": {
+                  "const": "level-2"
+                },
+                "order": {
+                  "const": 2
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/levelState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "level_id": {
+                  "const": "level-3"
+                },
+                "order": {
+                  "const": 3
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/levelState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "level_id": {
+                  "const": "level-4"
+                },
+                "order": {
+                  "const": 4
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/levelState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "level_id": {
+                  "const": "level-5"
+                },
+                "order": {
+                  "const": 5
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/levelState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "level_id": {
+                  "const": "level-6"
+                },
+                "order": {
+                  "const": 6
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/levelState"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "level_id": {
+                  "const": "level-7"
+                },
+                "order": {
+                  "const": 7
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "items": false
+    },
+    "levelState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level_id",
+        "order",
+        "title",
+        "status",
+        "task",
+        "knowledge_card",
+        "estimated_time",
+        "progress",
+        "question",
+        "choices",
+        "selected_choice_id",
+        "choice_impact",
+        "goal_preview",
+        "cognition_map_delta",
+        "quiz",
+        "reward",
+        "next_level_id"
+      ],
+      "properties": {
+        "level_id": {
+          "$ref": "#/$defs/levelId"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "status": {
+          "$ref": "#/$defs/levelStatus"
+        },
+        "task": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "knowledge_card": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "estimated_time": {
+          "$ref": "#/$defs/timeEstimate"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "question": {
+          "$ref": "#/$defs/question"
+        },
+        "choices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/choiceOption"
+          }
+        },
+        "selected_choice_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "choice_impact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "goal_preview": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "cognition_map_delta": {
+          "$ref": "#/$defs/cognitionDelta"
+        },
+        "quiz": {
+          "$ref": "#/$defs/levelQuiz"
+        },
+        "reward": {
+          "$ref": "#/$defs/reward"
+        },
+        "next_level_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "level-2",
+            "level-3",
+            "level-4",
+            "level-5",
+            "level-6",
+            "level-7",
+            "final-exam",
+            null
+          ]
+        }
+      }
+    },
+    "levelStatus": {
+      "type": "string",
+      "enum": [
+        "locked",
+        "available",
+        "active",
+        "completed"
+      ]
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_id",
+        "prompt",
+        "purpose"
+      ],
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "prompt": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "purpose": {
+          "$ref": "#/$defs/nonEmptyText"
+        }
+      }
+    },
+    "choiceOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "choice_id",
+        "label",
+        "impact_preview"
+      ],
+      "properties": {
+        "choice_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "label": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "impact_preview": {
+          "$ref": "#/$defs/nonEmptyText"
+        }
+      }
+    },
+    "playerChoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "choice_record_id",
+        "campaign_id",
+        "level_id",
+        "question_id",
+        "choice_id",
+        "impact",
+        "chosen_at"
+      ],
+      "properties": {
+        "choice_record_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/campaignId"
+        },
+        "level_id": {
+          "$ref": "#/$defs/levelId"
+        },
+        "question_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "choice_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "impact": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "chosen_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "cognitionDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_added",
+        "confirmed_added",
+        "verified_added",
+        "known_unknowns_added",
+        "misconceptions_corrected"
+      ],
+      "properties": {
+        "candidate_added": {
+          "$ref": "#/$defs/idList"
+        },
+        "confirmed_added": {
+          "$ref": "#/$defs/idList"
+        },
+        "verified_added": {
+          "$ref": "#/$defs/idList"
+        },
+        "known_unknowns_added": {
+          "$ref": "#/$defs/idList"
+        },
+        "misconceptions_corrected": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonEmptyId"
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "artifact_ids"
+      ],
+      "properties": {
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "artifact_ids": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "levelQuiz": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "question_ids",
+        "accuracy"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not-started",
+            "in-progress",
+            "passed",
+            "failed",
+            "not-required"
+          ]
+        },
+        "question_ids": {
+          "$ref": "#/$defs/idList"
+        },
+        "accuracy": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "knowledgeEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "evidence_type",
+        "source_ref",
+        "recorded_at"
+      ],
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "evidence_type": {
+          "type": "string",
+          "enum": [
+            "ai-extraction",
+            "user-confirmation",
+            "restatement",
+            "choice-application",
+            "level-quiz",
+            "final-exam",
+            "transfer-task",
+            "misconception-correction"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "knowledgeBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "knowledge_id",
+        "statement",
+        "status",
+        "campaign_id",
+        "introduced_level_id",
+        "provenance",
+        "candidate_evidence"
+      ],
+      "properties": {
+        "knowledge_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "statement": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "confirmed",
+            "verified"
+          ]
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/campaignId"
+        },
+        "introduced_level_id": {
+          "$ref": "#/$defs/levelId"
+        },
+        "provenance": {
+          "$ref": "#/$defs/scenarioProvenance"
+        },
+        "candidate_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/knowledgeEvidence"
+          }
+        },
+        "confirmation_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/knowledgeEvidence"
+          }
+        },
+        "verification_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/knowledgeEvidence"
+          }
+        }
+      }
+    },
+    "candidateKnowledge": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/knowledgeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "candidate"
+            }
+          }
+        }
+      ]
+    },
+    "confirmedKnowledge": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/knowledgeBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "confirmation_evidence"
+          ],
+          "properties": {
+            "confirmation_evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/knowledgeEvidence"
+              }
+            },
+            "status": {
+              "const": "confirmed"
+            }
+          }
+        }
+      ]
+    },
+    "verifiedKnowledge": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/knowledgeBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "confirmation_evidence",
+            "verification_evidence"
+          ],
+          "properties": {
+            "confirmation_evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/knowledgeEvidence"
+              }
+            },
+            "verification_evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/knowledgeEvidence"
+              }
+            },
+            "status": {
+              "const": "verified"
+            }
+          }
+        }
+      ]
+    },
+    "cognitiveItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "statement",
+        "campaign_id",
+        "introduced_level_id",
+        "status"
+      ],
+      "properties": {
+        "item_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "statement": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/campaignId"
+        },
+        "introduced_level_id": {
+          "$ref": "#/$defs/levelId"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "under-investigation",
+            "resolved"
+          ]
+        }
+      }
+    },
+    "promptClue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clue_id",
+        "clue_type",
+        "text",
+        "source_kind",
+        "evidence_status"
+      ],
+      "properties": {
+        "clue_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "clue_type": {
+          "type": "string",
+          "enum": [
+            "goal-clue",
+            "constraint-clue",
+            "workflow-clue",
+            "acceptance-clue",
+            "failure-clue",
+            "preference-clue",
+            "artifact-clue"
+          ]
+        },
+        "text": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "source_kind": {
+          "type": "string",
+          "enum": [
+            "public-context",
+            "sanitized-context",
+            "simulated"
+          ]
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "confirmed",
+            "verified",
+            "retrieval-limited"
+          ]
+        }
+      }
+    },
+    "goalVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "status",
+        "goal_text",
+        "source_decision_ids",
+        "created_at"
+      ],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "reviewed",
+            "frozen",
+            "superseded",
+            "executed"
+          ]
+        },
+        "goal_text": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "source_decision_ids": {
+          "$ref": "#/$defs/idList"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "campaign_id",
+        "level_id",
+        "summary",
+        "status",
+        "source_choice_record_id"
+      ],
+      "properties": {
+        "decision_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/campaignId"
+        },
+        "level_id": {
+          "$ref": "#/$defs/levelId"
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "confirmed",
+            "frozen",
+            "superseded"
+          ]
+        },
+        "source_choice_record_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "artifact_type",
+        "title",
+        "uri",
+        "public_safe"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "artifact_type": {
+          "type": "string",
+          "enum": [
+            "knowledge-card",
+            "decision-record",
+            "cognition-map",
+            "exam-result",
+            "game-state-export",
+            "codex-goal-export",
+            "other"
+          ]
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "uri": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "public_safe": {
+          "type": "boolean"
+        }
+      }
+    },
+    "understandingMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "new_verified_known_knowns",
+        "corrected_misconceptions",
+        "new_known_unknowns",
+        "applied_knowledge_count",
+        "level_quiz_accuracy",
+        "final_exam_accuracy",
+        "transfer_task_score",
+        "goal_revision_count",
+        "formal_understanding_score",
+        "verified_only_for_knowledge_count"
+      ],
+      "properties": {
+        "new_verified_known_knowns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "corrected_misconceptions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "new_known_unknowns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "applied_knowledge_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "level_quiz_accuracy": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "final_exam_accuracy": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "transfer_task_score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "goal_revision_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "formal_understanding_score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "verified_only_for_knowledge_count": {
+          "const": true
+        }
+      }
+    },
+    "examState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "pass_threshold",
+        "weights",
+        "questions",
+        "score",
+        "passed",
+        "completed_at"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not-started",
+            "in-progress",
+            "passed",
+            "failed"
+          ]
+        },
+        "pass_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 80
+        },
+        "weights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "decision_application",
+            "concept_understanding",
+            "transfer",
+            "weight_total"
+          ],
+          "properties": {
+            "decision_application": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "default": 60
+            },
+            "concept_understanding": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "default": 20
+            },
+            "transfer": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "default": 20
+            },
+            "weight_total": {
+              "const": 100
+            }
+          }
+        },
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/examQuestion"
+          }
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "passed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "completed_at": {
+          "$ref": "#/$defs/nullableDateTime"
+        }
+      }
+    },
+    "examQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_id",
+        "category",
+        "prompt",
+        "question_type",
+        "answer",
+        "is_correct",
+        "score"
+      ],
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "decision-application",
+            "concept-understanding",
+            "transfer"
+          ]
+        },
+        "prompt": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "question_type": {
+          "type": "string",
+          "enum": [
+            "single-choice",
+            "multi-choice",
+            "short-answer",
+            "application"
+          ]
+        },
+        "answer": {
+          "type": [
+            "string",
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "is_correct": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "autoDemo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "duration_seconds",
+        "status",
+        "deterministic_seed",
+        "loop",
+        "current_step",
+        "steps"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 90
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "idle",
+            "playing",
+            "paused",
+            "completed"
+          ]
+        },
+        "deterministic_seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "loop": {
+          "const": false
+        },
+        "current_step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 7,
+          "items": {
+            "$ref": "#/$defs/autoDemoStep"
+          }
+        }
+      }
+    },
+    "autoDemoStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "at_second",
+        "action",
+        "target"
+      ],
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "at_second": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 90
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "open-campaign",
+            "open-level",
+            "select-choice",
+            "confirm-knowledge",
+            "verify-knowledge",
+            "answer-exam",
+            "export-state",
+            "export-goal",
+            "complete"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/nonEmptyText"
+        }
+      }
+    },
+    "exports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "goal"
+      ],
+      "properties": {
+        "state": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/exportRecord"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "game-state"
+                },
+                "media_type": {
+                  "const": "application/json"
+                }
+              }
+            }
+          ]
+        },
+        "goal": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/exportRecord"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "codex-goal"
+                },
+                "media_type": {
+                  "enum": [
+                    "text/markdown",
+                    "text/plain"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "exportRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "status",
+        "media_type",
+        "filename",
+        "generated_at",
+        "sha256",
+        "content",
+        "schema_version",
+        "public_safe"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "game-state",
+            "codex-goal"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "not-generated",
+            "ready",
+            "downloaded",
+            "failed"
+          ]
+        },
+        "media_type": {
+          "type": "string",
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ]
+        },
+        "filename": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "generated_at": {
+          "$ref": "#/$defs/nullableDateTime"
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "content": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "public_safe": {
+          "const": true
+        }
+      }
+    },
+    "scenarioProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_classification",
+        "display_label",
+        "public_safe",
+        "contains_real_research_results",
+        "source_traceability"
+      ],
+      "properties": {
+        "data_classification": {
+          "type": "string",
+          "enum": [
+            "simulated",
+            "adapted",
+            "deidentified"
+          ]
+        },
+        "display_label": {
+          "type": "string",
+          "enum": [
+            "模拟数据",
+            "改编场景",
+            "脱敏场景"
+          ]
+        },
+        "public_safe": {
+          "const": true
+        },
+        "contains_real_research_results": {
+          "const": false
+        },
+        "source_traceability": {
+          "$ref": "#/$defs/nonEmptyText"
+        }
+      }
+    },
+    "privacyEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "public_demo_disclosure",
+        "research_claim_status",
+        "real_research_results_included",
+        "sanitization"
+      ],
+      "properties": {
+        "public_demo_disclosure": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "research_claim_status": {
+          "const": "illustrative-only"
+        },
+        "real_research_results_included": {
+          "const": false
+        },
+        "sanitization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "applied",
+            "removed_categories",
+            "review_status"
+          ],
+          "properties": {
+            "applied": {
+              "const": true
+            },
+            "removed_categories": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "personal-identifiers",
+                  "private-paths",
+                  "credentials",
+                  "private-code",
+                  "unpublished-results",
+                  "server-details",
+                  "datasets",
+                  "checkpoints"
+                ]
+              }
+            },
+            "review_status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "reviewed",
+                "approved"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

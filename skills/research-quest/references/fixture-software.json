@@ -1,0 +1,1524 @@
+{
+  "schema_version": "1.0.0",
+  "state_id": "fixture.software",
+  "revision": 14,
+  "session": {
+    "started_at": "2026-07-26T08:00:00.000Z",
+    "reset_count": 0,
+    "last_reset_at": null,
+    "can_restart": true
+  },
+  "project_goal": {
+    "summary": "实现支持 CSV 导入导出的离线阅读清单 CLI。",
+    "success_criteria": [
+      "最小命令合同可测试",
+      "重复导入保持幂等",
+      "单元、集成与安全检查通过"
+    ],
+    "constraints": [
+      "无网络与遥测",
+      "不覆盖用户文件",
+      "未知 CSV 方言必须显式报错"
+    ],
+    "status": "executed"
+  },
+  "mode": "controlled-loop",
+  "interaction_mode": "interactive",
+  "phase": "completed",
+  "prologue": {
+    "status": "completed",
+    "task": "选择“离线阅读清单 CLI”的第一条验证路线。",
+    "estimated_time": {
+      "min": 2,
+      "max": 3,
+      "unit": "minutes"
+    },
+    "question": {
+      "question_id": "software.prologue.question",
+      "prompt": "哪项选择最能改变后续方案？",
+      "purpose": "冻结第一条高价值决策。"
+    },
+    "choices": [
+      {
+        "choice_id": "software.prologue.choice.a",
+        "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+        "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+      },
+      {
+        "choice_id": "software.prologue.choice.b",
+        "label": "先扩展方案范围",
+        "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+      }
+    ],
+    "selected_choice_id": "software.prologue.choice.a",
+    "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。",
+    "cognition_map_delta": {
+      "candidate_added": [],
+      "confirmed_added": [],
+      "verified_added": [],
+      "known_unknowns_added": [],
+      "misconceptions_corrected": []
+    },
+    "reward": {
+      "title": "目标罗盘",
+      "artifact_ids": []
+    },
+    "next_level_id": "level-1"
+  },
+  "current_campaign": null,
+  "current_level": "complete",
+  "overall_progress": 100,
+  "estimated_remaining_time": {
+    "min": 0,
+    "max": 0,
+    "unit": "minutes"
+  },
+  "campaigns": {
+    "learning_cognition": {
+      "campaign_id": "learning-cognition",
+      "title": "学习认知战役",
+      "description": "把陈述转为可验证、可迁移的知识。",
+      "status": "completed",
+      "progress": 100,
+      "provenance": {
+        "data_classification": "simulated",
+        "display_label": "模拟数据",
+        "public_safe": true,
+        "contains_real_research_results": false,
+        "source_traceability": "fixture:software:synthetic-only"
+      },
+      "levels": [
+        {
+          "level_id": "level-1",
+          "order": 1,
+          "title": "冻结学习目标",
+          "status": "completed",
+          "task": "冻结学习目标：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 14.29,
+          "question": {
+            "question_id": "software.learning-cognition.level-1.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.learning-cognition.level-1.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.learning-cognition.level-1.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.learning-cognition.level-1.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 1/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "software.learning-cognition.knowledge.candidate"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.learning-cognition.level-1.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "冻结学习目标徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-2"
+        },
+        {
+          "level_id": "level-2",
+          "order": 2,
+          "title": "区分事实与假设",
+          "status": "completed",
+          "task": "区分事实与假设：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 28.57,
+          "question": {
+            "question_id": "software.learning-cognition.level-2.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.learning-cognition.level-2.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.learning-cognition.level-2.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.learning-cognition.level-2.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 2/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "software.learning-cognition.known-unknown"
+            ],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.learning-cognition.level-2.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "区分事实与假设徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-3"
+        },
+        {
+          "level_id": "level-3",
+          "order": 3,
+          "title": "绘制认知地图",
+          "status": "completed",
+          "task": "绘制认知地图：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 42.86,
+          "question": {
+            "question_id": "software.learning-cognition.level-3.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.learning-cognition.level-3.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.learning-cognition.level-3.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.learning-cognition.level-3.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 3/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [
+              "software.learning-cognition.knowledge.confirmed"
+            ],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.learning-cognition.level-3.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "绘制认知地图徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-4"
+        },
+        {
+          "level_id": "level-4",
+          "order": 4,
+          "title": "评估证据质量",
+          "status": "completed",
+          "task": "评估证据质量：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 57.14,
+          "question": {
+            "question_id": "software.learning-cognition.level-4.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.learning-cognition.level-4.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.learning-cognition.level-4.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.learning-cognition.level-4.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 4/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.learning-cognition.level-4.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "评估证据质量徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-5"
+        },
+        {
+          "level_id": "level-5",
+          "order": 5,
+          "title": "完成情境应用",
+          "status": "completed",
+          "task": "完成情境应用：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 71.43,
+          "question": {
+            "question_id": "software.learning-cognition.level-5.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.learning-cognition.level-5.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.learning-cognition.level-5.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.learning-cognition.level-5.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 5/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [
+              "software.learning-cognition.knowledge.verified"
+            ],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.learning-cognition.level-5.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "完成情境应用徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-6"
+        },
+        {
+          "level_id": "level-6",
+          "order": 6,
+          "title": "纠正关键误解",
+          "status": "completed",
+          "task": "纠正关键误解：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 85.71,
+          "question": {
+            "question_id": "software.learning-cognition.level-6.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.learning-cognition.level-6.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.learning-cognition.level-6.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.learning-cognition.level-6.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 6/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": [
+              "software.learning-cognition.misconception"
+            ]
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.learning-cognition.level-6.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "纠正关键误解徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-7"
+        },
+        {
+          "level_id": "level-7",
+          "order": 7,
+          "title": "完成新情境迁移",
+          "status": "completed",
+          "task": "完成新情境迁移：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 100,
+          "question": {
+            "question_id": "software.learning-cognition.level-7.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.learning-cognition.level-7.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.learning-cognition.level-7.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.learning-cognition.level-7.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 7/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.learning-cognition.level-7.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "完成新情境迁移徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "final-exam"
+        }
+      ]
+    },
+    "research_decision": {
+      "campaign_id": "research-decision",
+      "title": "科研决策战役",
+      "description": "把范围、baseline、指标、停止门与审查转为可追溯决定。",
+      "status": "completed",
+      "progress": 100,
+      "provenance": {
+        "data_classification": "simulated",
+        "display_label": "模拟数据",
+        "public_safe": true,
+        "contains_real_research_results": false,
+        "source_traceability": "fixture:software:synthetic-only"
+      },
+      "levels": [
+        {
+          "level_id": "level-1",
+          "order": 1,
+          "title": "冻结问题与成功条件",
+          "status": "completed",
+          "task": "冻结问题与成功条件：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 14.29,
+          "question": {
+            "question_id": "software.research-decision.level-1.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.research-decision.level-1.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.research-decision.level-1.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.research-decision.level-1.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 1/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "software.research-decision.knowledge.candidate"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.research-decision.level-1.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "冻结问题与成功条件徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-2"
+        },
+        {
+          "level_id": "level-2",
+          "order": 2,
+          "title": "划定数据与安全边界",
+          "status": "completed",
+          "task": "划定数据与安全边界：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 28.57,
+          "question": {
+            "question_id": "software.research-decision.level-2.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.research-decision.level-2.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.research-decision.level-2.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.research-decision.level-2.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 2/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "software.research-decision.known-unknown"
+            ],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.research-decision.level-2.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "划定数据与安全边界徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-3"
+        },
+        {
+          "level_id": "level-3",
+          "order": 3,
+          "title": "选择 baseline 与对照",
+          "status": "completed",
+          "task": "选择 baseline 与对照：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 42.86,
+          "question": {
+            "question_id": "software.research-decision.level-3.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.research-decision.level-3.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.research-decision.level-3.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.research-decision.level-3.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 3/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [
+              "software.research-decision.knowledge.confirmed"
+            ],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.research-decision.level-3.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "选择 baseline 与对照徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-4"
+        },
+        {
+          "level_id": "level-4",
+          "order": 4,
+          "title": "冻结指标与验收门",
+          "status": "completed",
+          "task": "冻结指标与验收门：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 57.14,
+          "question": {
+            "question_id": "software.research-decision.level-4.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.research-decision.level-4.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.research-decision.level-4.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.research-decision.level-4.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 4/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.research-decision.level-4.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "冻结指标与验收门徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-5"
+        },
+        {
+          "level_id": "level-5",
+          "order": 5,
+          "title": "设计受控执行",
+          "status": "completed",
+          "task": "设计受控执行：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 71.43,
+          "question": {
+            "question_id": "software.research-decision.level-5.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.research-decision.level-5.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.research-decision.level-5.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.research-decision.level-5.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 5/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [
+              "software.research-decision.knowledge.verified"
+            ],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.research-decision.level-5.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "设计受控执行徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-6"
+        },
+        {
+          "level_id": "level-6",
+          "order": 6,
+          "title": "设置失败门与退出条件",
+          "status": "completed",
+          "task": "设置失败门与退出条件：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 85.71,
+          "question": {
+            "question_id": "software.research-decision.level-6.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.research-decision.level-6.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.research-decision.level-6.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.research-decision.level-6.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 6/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": [
+              "software.research-decision.misconception"
+            ]
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.research-decision.level-6.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "设置失败门与退出条件徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "level-7"
+        },
+        {
+          "level_id": "level-7",
+          "order": 7,
+          "title": "冻结执行与独立审查",
+          "status": "completed",
+          "task": "冻结执行与独立审查：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。",
+          "knowledge_card": "陈述不等于 Verified；记录来源、选择影响和下一步证据。",
+          "estimated_time": {
+            "min": 3,
+            "max": 5,
+            "unit": "minutes"
+          },
+          "progress": 100,
+          "question": {
+            "question_id": "software.research-decision.level-7.question",
+            "prompt": "本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？",
+            "purpose": "只询问一个会改变路线的高价值问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "software.research-decision.level-7.choice.a",
+              "label": "先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界",
+              "impact_preview": "后续关卡优先建立可验证条件与停止门。"
+            },
+            {
+              "choice_id": "software.research-decision.level-7.choice.b",
+              "label": "先扩展方案范围",
+              "impact_preview": "探索面更宽，但必须增加未知项且不得跳过验证。"
+            }
+          ],
+          "selected_choice_id": "software.research-decision.level-7.choice.a",
+          "choice_impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+          "goal_preview": "实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 7/7 个决策门。",
+          "cognition_map_delta": {
+            "candidate_added": [],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [],
+            "misconceptions_corrected": []
+          },
+          "quiz": {
+            "status": "passed",
+            "question_ids": [
+              "software.research-decision.level-7.quiz"
+            ],
+            "accuracy": 1
+          },
+          "reward": {
+            "title": "冻结执行与独立审查徽章",
+            "artifact_ids": []
+          },
+          "next_level_id": "final-exam"
+        }
+      ]
+    }
+  },
+  "player_choices": [
+    {
+      "choice_record_id": "software.learning-cognition.level-1.choice-record",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-1",
+      "question_id": "software.learning-cognition.level-1.question",
+      "choice_id": "software.learning-cognition.level-1.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.learning-cognition.level-2.choice-record",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-2",
+      "question_id": "software.learning-cognition.level-2.question",
+      "choice_id": "software.learning-cognition.level-2.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.learning-cognition.level-3.choice-record",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-3",
+      "question_id": "software.learning-cognition.level-3.question",
+      "choice_id": "software.learning-cognition.level-3.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.learning-cognition.level-4.choice-record",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-4",
+      "question_id": "software.learning-cognition.level-4.question",
+      "choice_id": "software.learning-cognition.level-4.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.learning-cognition.level-5.choice-record",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-5",
+      "question_id": "software.learning-cognition.level-5.question",
+      "choice_id": "software.learning-cognition.level-5.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.learning-cognition.level-6.choice-record",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-6",
+      "question_id": "software.learning-cognition.level-6.question",
+      "choice_id": "software.learning-cognition.level-6.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.learning-cognition.level-7.choice-record",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-7",
+      "question_id": "software.learning-cognition.level-7.question",
+      "choice_id": "software.learning-cognition.level-7.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.research-decision.level-1.choice-record",
+      "campaign_id": "research-decision",
+      "level_id": "level-1",
+      "question_id": "software.research-decision.level-1.question",
+      "choice_id": "software.research-decision.level-1.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.research-decision.level-2.choice-record",
+      "campaign_id": "research-decision",
+      "level_id": "level-2",
+      "question_id": "software.research-decision.level-2.question",
+      "choice_id": "software.research-decision.level-2.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.research-decision.level-3.choice-record",
+      "campaign_id": "research-decision",
+      "level_id": "level-3",
+      "question_id": "software.research-decision.level-3.question",
+      "choice_id": "software.research-decision.level-3.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.research-decision.level-4.choice-record",
+      "campaign_id": "research-decision",
+      "level_id": "level-4",
+      "question_id": "software.research-decision.level-4.question",
+      "choice_id": "software.research-decision.level-4.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.research-decision.level-5.choice-record",
+      "campaign_id": "research-decision",
+      "level_id": "level-5",
+      "question_id": "software.research-decision.level-5.question",
+      "choice_id": "software.research-decision.level-5.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.research-decision.level-6.choice-record",
+      "campaign_id": "research-decision",
+      "level_id": "level-6",
+      "question_id": "software.research-decision.level-6.question",
+      "choice_id": "software.research-decision.level-6.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "choice_record_id": "software.research-decision.level-7.choice-record",
+      "campaign_id": "research-decision",
+      "level_id": "level-7",
+      "question_id": "software.research-decision.level-7.question",
+      "choice_id": "software.research-decision.level-7.choice.a",
+      "impact": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "chosen_at": "2026-07-26T08:00:00.000Z"
+    }
+  ],
+  "goal_versions": [
+    {
+      "version": 1,
+      "status": "superseded",
+      "goal_text": "草案：实现支持 CSV 导入导出的离线阅读清单 CLI。",
+      "source_decision_ids": [
+        "software.learning-cognition.level-1.decision"
+      ],
+      "created_at": "2026-07-26T08:00:00.000Z"
+    },
+    {
+      "version": 2,
+      "status": "executed",
+      "goal_text": "# Codex Goal｜离线阅读清单 CLI\n\n## 冻结 Context\n- 场景标签：模拟数据；仅用于流程验证。\n- 已确认目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\n- 待验证假设：controlled loop 的真实效果尚无用户证据。\n- 不可推断内容：未提供来源正文、真实结果或个人信息。\n\n## 任务边界\n- 目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\n- 成功条件：最小命令合同可测试；重复导入保持幂等；单元、集成与安全检查通过。\n- 范围内：离线 CLI、fixture 与验证记录。\n- 范围外：真实个人数据、私有代码、未公开结果与未经审查的效果声明。\n\n## 多 Agent 分工\n- Planner 冻结范围、依赖、文件 Owner 和验收矩阵。\n- Worker 按单一 Owner 边界产生产物与原始验证记录。\n- Reviewer 独立复验，不读取实现者的预期结论。\n- 交接使用 artifact、status、validation、blockers、requested_action。\n\n## 模型路由\n- 机械检索、分类与格式检查使用低成本模型。\n- 语义、架构、证据边界和失败恢复使用高能力模型。\n- 同一明确 blocker 两轮未解时升级，不以增加成本掩盖缺证据。\n\n## 执行步骤\n1. 清点并脱敏输入，登记七类 Prompt Clue。\n2. 完成双战役七关，逐关记录选择、决定和 Goal 版本。\n3. 只沿 Candidate → Confirmed → Verified 补齐凭据。\n4. 运行小测、应用题与迁移题。\n5. 通过最终考试后导出状态、Goal 与哈希。\n\n## 验证与验收\n- 用 Canonical Schema 1.0.0 验证完整 game-state。\n- 验证两个战役各七关、考试权重和为 100、正式得分只含 Verified。\n- 证据使用命令日志、fixture、测试结果或独立审查记录，不能只写“已完成”。\n\n## 安全\n- 仅使用公开、模拟或已脱敏输入；无网络与遥测；不覆盖用户文件；未知 CSV 方言必须显式报错。\n- 禁止凭据、个人标识、私有路径/代码、服务器细节、数据集、checkpoint 和未公开结果。\n- 登录、付费、发布、删除、覆盖或实质 Context 冲突必须等待明确授权。\n\n## 独立审查\n- Reviewer 独立检查功能、证据、隐私、可复现性与宣传边界。\n- 未关闭 P0/P1 阻止公开发布；修复后重新运行同一验收。\n\n## Git、PR 与合并\n- 只精确暂存 Owner 范围，不使用广泛暂存。\n- 提交、PR 与合并说明使用中文。\n- 仅集成 Owner 合并共享 Schema、根配置与跨模块变更。\n\n## 退出条件\n- 成功退出：全部 P0 有可复验证据，考试通过，状态与 Goal 可安全导出。\n- blocker 退出：两轮同一问题无进展时提交最小复现并升级。\n- 路线退出：安全边界无法满足、关键证据缺失或独立审查仍有未关闭 P0/P1 时停止。",
+      "source_decision_ids": [
+        "software.learning-cognition.level-1.decision",
+        "software.learning-cognition.level-2.decision",
+        "software.learning-cognition.level-3.decision",
+        "software.learning-cognition.level-4.decision",
+        "software.learning-cognition.level-5.decision",
+        "software.learning-cognition.level-6.decision",
+        "software.learning-cognition.level-7.decision",
+        "software.research-decision.level-1.decision",
+        "software.research-decision.level-2.decision",
+        "software.research-decision.level-3.decision",
+        "software.research-decision.level-4.decision",
+        "software.research-decision.level-5.decision",
+        "software.research-decision.level-6.decision",
+        "software.research-decision.level-7.decision"
+      ],
+      "created_at": "2026-07-26T08:00:00.000Z"
+    }
+  ],
+  "known_knowns": {
+    "candidate": [
+      {
+        "knowledge_id": "software.knowledge.candidate",
+        "statement": "候选陈述：实现支持 CSV 导入导出的离线阅读清单 CLI。",
+        "status": "candidate",
+        "campaign_id": "research-decision",
+        "introduced_level_id": "level-1",
+        "provenance": {
+          "data_classification": "simulated",
+          "display_label": "模拟数据",
+          "public_safe": true,
+          "contains_real_research_results": false,
+          "source_traceability": "fixture:software:synthetic-only"
+        },
+        "candidate_evidence": [
+          {
+            "evidence_id": "software.knowledge.candidate.candidate",
+            "evidence_type": "ai-extraction",
+            "source_ref": "fixture:software:sanitized-input",
+            "recorded_at": "2026-07-26T08:00:00.000Z"
+          }
+        ]
+      }
+    ],
+    "confirmed": [
+      {
+        "knowledge_id": "software.knowledge.confirmed",
+        "statement": "已确认边界：无网络与遥测",
+        "status": "confirmed",
+        "campaign_id": "research-decision",
+        "introduced_level_id": "level-3",
+        "provenance": {
+          "data_classification": "simulated",
+          "display_label": "模拟数据",
+          "public_safe": true,
+          "contains_real_research_results": false,
+          "source_traceability": "fixture:software:synthetic-only"
+        },
+        "candidate_evidence": [
+          {
+            "evidence_id": "software.knowledge.confirmed.candidate",
+            "evidence_type": "ai-extraction",
+            "source_ref": "fixture:software:sanitized-input",
+            "recorded_at": "2026-07-26T08:00:00.000Z"
+          }
+        ],
+        "confirmation_evidence": [
+          {
+            "evidence_id": "software.knowledge.confirmed.confirmation",
+            "evidence_type": "restatement",
+            "source_ref": "fixture:software:user-restatement",
+            "recorded_at": "2026-07-26T08:00:00.000Z"
+          }
+        ]
+      }
+    ],
+    "verified": [
+      {
+        "knowledge_id": "software.knowledge.verified",
+        "statement": "已验证应用：最小命令合同可测试",
+        "status": "verified",
+        "campaign_id": "research-decision",
+        "introduced_level_id": "level-5",
+        "provenance": {
+          "data_classification": "simulated",
+          "display_label": "模拟数据",
+          "public_safe": true,
+          "contains_real_research_results": false,
+          "source_traceability": "fixture:software:synthetic-only"
+        },
+        "candidate_evidence": [
+          {
+            "evidence_id": "software.knowledge.verified.candidate",
+            "evidence_type": "ai-extraction",
+            "source_ref": "fixture:software:sanitized-input",
+            "recorded_at": "2026-07-26T08:00:00.000Z"
+          }
+        ],
+        "confirmation_evidence": [
+          {
+            "evidence_id": "software.knowledge.verified.confirmation",
+            "evidence_type": "restatement",
+            "source_ref": "fixture:software:user-restatement",
+            "recorded_at": "2026-07-26T08:00:00.000Z"
+          }
+        ],
+        "verification_evidence": [
+          {
+            "evidence_id": "software.knowledge.verified.application",
+            "evidence_type": "choice-application",
+            "source_ref": "fixture:software:level-5",
+            "recorded_at": "2026-07-26T08:00:00.000Z",
+            "score": 90
+          },
+          {
+            "evidence_id": "software.knowledge.verified.exam",
+            "evidence_type": "final-exam",
+            "source_ref": "fixture:software:final-exam",
+            "recorded_at": "2026-07-26T08:00:00.000Z",
+            "score": 90
+          }
+        ]
+      }
+    ]
+  },
+  "known_unknowns": [
+    {
+      "item_id": "software.known-unknown",
+      "statement": "不同 CSV 方言和编码边界仍需 fixture 验证。",
+      "campaign_id": "research-decision",
+      "introduced_level_id": "level-2",
+      "status": "under-investigation"
+    }
+  ],
+  "unknown_knowns": [
+    {
+      "item_id": "software.unknown-known",
+      "statement": "用户可能已掌握部分方法，但必须通过无提示复述或应用暴露。",
+      "campaign_id": "learning-cognition",
+      "introduced_level_id": "level-3",
+      "status": "resolved"
+    }
+  ],
+  "unknown_unknowns": [
+    {
+      "item_id": "software.unknown-unknown",
+      "statement": "迁移到新情境后可能出现尚未建模的边界失败。",
+      "campaign_id": "research-decision",
+      "introduced_level_id": "level-6",
+      "status": "open"
+    }
+  ],
+  "prompt_clues": [
+    {
+      "clue_id": "software.clue.1",
+      "clue_type": "goal-clue",
+      "text": "实现支持 CSV 导入导出的离线阅读清单 CLI。",
+      "source_kind": "simulated",
+      "evidence_status": "verified"
+    },
+    {
+      "clue_id": "software.clue.2",
+      "clue_type": "constraint-clue",
+      "text": "无网络与遥测；不覆盖用户文件；未知 CSV 方言必须显式报错",
+      "source_kind": "simulated",
+      "evidence_status": "verified"
+    },
+    {
+      "clue_id": "software.clue.3",
+      "clue_type": "workflow-clue",
+      "text": "按 controlled loop 一次处理一个高价值决定。",
+      "source_kind": "simulated",
+      "evidence_status": "confirmed"
+    },
+    {
+      "clue_id": "software.clue.4",
+      "clue_type": "acceptance-clue",
+      "text": "最小命令合同可测试；重复导入保持幂等；单元、集成与安全检查通过",
+      "source_kind": "simulated",
+      "evidence_status": "confirmed"
+    },
+    {
+      "clue_id": "software.clue.5",
+      "clue_type": "failure-clue",
+      "text": "证据不足或安全边界无法满足时停止。",
+      "source_kind": "simulated",
+      "evidence_status": "confirmed"
+    },
+    {
+      "clue_id": "software.clue.6",
+      "clue_type": "preference-clue",
+      "text": "按 controlled loop 一次处理一个高价值决定。",
+      "source_kind": "simulated",
+      "evidence_status": "confirmed"
+    },
+    {
+      "clue_id": "software.clue.7",
+      "clue_type": "artifact-clue",
+      "text": "离线 CLI、fixture 与验证记录",
+      "source_kind": "simulated",
+      "evidence_status": "retrieval-limited"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "software.artifact.cognition-map",
+      "artifact_type": "cognition-map",
+      "title": "离线阅读清单 CLI cognition-map",
+      "uri": "artifact://software/cognition-map",
+      "public_safe": true
+    },
+    {
+      "artifact_id": "software.artifact.exam-result",
+      "artifact_type": "exam-result",
+      "title": "离线阅读清单 CLI exam-result",
+      "uri": "artifact://software/exam-result",
+      "public_safe": true
+    },
+    {
+      "artifact_id": "software.artifact.game-state-export",
+      "artifact_type": "game-state-export",
+      "title": "离线阅读清单 CLI game-state-export",
+      "uri": "artifact://software/game-state-export",
+      "public_safe": true
+    },
+    {
+      "artifact_id": "software.artifact.codex-goal-export",
+      "artifact_type": "codex-goal-export",
+      "title": "离线阅读清单 CLI codex-goal-export",
+      "uri": "artifact://software/codex-goal-export",
+      "public_safe": true
+    }
+  ],
+  "decisions": [
+    {
+      "decision_id": "software.learning-cognition.level-1.decision",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-1",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.learning-cognition.level-1.choice-record"
+    },
+    {
+      "decision_id": "software.learning-cognition.level-2.decision",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-2",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.learning-cognition.level-2.choice-record"
+    },
+    {
+      "decision_id": "software.learning-cognition.level-3.decision",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-3",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.learning-cognition.level-3.choice-record"
+    },
+    {
+      "decision_id": "software.learning-cognition.level-4.decision",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-4",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.learning-cognition.level-4.choice-record"
+    },
+    {
+      "decision_id": "software.learning-cognition.level-5.decision",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-5",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.learning-cognition.level-5.choice-record"
+    },
+    {
+      "decision_id": "software.learning-cognition.level-6.decision",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-6",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.learning-cognition.level-6.choice-record"
+    },
+    {
+      "decision_id": "software.learning-cognition.level-7.decision",
+      "campaign_id": "learning-cognition",
+      "level_id": "level-7",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.learning-cognition.level-7.choice-record"
+    },
+    {
+      "decision_id": "software.research-decision.level-1.decision",
+      "campaign_id": "research-decision",
+      "level_id": "level-1",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.research-decision.level-1.choice-record"
+    },
+    {
+      "decision_id": "software.research-decision.level-2.decision",
+      "campaign_id": "research-decision",
+      "level_id": "level-2",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.research-decision.level-2.choice-record"
+    },
+    {
+      "decision_id": "software.research-decision.level-3.decision",
+      "campaign_id": "research-decision",
+      "level_id": "level-3",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.research-decision.level-3.choice-record"
+    },
+    {
+      "decision_id": "software.research-decision.level-4.decision",
+      "campaign_id": "research-decision",
+      "level_id": "level-4",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.research-decision.level-4.choice-record"
+    },
+    {
+      "decision_id": "software.research-decision.level-5.decision",
+      "campaign_id": "research-decision",
+      "level_id": "level-5",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.research-decision.level-5.choice-record"
+    },
+    {
+      "decision_id": "software.research-decision.level-6.decision",
+      "campaign_id": "research-decision",
+      "level_id": "level-6",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.research-decision.level-6.choice-record"
+    },
+    {
+      "decision_id": "software.research-decision.level-7.decision",
+      "campaign_id": "research-decision",
+      "level_id": "level-7",
+      "summary": "冻结证据边界，并把未解决项保留为 Known Unknown。",
+      "status": "frozen",
+      "source_choice_record_id": "software.research-decision.level-7.choice-record"
+    }
+  ],
+  "metrics": {
+    "new_verified_known_knowns": 1,
+    "corrected_misconceptions": 1,
+    "new_known_unknowns": 1,
+    "applied_knowledge_count": 2,
+    "level_quiz_accuracy": 1,
+    "final_exam_accuracy": 0.9,
+    "transfer_task_score": 90,
+    "goal_revision_count": 1,
+    "formal_understanding_score": 90,
+    "verified_only_for_knowledge_count": true
+  },
+  "exam": {
+    "status": "passed",
+    "pass_threshold": 80,
+    "weights": {
+      "decision_application": 60,
+      "concept_understanding": 20,
+      "transfer": 20,
+      "weight_total": 100
+    },
+    "questions": [
+      {
+        "question_id": "software.exam.application",
+        "category": "decision-application",
+        "prompt": "在范围扩张请求出现时，如何应用“无网络与遥测”这一决定？",
+        "question_type": "application",
+        "answer": "保留冻结边界，将扩张项登记为待验证假设并重新走审批。",
+        "is_correct": true,
+        "score": 90
+      },
+      {
+        "question_id": "software.exam.concept",
+        "category": "concept-understanding",
+        "prompt": "为什么 Confirmed 不能直接计入正式理解得分？",
+        "question_type": "short-answer",
+        "answer": "Confirmed 只有确认凭据，尚缺应用、小测、考试、迁移或纠错形成的验证凭据。",
+        "is_correct": true,
+        "score": 90
+      },
+      {
+        "question_id": "software.exam.transfer",
+        "category": "transfer",
+        "prompt": "把幂等导入策略迁移到 JSONL 输入。",
+        "question_type": "application",
+        "answer": "冻结新情境边界并复用验证门；新增未知项，不把旧结论直接外推。",
+        "is_correct": true,
+        "score": 90
+      }
+    ],
+    "score": 90,
+    "passed": true,
+    "completed_at": "2026-07-26T08:00:00.000Z"
+  },
+  "auto_demo": {
+    "enabled": true,
+    "duration_seconds": 75,
+    "status": "completed",
+    "deterministic_seed": 20260726,
+    "loop": false,
+    "current_step": 9,
+    "steps": [
+      {
+        "step_id": "software.demo.step-1",
+        "at_second": 0,
+        "action": "open-campaign",
+        "target": "learning-cognition"
+      },
+      {
+        "step_id": "software.demo.step-2",
+        "at_second": 9,
+        "action": "open-level",
+        "target": "level-1"
+      },
+      {
+        "step_id": "software.demo.step-3",
+        "at_second": 18,
+        "action": "select-choice",
+        "target": "software.learning-cognition.level-1.choice.a"
+      },
+      {
+        "step_id": "software.demo.step-4",
+        "at_second": 27,
+        "action": "confirm-knowledge",
+        "target": "software.knowledge.confirmed"
+      },
+      {
+        "step_id": "software.demo.step-5",
+        "at_second": 36,
+        "action": "verify-knowledge",
+        "target": "software.knowledge.verified"
+      },
+      {
+        "step_id": "software.demo.step-6",
+        "at_second": 45,
+        "action": "answer-exam",
+        "target": "software.exam.application"
+      },
+      {
+        "step_id": "software.demo.step-7",
+        "at_second": 54,
+        "action": "export-state",
+        "target": "software.artifact.game-state-export"
+      },
+      {
+        "step_id": "software.demo.step-8",
+        "at_second": 63,
+        "action": "export-goal",
+        "target": "software.artifact.codex-goal-export"
+      },
+      {
+        "step_id": "software.demo.step-9",
+        "at_second": 72,
+        "action": "complete",
+        "target": "fixture.software"
+      }
+    ]
+  },
+  "exports": {
+    "state": {
+      "kind": "game-state",
+      "status": "ready",
+      "media_type": "application/json",
+      "filename": "software-game-state.json",
+      "generated_at": "2026-07-26T08:00:00.000Z",
+      "sha256": "73bb2eef4678e2d164f90b4844249df65fa69cea43218bf48ab0749e461faf32",
+      "content": "{\"schema_version\":\"1.0.0\",\"state_id\":\"fixture.software\",\"revision\":14,\"session\":{\"started_at\":\"2026-07-26T08:00:00.000Z\",\"reset_count\":0,\"last_reset_at\":null,\"can_restart\":true},\"project_goal\":{\"summary\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。\",\"success_criteria\":[\"最小命令合同可测试\",\"重复导入保持幂等\",\"单元、集成与安全检查通过\"],\"constraints\":[\"无网络与遥测\",\"不覆盖用户文件\",\"未知 CSV 方言必须显式报错\"],\"status\":\"executed\"},\"mode\":\"controlled-loop\",\"interaction_mode\":\"interactive\",\"phase\":\"completed\",\"prologue\":{\"status\":\"completed\",\"task\":\"选择“离线阅读清单 CLI”的第一条验证路线。\",\"estimated_time\":{\"min\":2,\"max\":3,\"unit\":\"minutes\"},\"question\":{\"question_id\":\"software.prologue.question\",\"prompt\":\"哪项选择最能改变后续方案？\",\"purpose\":\"冻结第一条高价值决策。\"},\"choices\":[{\"choice_id\":\"software.prologue.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.prologue.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.prologue.choice.a\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"reward\":{\"title\":\"目标罗盘\",\"artifact_ids\":[]},\"next_level_id\":\"level-1\"},\"current_campaign\":null,\"current_level\":\"complete\",\"overall_progress\":100,\"estimated_remaining_time\":{\"min\":0,\"max\":0,\"unit\":\"minutes\"},\"campaigns\":{\"learning_cognition\":{\"campaign_id\":\"learning-cognition\",\"title\":\"学习认知战役\",\"description\":\"把陈述转为可验证、可迁移的知识。\",\"status\":\"completed\",\"progress\":100,\"provenance\":{\"data_classification\":\"simulated\",\"display_label\":\"模拟数据\",\"public_safe\":true,\"contains_real_research_results\":false,\"source_traceability\":\"fixture:software:synthetic-only\"},\"levels\":[{\"level_id\":\"level-1\",\"order\":1,\"title\":\"冻结学习目标\",\"status\":\"completed\",\"task\":\"冻结学习目标：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":14.29,\"question\":{\"question_id\":\"software.learning-cognition.level-1.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.learning-cognition.level-1.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.learning-cognition.level-1.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.learning-cognition.level-1.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 1/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[\"software.learning-cognition.knowledge.candidate\"],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.learning-cognition.level-1.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"冻结学习目标徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-2\"},{\"level_id\":\"level-2\",\"order\":2,\"title\":\"区分事实与假设\",\"status\":\"completed\",\"task\":\"区分事实与假设：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":28.57,\"question\":{\"question_id\":\"software.learning-cognition.level-2.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.learning-cognition.level-2.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.learning-cognition.level-2.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.learning-cognition.level-2.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 2/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[\"software.learning-cognition.known-unknown\"],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.learning-cognition.level-2.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"区分事实与假设徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-3\"},{\"level_id\":\"level-3\",\"order\":3,\"title\":\"绘制认知地图\",\"status\":\"completed\",\"task\":\"绘制认知地图：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":42.86,\"question\":{\"question_id\":\"software.learning-cognition.level-3.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.learning-cognition.level-3.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.learning-cognition.level-3.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.learning-cognition.level-3.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 3/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[\"software.learning-cognition.knowledge.confirmed\"],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.learning-cognition.level-3.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"绘制认知地图徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-4\"},{\"level_id\":\"level-4\",\"order\":4,\"title\":\"评估证据质量\",\"status\":\"completed\",\"task\":\"评估证据质量：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":57.14,\"question\":{\"question_id\":\"software.learning-cognition.level-4.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.learning-cognition.level-4.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.learning-cognition.level-4.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.learning-cognition.level-4.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 4/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.learning-cognition.level-4.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"评估证据质量徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-5\"},{\"level_id\":\"level-5\",\"order\":5,\"title\":\"完成情境应用\",\"status\":\"completed\",\"task\":\"完成情境应用：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":71.43,\"question\":{\"question_id\":\"software.learning-cognition.level-5.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.learning-cognition.level-5.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.learning-cognition.level-5.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.learning-cognition.level-5.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 5/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[\"software.learning-cognition.knowledge.verified\"],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.learning-cognition.level-5.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"完成情境应用徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-6\"},{\"level_id\":\"level-6\",\"order\":6,\"title\":\"纠正关键误解\",\"status\":\"completed\",\"task\":\"纠正关键误解：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":85.71,\"question\":{\"question_id\":\"software.learning-cognition.level-6.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.learning-cognition.level-6.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.learning-cognition.level-6.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.learning-cognition.level-6.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 6/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[\"software.learning-cognition.misconception\"]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.learning-cognition.level-6.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"纠正关键误解徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-7\"},{\"level_id\":\"level-7\",\"order\":7,\"title\":\"完成新情境迁移\",\"status\":\"completed\",\"task\":\"完成新情境迁移：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":100,\"question\":{\"question_id\":\"software.learning-cognition.level-7.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.learning-cognition.level-7.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.learning-cognition.level-7.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.learning-cognition.level-7.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 7/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.learning-cognition.level-7.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"完成新情境迁移徽章\",\"artifact_ids\":[]},\"next_level_id\":\"final-exam\"}]},\"research_decision\":{\"campaign_id\":\"research-decision\",\"title\":\"科研决策战役\",\"description\":\"把范围、baseline、指标、停止门与审查转为可追溯决定。\",\"status\":\"completed\",\"progress\":100,\"provenance\":{\"data_classification\":\"simulated\",\"display_label\":\"模拟数据\",\"public_safe\":true,\"contains_real_research_results\":false,\"source_traceability\":\"fixture:software:synthetic-only\"},\"levels\":[{\"level_id\":\"level-1\",\"order\":1,\"title\":\"冻结问题与成功条件\",\"status\":\"completed\",\"task\":\"冻结问题与成功条件：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":14.29,\"question\":{\"question_id\":\"software.research-decision.level-1.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.research-decision.level-1.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.research-decision.level-1.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.research-decision.level-1.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 1/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[\"software.research-decision.knowledge.candidate\"],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.research-decision.level-1.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"冻结问题与成功条件徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-2\"},{\"level_id\":\"level-2\",\"order\":2,\"title\":\"划定数据与安全边界\",\"status\":\"completed\",\"task\":\"划定数据与安全边界：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":28.57,\"question\":{\"question_id\":\"software.research-decision.level-2.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.research-decision.level-2.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.research-decision.level-2.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.research-decision.level-2.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 2/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[\"software.research-decision.known-unknown\"],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.research-decision.level-2.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"划定数据与安全边界徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-3\"},{\"level_id\":\"level-3\",\"order\":3,\"title\":\"选择 baseline 与对照\",\"status\":\"completed\",\"task\":\"选择 baseline 与对照：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":42.86,\"question\":{\"question_id\":\"software.research-decision.level-3.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.research-decision.level-3.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.research-decision.level-3.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.research-decision.level-3.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 3/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[\"software.research-decision.knowledge.confirmed\"],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.research-decision.level-3.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"选择 baseline 与对照徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-4\"},{\"level_id\":\"level-4\",\"order\":4,\"title\":\"冻结指标与验收门\",\"status\":\"completed\",\"task\":\"冻结指标与验收门：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":57.14,\"question\":{\"question_id\":\"software.research-decision.level-4.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.research-decision.level-4.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.research-decision.level-4.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.research-decision.level-4.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 4/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.research-decision.level-4.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"冻结指标与验收门徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-5\"},{\"level_id\":\"level-5\",\"order\":5,\"title\":\"设计受控执行\",\"status\":\"completed\",\"task\":\"设计受控执行：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":71.43,\"question\":{\"question_id\":\"software.research-decision.level-5.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.research-decision.level-5.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.research-decision.level-5.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.research-decision.level-5.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 5/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[\"software.research-decision.knowledge.verified\"],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.research-decision.level-5.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"设计受控执行徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-6\"},{\"level_id\":\"level-6\",\"order\":6,\"title\":\"设置失败门与退出条件\",\"status\":\"completed\",\"task\":\"设置失败门与退出条件：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":85.71,\"question\":{\"question_id\":\"software.research-decision.level-6.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.research-decision.level-6.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.research-decision.level-6.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.research-decision.level-6.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 6/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[\"software.research-decision.misconception\"]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.research-decision.level-6.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"设置失败门与退出条件徽章\",\"artifact_ids\":[]},\"next_level_id\":\"level-7\"},{\"level_id\":\"level-7\",\"order\":7,\"title\":\"冻结执行与独立审查\",\"status\":\"completed\",\"task\":\"冻结执行与独立审查：围绕“实现支持 CSV 导入导出的离线阅读清单 CLI。”产出可复验记录。\",\"knowledge_card\":\"陈述不等于 Verified；记录来源、选择影响和下一步证据。\",\"estimated_time\":{\"min\":3,\"max\":5,\"unit\":\"minutes\"},\"progress\":100,\"question\":{\"question_id\":\"software.research-decision.level-7.question\",\"prompt\":\"本关哪项选择最能改变“离线阅读清单 CLI”的后续方案？\",\"purpose\":\"只询问一个会改变路线的高价值问题。\"},\"choices\":[{\"choice_id\":\"software.research-decision.level-7.choice.a\",\"label\":\"先冻结“实现支持 CSV 导入导出的离线阅读清单 CLI。”的证据边界\",\"impact_preview\":\"后续关卡优先建立可验证条件与停止门。\"},{\"choice_id\":\"software.research-decision.level-7.choice.b\",\"label\":\"先扩展方案范围\",\"impact_preview\":\"探索面更宽，但必须增加未知项且不得跳过验证。\"}],\"selected_choice_id\":\"software.research-decision.level-7.choice.a\",\"choice_impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"goal_preview\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。 当前已完成 7/7 个决策门。\",\"cognition_map_delta\":{\"candidate_added\":[],\"confirmed_added\":[],\"verified_added\":[],\"known_unknowns_added\":[],\"misconceptions_corrected\":[]},\"quiz\":{\"status\":\"passed\",\"question_ids\":[\"software.research-decision.level-7.quiz\"],\"accuracy\":1},\"reward\":{\"title\":\"冻结执行与独立审查徽章\",\"artifact_ids\":[]},\"next_level_id\":\"final-exam\"}]}},\"player_choices\":[{\"choice_record_id\":\"software.learning-cognition.level-1.choice-record\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-1\",\"question_id\":\"software.learning-cognition.level-1.question\",\"choice_id\":\"software.learning-cognition.level-1.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.learning-cognition.level-2.choice-record\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-2\",\"question_id\":\"software.learning-cognition.level-2.question\",\"choice_id\":\"software.learning-cognition.level-2.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.learning-cognition.level-3.choice-record\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-3\",\"question_id\":\"software.learning-cognition.level-3.question\",\"choice_id\":\"software.learning-cognition.level-3.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.learning-cognition.level-4.choice-record\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-4\",\"question_id\":\"software.learning-cognition.level-4.question\",\"choice_id\":\"software.learning-cognition.level-4.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.learning-cognition.level-5.choice-record\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-5\",\"question_id\":\"software.learning-cognition.level-5.question\",\"choice_id\":\"software.learning-cognition.level-5.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.learning-cognition.level-6.choice-record\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-6\",\"question_id\":\"software.learning-cognition.level-6.question\",\"choice_id\":\"software.learning-cognition.level-6.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.learning-cognition.level-7.choice-record\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-7\",\"question_id\":\"software.learning-cognition.level-7.question\",\"choice_id\":\"software.learning-cognition.level-7.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.research-decision.level-1.choice-record\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-1\",\"question_id\":\"software.research-decision.level-1.question\",\"choice_id\":\"software.research-decision.level-1.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.research-decision.level-2.choice-record\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-2\",\"question_id\":\"software.research-decision.level-2.question\",\"choice_id\":\"software.research-decision.level-2.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.research-decision.level-3.choice-record\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-3\",\"question_id\":\"software.research-decision.level-3.question\",\"choice_id\":\"software.research-decision.level-3.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.research-decision.level-4.choice-record\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-4\",\"question_id\":\"software.research-decision.level-4.question\",\"choice_id\":\"software.research-decision.level-4.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.research-decision.level-5.choice-record\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-5\",\"question_id\":\"software.research-decision.level-5.question\",\"choice_id\":\"software.research-decision.level-5.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.research-decision.level-6.choice-record\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-6\",\"question_id\":\"software.research-decision.level-6.question\",\"choice_id\":\"software.research-decision.level-6.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"},{\"choice_record_id\":\"software.research-decision.level-7.choice-record\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-7\",\"question_id\":\"software.research-decision.level-7.question\",\"choice_id\":\"software.research-decision.level-7.choice.a\",\"impact\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"chosen_at\":\"2026-07-26T08:00:00.000Z\"}],\"goal_versions\":[{\"version\":1,\"status\":\"superseded\",\"goal_text\":\"草案：实现支持 CSV 导入导出的离线阅读清单 CLI。\",\"source_decision_ids\":[\"software.learning-cognition.level-1.decision\"],\"created_at\":\"2026-07-26T08:00:00.000Z\"},{\"version\":2,\"status\":\"executed\",\"goal_text\":\"# Codex Goal｜离线阅读清单 CLI\\n\\n## 冻结 Context\\n- 场景标签：模拟数据；仅用于流程验证。\\n- 已确认目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\\n- 待验证假设：controlled loop 的真实效果尚无用户证据。\\n- 不可推断内容：未提供来源正文、真实结果或个人信息。\\n\\n## 任务边界\\n- 目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\\n- 成功条件：最小命令合同可测试；重复导入保持幂等；单元、集成与安全检查通过。\\n- 范围内：离线 CLI、fixture 与验证记录。\\n- 范围外：真实个人数据、私有代码、未公开结果与未经审查的效果声明。\\n\\n## 多 Agent 分工\\n- Planner 冻结范围、依赖、文件 Owner 和验收矩阵。\\n- Worker 按单一 Owner 边界产生产物与原始验证记录。\\n- Reviewer 独立复验，不读取实现者的预期结论。\\n- 交接使用 artifact、status、validation、blockers、requested_action。\\n\\n## 模型路由\\n- 机械检索、分类与格式检查使用低成本模型。\\n- 语义、架构、证据边界和失败恢复使用高能力模型。\\n- 同一明确 blocker 两轮未解时升级，不以增加成本掩盖缺证据。\\n\\n## 执行步骤\\n1. 清点并脱敏输入，登记七类 Prompt Clue。\\n2. 完成双战役七关，逐关记录选择、决定和 Goal 版本。\\n3. 只沿 Candidate → Confirmed → Verified 补齐凭据。\\n4. 运行小测、应用题与迁移题。\\n5. 通过最终考试后导出状态、Goal 与哈希。\\n\\n## 验证与验收\\n- 用 Canonical Schema 1.0.0 验证完整 game-state。\\n- 验证两个战役各七关、考试权重和为 100、正式得分只含 Verified。\\n- 证据使用命令日志、fixture、测试结果或独立审查记录，不能只写“已完成”。\\n\\n## 安全\\n- 仅使用公开、模拟或已脱敏输入；无网络与遥测；不覆盖用户文件；未知 CSV 方言必须显式报错。\\n- 禁止凭据、个人标识、私有路径/代码、服务器细节、数据集、checkpoint 和未公开结果。\\n- 登录、付费、发布、删除、覆盖或实质 Context 冲突必须等待明确授权。\\n\\n## 独立审查\\n- Reviewer 独立检查功能、证据、隐私、可复现性与宣传边界。\\n- 未关闭 P0/P1 阻止公开发布；修复后重新运行同一验收。\\n\\n## Git、PR 与合并\\n- 只精确暂存 Owner 范围，不使用广泛暂存。\\n- 提交、PR 与合并说明使用中文。\\n- 仅集成 Owner 合并共享 Schema、根配置与跨模块变更。\\n\\n## 退出条件\\n- 成功退出：全部 P0 有可复验证据，考试通过，状态与 Goal 可安全导出。\\n- blocker 退出：两轮同一问题无进展时提交最小复现并升级。\\n- 路线退出：安全边界无法满足、关键证据缺失或独立审查仍有未关闭 P0/P1 时停止。\",\"source_decision_ids\":[\"software.learning-cognition.level-1.decision\",\"software.learning-cognition.level-2.decision\",\"software.learning-cognition.level-3.decision\",\"software.learning-cognition.level-4.decision\",\"software.learning-cognition.level-5.decision\",\"software.learning-cognition.level-6.decision\",\"software.learning-cognition.level-7.decision\",\"software.research-decision.level-1.decision\",\"software.research-decision.level-2.decision\",\"software.research-decision.level-3.decision\",\"software.research-decision.level-4.decision\",\"software.research-decision.level-5.decision\",\"software.research-decision.level-6.decision\",\"software.research-decision.level-7.decision\"],\"created_at\":\"2026-07-26T08:00:00.000Z\"}],\"known_knowns\":{\"candidate\":[{\"knowledge_id\":\"software.knowledge.candidate\",\"statement\":\"候选陈述：实现支持 CSV 导入导出的离线阅读清单 CLI。\",\"status\":\"candidate\",\"campaign_id\":\"research-decision\",\"introduced_level_id\":\"level-1\",\"provenance\":{\"data_classification\":\"simulated\",\"display_label\":\"模拟数据\",\"public_safe\":true,\"contains_real_research_results\":false,\"source_traceability\":\"fixture:software:synthetic-only\"},\"candidate_evidence\":[{\"evidence_id\":\"software.knowledge.candidate.candidate\",\"evidence_type\":\"ai-extraction\",\"source_ref\":\"fixture:software:sanitized-input\",\"recorded_at\":\"2026-07-26T08:00:00.000Z\"}]}],\"confirmed\":[{\"knowledge_id\":\"software.knowledge.confirmed\",\"statement\":\"已确认边界：无网络与遥测\",\"status\":\"confirmed\",\"campaign_id\":\"research-decision\",\"introduced_level_id\":\"level-3\",\"provenance\":{\"data_classification\":\"simulated\",\"display_label\":\"模拟数据\",\"public_safe\":true,\"contains_real_research_results\":false,\"source_traceability\":\"fixture:software:synthetic-only\"},\"candidate_evidence\":[{\"evidence_id\":\"software.knowledge.confirmed.candidate\",\"evidence_type\":\"ai-extraction\",\"source_ref\":\"fixture:software:sanitized-input\",\"recorded_at\":\"2026-07-26T08:00:00.000Z\"}],\"confirmation_evidence\":[{\"evidence_id\":\"software.knowledge.confirmed.confirmation\",\"evidence_type\":\"restatement\",\"source_ref\":\"fixture:software:user-restatement\",\"recorded_at\":\"2026-07-26T08:00:00.000Z\"}]}],\"verified\":[{\"knowledge_id\":\"software.knowledge.verified\",\"statement\":\"已验证应用：最小命令合同可测试\",\"status\":\"verified\",\"campaign_id\":\"research-decision\",\"introduced_level_id\":\"level-5\",\"provenance\":{\"data_classification\":\"simulated\",\"display_label\":\"模拟数据\",\"public_safe\":true,\"contains_real_research_results\":false,\"source_traceability\":\"fixture:software:synthetic-only\"},\"candidate_evidence\":[{\"evidence_id\":\"software.knowledge.verified.candidate\",\"evidence_type\":\"ai-extraction\",\"source_ref\":\"fixture:software:sanitized-input\",\"recorded_at\":\"2026-07-26T08:00:00.000Z\"}],\"confirmation_evidence\":[{\"evidence_id\":\"software.knowledge.verified.confirmation\",\"evidence_type\":\"restatement\",\"source_ref\":\"fixture:software:user-restatement\",\"recorded_at\":\"2026-07-26T08:00:00.000Z\"}],\"verification_evidence\":[{\"evidence_id\":\"software.knowledge.verified.application\",\"evidence_type\":\"choice-application\",\"source_ref\":\"fixture:software:level-5\",\"recorded_at\":\"2026-07-26T08:00:00.000Z\",\"score\":90},{\"evidence_id\":\"software.knowledge.verified.exam\",\"evidence_type\":\"final-exam\",\"source_ref\":\"fixture:software:final-exam\",\"recorded_at\":\"2026-07-26T08:00:00.000Z\",\"score\":90}]}]},\"known_unknowns\":[{\"item_id\":\"software.known-unknown\",\"statement\":\"不同 CSV 方言和编码边界仍需 fixture 验证。\",\"campaign_id\":\"research-decision\",\"introduced_level_id\":\"level-2\",\"status\":\"under-investigation\"}],\"unknown_knowns\":[{\"item_id\":\"software.unknown-known\",\"statement\":\"用户可能已掌握部分方法，但必须通过无提示复述或应用暴露。\",\"campaign_id\":\"learning-cognition\",\"introduced_level_id\":\"level-3\",\"status\":\"resolved\"}],\"unknown_unknowns\":[{\"item_id\":\"software.unknown-unknown\",\"statement\":\"迁移到新情境后可能出现尚未建模的边界失败。\",\"campaign_id\":\"research-decision\",\"introduced_level_id\":\"level-6\",\"status\":\"open\"}],\"prompt_clues\":[{\"clue_id\":\"software.clue.1\",\"clue_type\":\"goal-clue\",\"text\":\"实现支持 CSV 导入导出的离线阅读清单 CLI。\",\"source_kind\":\"simulated\",\"evidence_status\":\"verified\"},{\"clue_id\":\"software.clue.2\",\"clue_type\":\"constraint-clue\",\"text\":\"无网络与遥测；不覆盖用户文件；未知 CSV 方言必须显式报错\",\"source_kind\":\"simulated\",\"evidence_status\":\"verified\"},{\"clue_id\":\"software.clue.3\",\"clue_type\":\"workflow-clue\",\"text\":\"按 controlled loop 一次处理一个高价值决定。\",\"source_kind\":\"simulated\",\"evidence_status\":\"confirmed\"},{\"clue_id\":\"software.clue.4\",\"clue_type\":\"acceptance-clue\",\"text\":\"最小命令合同可测试；重复导入保持幂等；单元、集成与安全检查通过\",\"source_kind\":\"simulated\",\"evidence_status\":\"confirmed\"},{\"clue_id\":\"software.clue.5\",\"clue_type\":\"failure-clue\",\"text\":\"证据不足或安全边界无法满足时停止。\",\"source_kind\":\"simulated\",\"evidence_status\":\"confirmed\"},{\"clue_id\":\"software.clue.6\",\"clue_type\":\"preference-clue\",\"text\":\"按 controlled loop 一次处理一个高价值决定。\",\"source_kind\":\"simulated\",\"evidence_status\":\"confirmed\"},{\"clue_id\":\"software.clue.7\",\"clue_type\":\"artifact-clue\",\"text\":\"离线 CLI、fixture 与验证记录\",\"source_kind\":\"simulated\",\"evidence_status\":\"retrieval-limited\"}],\"artifacts\":[{\"artifact_id\":\"software.artifact.cognition-map\",\"artifact_type\":\"cognition-map\",\"title\":\"离线阅读清单 CLI cognition-map\",\"uri\":\"artifact://software/cognition-map\",\"public_safe\":true},{\"artifact_id\":\"software.artifact.exam-result\",\"artifact_type\":\"exam-result\",\"title\":\"离线阅读清单 CLI exam-result\",\"uri\":\"artifact://software/exam-result\",\"public_safe\":true},{\"artifact_id\":\"software.artifact.game-state-export\",\"artifact_type\":\"game-state-export\",\"title\":\"离线阅读清单 CLI game-state-export\",\"uri\":\"artifact://software/game-state-export\",\"public_safe\":true},{\"artifact_id\":\"software.artifact.codex-goal-export\",\"artifact_type\":\"codex-goal-export\",\"title\":\"离线阅读清单 CLI codex-goal-export\",\"uri\":\"artifact://software/codex-goal-export\",\"public_safe\":true}],\"decisions\":[{\"decision_id\":\"software.learning-cognition.level-1.decision\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-1\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.learning-cognition.level-1.choice-record\"},{\"decision_id\":\"software.learning-cognition.level-2.decision\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-2\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.learning-cognition.level-2.choice-record\"},{\"decision_id\":\"software.learning-cognition.level-3.decision\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-3\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.learning-cognition.level-3.choice-record\"},{\"decision_id\":\"software.learning-cognition.level-4.decision\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-4\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.learning-cognition.level-4.choice-record\"},{\"decision_id\":\"software.learning-cognition.level-5.decision\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-5\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.learning-cognition.level-5.choice-record\"},{\"decision_id\":\"software.learning-cognition.level-6.decision\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-6\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.learning-cognition.level-6.choice-record\"},{\"decision_id\":\"software.learning-cognition.level-7.decision\",\"campaign_id\":\"learning-cognition\",\"level_id\":\"level-7\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.learning-cognition.level-7.choice-record\"},{\"decision_id\":\"software.research-decision.level-1.decision\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-1\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.research-decision.level-1.choice-record\"},{\"decision_id\":\"software.research-decision.level-2.decision\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-2\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.research-decision.level-2.choice-record\"},{\"decision_id\":\"software.research-decision.level-3.decision\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-3\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.research-decision.level-3.choice-record\"},{\"decision_id\":\"software.research-decision.level-4.decision\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-4\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.research-decision.level-4.choice-record\"},{\"decision_id\":\"software.research-decision.level-5.decision\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-5\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.research-decision.level-5.choice-record\"},{\"decision_id\":\"software.research-decision.level-6.decision\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-6\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.research-decision.level-6.choice-record\"},{\"decision_id\":\"software.research-decision.level-7.decision\",\"campaign_id\":\"research-decision\",\"level_id\":\"level-7\",\"summary\":\"冻结证据边界，并把未解决项保留为 Known Unknown。\",\"status\":\"frozen\",\"source_choice_record_id\":\"software.research-decision.level-7.choice-record\"}],\"metrics\":{\"new_verified_known_knowns\":1,\"corrected_misconceptions\":1,\"new_known_unknowns\":1,\"applied_knowledge_count\":2,\"level_quiz_accuracy\":1,\"final_exam_accuracy\":0.9,\"transfer_task_score\":90,\"goal_revision_count\":1,\"formal_understanding_score\":90,\"verified_only_for_knowledge_count\":true},\"exam\":{\"status\":\"passed\",\"pass_threshold\":80,\"weights\":{\"decision_application\":60,\"concept_understanding\":20,\"transfer\":20,\"weight_total\":100},\"questions\":[{\"question_id\":\"software.exam.application\",\"category\":\"decision-application\",\"prompt\":\"在范围扩张请求出现时，如何应用“无网络与遥测”这一决定？\",\"question_type\":\"application\",\"answer\":\"保留冻结边界，将扩张项登记为待验证假设并重新走审批。\",\"is_correct\":true,\"score\":90},{\"question_id\":\"software.exam.concept\",\"category\":\"concept-understanding\",\"prompt\":\"为什么 Confirmed 不能直接计入正式理解得分？\",\"question_type\":\"short-answer\",\"answer\":\"Confirmed 只有确认凭据，尚缺应用、小测、考试、迁移或纠错形成的验证凭据。\",\"is_correct\":true,\"score\":90},{\"question_id\":\"software.exam.transfer\",\"category\":\"transfer\",\"prompt\":\"把幂等导入策略迁移到 JSONL 输入。\",\"question_type\":\"application\",\"answer\":\"冻结新情境边界并复用验证门；新增未知项，不把旧结论直接外推。\",\"is_correct\":true,\"score\":90}],\"score\":90,\"passed\":true,\"completed_at\":\"2026-07-26T08:00:00.000Z\"},\"auto_demo\":{\"enabled\":true,\"duration_seconds\":75,\"status\":\"completed\",\"deterministic_seed\":20260726,\"loop\":false,\"current_step\":9,\"steps\":[{\"step_id\":\"software.demo.step-1\",\"at_second\":0,\"action\":\"open-campaign\",\"target\":\"learning-cognition\"},{\"step_id\":\"software.demo.step-2\",\"at_second\":9,\"action\":\"open-level\",\"target\":\"level-1\"},{\"step_id\":\"software.demo.step-3\",\"at_second\":18,\"action\":\"select-choice\",\"target\":\"software.learning-cognition.level-1.choice.a\"},{\"step_id\":\"software.demo.step-4\",\"at_second\":27,\"action\":\"confirm-knowledge\",\"target\":\"software.knowledge.confirmed\"},{\"step_id\":\"software.demo.step-5\",\"at_second\":36,\"action\":\"verify-knowledge\",\"target\":\"software.knowledge.verified\"},{\"step_id\":\"software.demo.step-6\",\"at_second\":45,\"action\":\"answer-exam\",\"target\":\"software.exam.application\"},{\"step_id\":\"software.demo.step-7\",\"at_second\":54,\"action\":\"export-state\",\"target\":\"software.artifact.game-state-export\"},{\"step_id\":\"software.demo.step-8\",\"at_second\":63,\"action\":\"export-goal\",\"target\":\"software.artifact.codex-goal-export\"},{\"step_id\":\"software.demo.step-9\",\"at_second\":72,\"action\":\"complete\",\"target\":\"fixture.software\"}]},\"exports\":{\"state\":{\"kind\":\"game-state\",\"status\":\"not-generated\",\"media_type\":\"application/json\",\"filename\":null,\"generated_at\":null,\"sha256\":null,\"content\":null,\"schema_version\":\"1.0.0\",\"public_safe\":true},\"goal\":{\"kind\":\"codex-goal\",\"status\":\"ready\",\"media_type\":\"text/markdown\",\"filename\":\"software-codex-goal.md\",\"generated_at\":\"2026-07-26T08:00:00.000Z\",\"sha256\":\"c19a34f5a859ce4016f37d38198c248ff3e76024082853bf7dfccb0e9a26d2ab\",\"content\":\"# Codex Goal｜离线阅读清单 CLI\\n\\n## 冻结 Context\\n- 场景标签：模拟数据；仅用于流程验证。\\n- 已确认目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\\n- 待验证假设：controlled loop 的真实效果尚无用户证据。\\n- 不可推断内容：未提供来源正文、真实结果或个人信息。\\n\\n## 任务边界\\n- 目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\\n- 成功条件：最小命令合同可测试；重复导入保持幂等；单元、集成与安全检查通过。\\n- 范围内：离线 CLI、fixture 与验证记录。\\n- 范围外：真实个人数据、私有代码、未公开结果与未经审查的效果声明。\\n\\n## 多 Agent 分工\\n- Planner 冻结范围、依赖、文件 Owner 和验收矩阵。\\n- Worker 按单一 Owner 边界产生产物与原始验证记录。\\n- Reviewer 独立复验，不读取实现者的预期结论。\\n- 交接使用 artifact、status、validation、blockers、requested_action。\\n\\n## 模型路由\\n- 机械检索、分类与格式检查使用低成本模型。\\n- 语义、架构、证据边界和失败恢复使用高能力模型。\\n- 同一明确 blocker 两轮未解时升级，不以增加成本掩盖缺证据。\\n\\n## 执行步骤\\n1. 清点并脱敏输入，登记七类 Prompt Clue。\\n2. 完成双战役七关，逐关记录选择、决定和 Goal 版本。\\n3. 只沿 Candidate → Confirmed → Verified 补齐凭据。\\n4. 运行小测、应用题与迁移题。\\n5. 通过最终考试后导出状态、Goal 与哈希。\\n\\n## 验证与验收\\n- 用 Canonical Schema 1.0.0 验证完整 game-state。\\n- 验证两个战役各七关、考试权重和为 100、正式得分只含 Verified。\\n- 证据使用命令日志、fixture、测试结果或独立审查记录，不能只写“已完成”。\\n\\n## 安全\\n- 仅使用公开、模拟或已脱敏输入；无网络与遥测；不覆盖用户文件；未知 CSV 方言必须显式报错。\\n- 禁止凭据、个人标识、私有路径/代码、服务器细节、数据集、checkpoint 和未公开结果。\\n- 登录、付费、发布、删除、覆盖或实质 Context 冲突必须等待明确授权。\\n\\n## 独立审查\\n- Reviewer 独立检查功能、证据、隐私、可复现性与宣传边界。\\n- 未关闭 P0/P1 阻止公开发布；修复后重新运行同一验收。\\n\\n## Git、PR 与合并\\n- 只精确暂存 Owner 范围，不使用广泛暂存。\\n- 提交、PR 与合并说明使用中文。\\n- 仅集成 Owner 合并共享 Schema、根配置与跨模块变更。\\n\\n## 退出条件\\n- 成功退出：全部 P0 有可复验证据，考试通过，状态与 Goal 可安全导出。\\n- blocker 退出：两轮同一问题无进展时提交最小复现并升级。\\n- 路线退出：安全边界无法满足、关键证据缺失或独立审查仍有未关闭 P0/P1 时停止。\",\"schema_version\":\"1.0.0\",\"public_safe\":true}},\"privacy\":{\"public_demo_disclosure\":\"本 fixture 为模拟数据，仅用于功能与合同验证，不代表真实科研或产品效果。\",\"research_claim_status\":\"illustrative-only\",\"real_research_results_included\":false,\"sanitization\":{\"applied\":true,\"removed_categories\":[\"personal-identifiers\",\"private-paths\",\"credentials\",\"private-code\",\"unpublished-results\",\"server-details\",\"datasets\",\"checkpoints\"],\"review_status\":\"approved\"}},\"next_question\":null,\"updated_at\":\"2026-07-26T08:00:00.000Z\"}",
+      "schema_version": "1.0.0",
+      "public_safe": true
+    },
+    "goal": {
+      "kind": "codex-goal",
+      "status": "ready",
+      "media_type": "text/markdown",
+      "filename": "software-codex-goal.md",
+      "generated_at": "2026-07-26T08:00:00.000Z",
+      "sha256": "c19a34f5a859ce4016f37d38198c248ff3e76024082853bf7dfccb0e9a26d2ab",
+      "content": "# Codex Goal｜离线阅读清单 CLI\n\n## 冻结 Context\n- 场景标签：模拟数据；仅用于流程验证。\n- 已确认目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\n- 待验证假设：controlled loop 的真实效果尚无用户证据。\n- 不可推断内容：未提供来源正文、真实结果或个人信息。\n\n## 任务边界\n- 目标：实现支持 CSV 导入导出的离线阅读清单 CLI。\n- 成功条件：最小命令合同可测试；重复导入保持幂等；单元、集成与安全检查通过。\n- 范围内：离线 CLI、fixture 与验证记录。\n- 范围外：真实个人数据、私有代码、未公开结果与未经审查的效果声明。\n\n## 多 Agent 分工\n- Planner 冻结范围、依赖、文件 Owner 和验收矩阵。\n- Worker 按单一 Owner 边界产生产物与原始验证记录。\n- Reviewer 独立复验，不读取实现者的预期结论。\n- 交接使用 artifact、status、validation、blockers、requested_action。\n\n## 模型路由\n- 机械检索、分类与格式检查使用低成本模型。\n- 语义、架构、证据边界和失败恢复使用高能力模型。\n- 同一明确 blocker 两轮未解时升级，不以增加成本掩盖缺证据。\n\n## 执行步骤\n1. 清点并脱敏输入，登记七类 Prompt Clue。\n2. 完成双战役七关，逐关记录选择、决定和 Goal 版本。\n3. 只沿 Candidate → Confirmed → Verified 补齐凭据。\n4. 运行小测、应用题与迁移题。\n5. 通过最终考试后导出状态、Goal 与哈希。\n\n## 验证与验收\n- 用 Canonical Schema 1.0.0 验证完整 game-state。\n- 验证两个战役各七关、考试权重和为 100、正式得分只含 Verified。\n- 证据使用命令日志、fixture、测试结果或独立审查记录，不能只写“已完成”。\n\n## 安全\n- 仅使用公开、模拟或已脱敏输入；无网络与遥测；不覆盖用户文件；未知 CSV 方言必须显式报错。\n- 禁止凭据、个人标识、私有路径/代码、服务器细节、数据集、checkpoint 和未公开结果。\n- 登录、付费、发布、删除、覆盖或实质 Context 冲突必须等待明确授权。\n\n## 独立审查\n- Reviewer 独立检查功能、证据、隐私、可复现性与宣传边界。\n- 未关闭 P0/P1 阻止公开发布；修复后重新运行同一验收。\n\n## Git、PR 与合并\n- 只精确暂存 Owner 范围，不使用广泛暂存。\n- 提交、PR 与合并说明使用中文。\n- 仅集成 Owner 合并共享 Schema、根配置与跨模块变更。\n\n## 退出条件\n- 成功退出：全部 P0 有可复验证据，考试通过，状态与 Goal 可安全导出。\n- blocker 退出：两轮同一问题无进展时提交最小复现并升级。\n- 路线退出：安全边界无法满足、关键证据缺失或独立审查仍有未关闭 P0/P1 时停止。",
+      "schema_version": "1.0.0",
+      "public_safe": true
+    }
+  },
+  "privacy": {
+    "public_demo_disclosure": "本 fixture 为模拟数据，仅用于功能与合同验证，不代表真实科研或产品效果。",
+    "research_claim_status": "illustrative-only",
+    "real_research_results_included": false,
+    "sanitization": {
+      "applied": true,
+      "removed_categories": [
+        "personal-identifiers",
+        "private-paths",
+        "credentials",
+        "private-code",
+        "unpublished-results",
+        "server-details",
+        "datasets",
+        "checkpoints"
+      ],
+      "review_status": "approved"
+    }
+  },
+  "next_question": null,
+  "updated_at": "2026-07-26T08:00:00.000Z"
+}

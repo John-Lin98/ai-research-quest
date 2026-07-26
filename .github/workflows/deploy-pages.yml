@@ -1,0 +1,109 @@
+name: 质量检查与 GitHub Pages 部署
+
+on:
+  pull_request:
+    paths:
+      - "app/**"
+      - "public/**"
+      - "shared/**"
+      - "skills/**"
+      - "docs/**"
+      - "README.md"
+      - "LICENSE"
+      - "THIRD_PARTY_NOTICES"
+      - "PRIVACY.md"
+      - "SECURITY.md"
+      - ".github/workflows/**"
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "public/**"
+      - "shared/**"
+      - "skills/**"
+      - "docs/**"
+      - "README.md"
+      - "LICENSE"
+      - "THIRD_PARTY_NOTICES"
+      - "PRIVACY.md"
+      - "SECURITY.md"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建、测试与公开安全检查
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: 检出当前提交
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: 安装锁定依赖
+        run: npm ci --prefix app
+
+      - name: 静态类型检查
+        run: npm run lint --prefix app
+
+      - name: 契约、Schema 与三份 Skill fixture
+        run: npm run test:contract --prefix app
+
+      - name: 安装 Chromium 测试运行时
+        run: npx --prefix app playwright install --with-deps chromium
+
+      - name: 桌面与移动端浏览器测试
+        run: npm run test:e2e --prefix app
+
+      - name: 构建静态网站
+        run: npm run build --prefix app
+
+      - name: 源文件、文档链接、审批状态与 dist 隐私扫描
+        run: node skills/research-quest/scripts/public-safety-scan.mjs --include-dist --require-approved
+
+      - name: 验证 Pages 入口与公开数据
+        shell: bash
+        run: |
+          test -f app/dist/index.html
+          test -f app/dist/demo-data/default-game-state.json
+          node -e "const value=JSON.parse(require('fs').readFileSync('app/dist/demo-data/default-game-state.json','utf8')); if(value.schema_version!=='1.0.0') process.exit(1); console.log('PAGES_DATA_OK')"
+
+      - name: 上传 Pages 静态产物
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.event.repository.visibility == 'public' }}
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: app/dist
+
+  deploy:
+    name: 发布 GitHub Pages
+    needs: build
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.event.repository.visibility == 'public' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 发布已验证静态产物
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

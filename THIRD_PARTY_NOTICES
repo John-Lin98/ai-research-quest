@@ -1,0 +1,47 @@
+AI Research Quest includes or uses third-party open-source software.
+The dependency lockfile is the authoritative version record.
+
+Runtime dependencies
+--------------------
+
+React 19.2.8 and React DOM 19.2.8
+Copyright (c) Meta Platforms, Inc. and affiliates.
+License: MIT
+Source: https://github.com/facebook/react
+
+The MIT permission and warranty terms reproduced in this repository's LICENSE
+also apply to these MIT-licensed packages. Their copyright notices remain the
+property of their respective owners.
+
+Development and verification dependencies
+-----------------------------------------
+
+- @types/react 19.2.17 — MIT License
+  https://github.com/DefinitelyTyped/DefinitelyTyped
+- @types/react-dom 19.2.3 — MIT License
+  https://github.com/DefinitelyTyped/DefinitelyTyped
+- @playwright/test 1.57.0 — Apache License 2.0
+  https://github.com/microsoft/playwright
+- TypeScript 7.0.2 — Apache License 2.0
+  https://github.com/microsoft/TypeScript
+- Vite 8.1.5 — MIT License
+  https://github.com/vitejs/vite
+- @vitejs/plugin-react 6.0.4 — MIT License
+  https://github.com/vitejs/vite-plugin-react
+- tsx 4.21.0 — MIT License
+  https://github.com/privatenumber/tsx
+- Ajv 8.20.0 — MIT License
+  https://github.com/ajv-validator/ajv
+- ajv-formats 3.0.1 — MIT License
+  https://github.com/ajv-validator/ajv-formats
+
+Transitive dependency names, versions, integrity hashes and declared licenses
+are recorded in app/package-lock.json. Development dependencies are used to
+build and verify the project and are not intentionally served as application
+assets.
+
+Apache License 2.0:
+https://www.apache.org/licenses/LICENSE-2.0
+
+This notice is informational and is not a substitute for the license files
+distributed by each upstream project.

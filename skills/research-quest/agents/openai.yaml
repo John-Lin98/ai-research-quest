@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Quest"
+  short_description: "Turn sanitized context into a verified quest and Codex Goal"
+  default_prompt: "Use $research-quest to turn my sanitized project materials into a seven-level cognition map and an executable Codex Goal."

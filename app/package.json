@@ -1,0 +1,32 @@
+{
+  "name": "@research-quest/web-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "npm run typecheck",
+    "test": "npm run test:contract && npm run test:e2e",
+    "test:contract": "tsx tests/contract.spec.ts && tsx tests/security-contract.spec.ts && node tests/validate-fixtures.mjs && node ../skills/research-quest/scripts/generate-test-sessions.mjs --check-only",
+    "test:e2e": "playwright test",
+    "typecheck": "npm run typecheck:core",
+    "typecheck:core": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "@playwright/test": "1.57.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "typescript": "^7.0.2",
+    "tsx": "4.21.0",
+    "vite": "^8.1.5"
+  }
+}

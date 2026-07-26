@@ -1,0 +1,5 @@
+app/node_modules/
+app/dist/
+app/test-results/
+app/playwright-report/
+npm-debug.log*

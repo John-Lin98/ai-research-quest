@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "state_id": "demo-research-quest-v1",
+  "revision": 0,
+  "session": { "started_at": "2026-07-26T00:00:00Z", "reset_count": 0, "last_reset_at": null, "can_restart": true },
+  "project_goal": {
+    "summary": "在一个公开、安全的模拟项目中，将零散材料整理为可审查的学习与研究决策计划。",
+    "success_criteria": ["完成两条七关主线", "通过应用与迁移题", "导出可审查的 Codex Goal"],
+    "constraints": ["只使用模拟、改编或脱敏内容", "候选信息不得直接计入正式理解分"],
+    "status": "draft"
+  },
+  "mode": "controlled-loop",
+  "interaction_mode": "interactive",
+  "phase": "prologue",
+  "prologue": {
+    "status": "active",
+    "task": "选择本次 Quest 的起点：先练习辨认信息状态，或先练习研究决策。",
+    "estimated_time": { "min": 1, "max": 2, "unit": "minutes" },
+    "question": { "question_id": "prologue-start", "prompt": "你希望先解决哪一种不确定性？", "purpose": "用一个高价值选择决定起始战役。" },
+    "choices": [
+      { "choice_id": "start-learning", "label": "先练习学习认知", "impact_preview": "先建立 Candidate → Confirmed → Verified 的边界。" },
+      { "choice_id": "start-research", "label": "先练习研究决策", "impact_preview": "先建立目标、证据与退出条件。" }
+    ],
+    "selected_choice_id": null,
+    "goal_preview": "最终把选择、证据状态和验收条件汇成一份可执行 Goal。",
+    "cognition_map_delta": { "candidate_added": [], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["starting-uncertainty"], "misconceptions_corrected": [] },
+    "reward": { "title": "Quest 地图已展开", "artifact_ids": ["map-overview"] },
+    "next_level_id": "level-1"
+  },
+  "current_campaign": "learning-cognition",
+  "current_level": "level-1",
+  "overall_progress": 0,
+  "estimated_remaining_time": { "min": 28, "max": 42, "unit": "minutes" },
+  "campaigns": {
+    "learning_cognition": {
+      "campaign_id": "learning-cognition",
+      "title": "学习认知战役：从线索到可验证理解",
+      "description": "用一个虚构学习主题练习拆解概念、指标、评估与实验设计；所有材料均为模拟内容。",
+      "status": "active",
+      "progress": 0,
+      "provenance": { "data_classification": "simulated", "display_label": "模拟数据", "public_safe": true, "contains_real_research_results": false, "source_traceability": "为公开 Demo 编写的虚构学习情境，不对应真实课程、项目或结果。" },
+      "levels": [
+        { "level_id": "level-1", "order": 1, "title": "概念定位", "status": "active", "task": "把一个宽泛主题改写为可讨论的核心概念。", "knowledge_card": "知识卡：概念不是口号；应说明对象、关系与边界。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 7, "question": { "question_id": "lc-l1-q", "prompt": "先固定哪一项最能减少后续歧义？", "purpose": "建立问题边界。" }, "choices": [{ "choice_id": "lc-l1-boundary", "label": "写出对象与边界", "impact_preview": "后续指标有明确适用范围。" }, { "choice_id": "lc-l1-slogan", "label": "先收集更多口号", "impact_preview": "信息变多，但定义仍可能漂移。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到一条可被证据支持或反驳的概念陈述。", "cognition_map_delta": { "candidate_added": ["lc-concept"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-boundary"], "misconceptions_corrected": ["lc-slogan-is-definition"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l1-quiz"], "accuracy": null }, "reward": { "title": "概念边界卡", "artifact_ids": ["lc-card-1"] }, "next_level_id": "level-2" },
+        { "level_id": "level-2", "order": 2, "title": "指标辨析", "status": "locked", "task": "为概念选择一个可观测且不夸大的指标。", "knowledge_card": "知识卡：指标是观察窗口，不等同于对象本身。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 14, "question": { "question_id": "lc-l2-q", "prompt": "哪种表述更适合作为指标？", "purpose": "区分目标与可观测信号。" }, "choices": [{ "choice_id": "lc-l2-observable", "label": "记录可复核的行为信号", "impact_preview": "可在后续评估中重复检查。" }, { "choice_id": "lc-l2-claim", "label": "直接宣称能力提升", "impact_preview": "缺少测量路径，仍是待验证主张。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "将抽象目标连接到一个明确的观测方式。", "cognition_map_delta": { "candidate_added": ["lc-metric"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-metric-validity"], "misconceptions_corrected": ["lc-metric-equals-goal"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l2-quiz"], "accuracy": null }, "reward": { "title": "指标透镜", "artifact_ids": ["lc-card-2"] }, "next_level_id": "level-3" },
+        { "level_id": "level-3", "order": 3, "title": "证据分层", "status": "locked", "task": "将一条 AI 摘要放入恰当的信息状态。", "knowledge_card": "知识卡：AI 提取可生成 Candidate，不自动成为 Verified。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 21, "question": { "question_id": "lc-l3-q", "prompt": "未经回查的摘要应放在哪里？", "purpose": "练习证据状态的单向升级。" }, "choices": [{ "choice_id": "lc-l3-candidate", "label": "Candidate", "impact_preview": "保留线索，同时要求后续核验。" }, { "choice_id": "lc-l3-verified", "label": "Verified", "impact_preview": "会越过必要的确认与核验步骤。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "形成可审查的 Candidate → Confirmed → Verified 队列。", "cognition_map_delta": { "candidate_added": ["lc-evidence"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-source-check"], "misconceptions_corrected": ["lc-ai-output-is-proof"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l3-quiz"], "accuracy": null }, "reward": { "title": "证据阶梯", "artifact_ids": ["lc-card-3"] }, "next_level_id": "level-4" },
+        { "level_id": "level-4", "order": 4, "title": "评估设计", "status": "locked", "task": "为模拟干预设计一个前后可比较的检查。", "knowledge_card": "知识卡：评估要预先说明比较对象、记录方式与局限。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 28, "question": { "question_id": "lc-l4-q", "prompt": "哪项先写入评估草案？", "purpose": "让比较可复核。" }, "choices": [{ "choice_id": "lc-l4-baseline", "label": "定义比较基线", "impact_preview": "后续变化有参照物。" }, { "choice_id": "lc-l4-polish", "label": "先美化结论", "impact_preview": "不能增加评估有效性。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到一个不把相关性写成因果的评估草案。", "cognition_map_delta": { "candidate_added": ["lc-evaluation"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-confounder"], "misconceptions_corrected": ["lc-post-hoc-baseline"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l4-quiz"], "accuracy": null }, "reward": { "title": "评估蓝图", "artifact_ids": ["lc-card-4"] }, "next_level_id": "level-5" },
+        { "level_id": "level-5", "order": 5, "title": "实验取舍", "status": "locked", "task": "在时间有限的模拟场景中选择信息量更高的小实验。", "knowledge_card": "知识卡：优先做能改变下一步决策的检查。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 35, "question": { "question_id": "lc-l5-q", "prompt": "有限预算应优先支持什么？", "purpose": "学习用信息价值排序。" }, "choices": [{ "choice_id": "lc-l5-decisive", "label": "能改变路线的检查", "impact_preview": "减少无效投入。" }, { "choice_id": "lc-l5-many", "label": "数量最多的低风险任务", "impact_preview": "完成感较强，但决策信息有限。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "把资源投入到能降低关键不确定性的动作。", "cognition_map_delta": { "candidate_added": ["lc-information-value"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-cost-of-check"], "misconceptions_corrected": ["lc-more-tasks-is-progress"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l5-quiz"], "accuracy": null }, "reward": { "title": "取舍罗盘", "artifact_ids": ["lc-card-5"] }, "next_level_id": "level-6" },
+        { "level_id": "level-6", "order": 6, "title": "迁移应用", "status": "locked", "task": "把证据分层方法迁移到一个陌生的学习问题。", "knowledge_card": "知识卡：迁移不是套用答案，而是保留判据、替换情境。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 42, "question": { "question_id": "lc-l6-q", "prompt": "面对新情境，先迁移什么？", "purpose": "检验是否掌握可泛化判据。" }, "choices": [{ "choice_id": "lc-l6-criterion", "label": "迁移证据判据", "impact_preview": "可重新判断新材料的状态。" }, { "choice_id": "lc-l6-answer", "label": "复制旧答案", "impact_preview": "可能忽略新情境的边界。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "证明方法可应用于不同的模拟问题。", "cognition_map_delta": { "candidate_added": ["lc-transfer"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-new-context"], "misconceptions_corrected": ["lc-transfer-is-copy"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l6-quiz"], "accuracy": null }, "reward": { "title": "迁移钥匙", "artifact_ids": ["lc-card-6"] }, "next_level_id": "level-7" },
+        { "level_id": "level-7", "order": 7, "title": "学习闭环", "status": "locked", "task": "用已验证内容和未解决问题生成一份学习行动清单。", "knowledge_card": "知识卡：好的闭环同时陈述已知、未知、下一步和退出条件。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 50, "question": { "question_id": "lc-l7-q", "prompt": "行动清单必须保留哪类项目？", "purpose": "防止把未验证推断写成结论。" }, "choices": [{ "choice_id": "lc-l7-unknowns", "label": "已知未知与下一步", "impact_preview": "让计划保持可审查。" }, { "choice_id": "lc-l7-only-wins", "label": "只保留已完成项", "impact_preview": "会隐藏关键风险。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "为最终应用题准备可追溯的学习记录。", "cognition_map_delta": { "candidate_added": ["lc-closure"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-exit-condition"], "misconceptions_corrected": ["lc-unknowns-are-failures"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l7-quiz"], "accuracy": null }, "reward": { "title": "学习闭环包", "artifact_ids": ["lc-card-7"] }, "next_level_id": "final-exam" }
+      ]
+    },
+    "research_decision": {
+      "campaign_id": "research-decision",
+      "title": "科研决策战役：从目标到安全退出",
+      "description": "在一个改编且脱敏的虚构研究协作情境中练习目标、数据边界、基线、验收与退出条件。",
+      "status": "available",
+      "progress": 0,
+      "provenance": { "data_classification": "deidentified", "display_label": "脱敏场景", "public_safe": true, "contains_real_research_results": false, "source_traceability": "为公开 Demo 编写的改编与脱敏情境；不含真实项目身份、数据、代码或结论。" },
+      "levels": [
+        { "level_id": "level-1", "order": 1, "title": "目标冻结", "status": "available", "task": "把一个模糊研究愿望改写为可验收目标。", "knowledge_card": "知识卡：目标应包含产物、边界和验收信号。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 7, "question": { "question_id": "rd-l1-q", "prompt": "目标草案优先补全什么？", "purpose": "防止范围持续扩张。" }, "choices": [{ "choice_id": "rd-l1-acceptance", "label": "明确验收信号", "impact_preview": "后续决策可回到同一标准。" }, { "choice_id": "rd-l1-more-features", "label": "增加更多功能", "impact_preview": "范围会扩大，验收仍不清晰。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到一个能判断完成与否的研究目标。", "cognition_map_delta": { "candidate_added": ["rd-goal"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-acceptance"], "misconceptions_corrected": ["rd-scope-is-goal"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l1-quiz"], "accuracy": null }, "reward": { "title": "目标冻结卡", "artifact_ids": ["rd-card-1"] }, "next_level_id": "level-2" },
+        { "level_id": "level-2", "order": 2, "title": "数据边界", "status": "locked", "task": "识别哪些输入可以进入公开模拟流程。", "knowledge_card": "知识卡：可读取不等于可公开、可训练或可发布。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 14, "question": { "question_id": "rd-l2-q", "prompt": "发现来源不明的材料时怎么办？", "purpose": "建立 fail-closed 数据边界。" }, "choices": [{ "choice_id": "rd-l2-quarantine", "label": "隔离并记录待核验", "impact_preview": "不将来源不明材料当作合格输入。" }, { "choice_id": "rd-l2-use", "label": "先用再补记录", "impact_preview": "会破坏可追溯性。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "每项输入都拥有清晰的许可与来源状态。", "cognition_map_delta": { "candidate_added": ["rd-data-boundary"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-provenance"], "misconceptions_corrected": ["rd-readable-means-authorized"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l2-quiz"], "accuracy": null }, "reward": { "title": "边界护栏", "artifact_ids": ["rd-card-2"] }, "next_level_id": "level-3" },
+        { "level_id": "level-3", "order": 3, "title": "基线对照", "status": "locked", "task": "为一个模拟方案指定公平、可复现的比较对象。", "knowledge_card": "知识卡：可运行的实现不等于可比较的基线。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 21, "question": { "question_id": "rd-l3-q", "prompt": "选择基线时首先检查什么？", "purpose": "避免不对称比较。" }, "choices": [{ "choice_id": "rd-l3-contract", "label": "检查数据与评测契约一致性", "impact_preview": "比较前提可被复查。" }, { "choice_id": "rd-l3-best-number", "label": "挑选最高历史数字", "impact_preview": "可能跨越不同设定。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "比较限制和结论边界均被明确记录。", "cognition_map_delta": { "candidate_added": ["rd-baseline"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-parity"], "misconceptions_corrected": ["rd-green-test-is-parity"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l3-quiz"], "accuracy": null }, "reward": { "title": "基线标尺", "artifact_ids": ["rd-card-3"] }, "next_level_id": "level-4" },
+        { "level_id": "level-4", "order": 4, "title": "指标与收据", "status": "locked", "task": "把一次模拟评估的证据与结论拆开记录。", "knowledge_card": "知识卡：收据证明流程发生过，不自动证明科学或产品效果。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 28, "question": { "question_id": "rd-l4-q", "prompt": "一份绿色测试收据能证明什么？", "purpose": "区分工程检查与性能主张。" }, "choices": [{ "choice_id": "rd-l4-process", "label": "证明该检查通过", "impact_preview": "结论保持在收据覆盖范围内。" }, { "choice_id": "rd-l4-performance", "label": "证明方案效果更好", "impact_preview": "会超出收据证据范围。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "让每条主张都能追溯到恰当的证据。", "cognition_map_delta": { "candidate_added": ["rd-receipt"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-claim-boundary"], "misconceptions_corrected": ["rd-pass-is-performance"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l4-quiz"], "accuracy": null }, "reward": { "title": "证据收据夹", "artifact_ids": ["rd-card-4"] }, "next_level_id": "level-5" },
+        { "level_id": "level-5", "order": 5, "title": "多 Agent 分工", "status": "locked", "task": "在模拟协作中分离计划、执行与独立审查职责。", "knowledge_card": "知识卡：独立审查不能由同一实现角色自证完成。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 35, "question": { "question_id": "rd-l5-q", "prompt": "哪项分工最能提高可审查性？", "purpose": "避免角色自审。" }, "choices": [{ "choice_id": "rd-l5-separate-review", "label": "分离实施与审查", "impact_preview": "缺陷检查拥有独立视角。" }, { "choice_id": "rd-l5-single-agent", "label": "同一角色完成并自审", "impact_preview": "速度可能更快，独立性降低。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "让职责、交接物和审查边界可见。", "cognition_map_delta": { "candidate_added": ["rd-roles"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-review-independence"], "misconceptions_corrected": ["rd-self-review-is-independent"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l5-quiz"], "accuracy": null }, "reward": { "title": "协作角色图", "artifact_ids": ["rd-card-5"] }, "next_level_id": "level-6" },
+        { "level_id": "level-6", "order": 6, "title": "安全发布", "status": "locked", "task": "在发布前检查示例是否包含不应公开的线索。", "knowledge_card": "知识卡：脱敏不是删掉名字；还要移除路径、密钥、私有资产与未公开结论。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 42, "question": { "question_id": "rd-l6-q", "prompt": "发现绝对环境路径时应如何处理？", "purpose": "练习公开发布前的隐私审查。" }, "choices": [{ "choice_id": "rd-l6-remove", "label": "移除并用通用描述替代", "impact_preview": "保留教学意义，不暴露环境细节。" }, { "choice_id": "rd-l6-keep", "label": "保留以便复现", "impact_preview": "可能泄露私有环境线索。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到可公开、可审查但不含私有资产的演示包。", "cognition_map_delta": { "candidate_added": ["rd-sanitization"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-release-review"], "misconceptions_corrected": ["rd-path-is-harmless"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l6-quiz"], "accuracy": null }, "reward": { "title": "发布检查单", "artifact_ids": ["rd-card-6"] }, "next_level_id": "level-7" },
+        { "level_id": "level-7", "order": 7, "title": "退出条件", "status": "locked", "task": "为模拟路线写下继续、暂停或退出的可观察条件。", "knowledge_card": "知识卡：提前写退出条件能避免把投入沉没成本误作证据。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 50, "question": { "question_id": "rd-l7-q", "prompt": "当关键资格条件未闭合时，下一步是什么？", "purpose": "练习 fail-closed 决策。" }, "choices": [{ "choice_id": "rd-l7-stop", "label": "暂停并记录缺口", "impact_preview": "避免越过未满足的门槛。" }, { "choice_id": "rd-l7-escalate-run", "label": "继续昂贵执行", "impact_preview": "会放大未解决风险。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "将行动授权与退出条件一起写入 Goal。", "cognition_map_delta": { "candidate_added": ["rd-exit"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-authorization"], "misconceptions_corrected": ["rd-effort-justifies-run"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l7-quiz"], "accuracy": null }, "reward": { "title": "安全退出章", "artifact_ids": ["rd-card-7"] }, "next_level_id": "final-exam" }
+      ]
+    }
+  },
+  "player_choices": [],
+  "goal_versions": [{ "version": 1, "status": "draft", "goal_text": "在公开的模拟情境中完成双战役，输出仅含已验证内容、未决问题和下一步检查的 Codex Goal。", "source_decision_ids": [], "created_at": "2026-07-26T00:00:00Z" }],
+  "known_knowns": { "candidate": [], "confirmed": [], "verified": [] },
+  "known_unknowns": [{ "item_id": "demo-open-question", "statement": "该 Quest 是否提升长期理解仍待用户研究验证。", "campaign_id": "learning-cognition", "introduced_level_id": "level-1", "status": "open" }],
+  "unknown_knowns": [],
+  "unknown_unknowns": [],
+  "prompt_clues": [
+    { "clue_id": "clue-single-question", "clue_type": "workflow-clue", "text": "每关只提出一个会改变后续路径的高价值问题。", "source_kind": "sanitized-context", "evidence_status": "confirmed" },
+    { "clue_id": "clue-verified-score", "clue_type": "acceptance-clue", "text": "只有 Verified 信息计入正式理解分。", "source_kind": "public-context", "evidence_status": "verified" },
+    { "clue_id": "clue-demo-simulation", "clue_type": "constraint-clue", "text": "公开示例必须是模拟、改编或脱敏内容。", "source_kind": "public-context", "evidence_status": "verified" }
+  ],
+  "artifacts": [
+    { "artifact_id": "map-overview", "artifact_type": "cognition-map", "title": "Quest 世界地图", "uri": "#map-overview", "public_safe": true },
+    { "artifact_id": "lc-card-1", "artifact_type": "knowledge-card", "title": "概念边界卡", "uri": "#lc-card-1", "public_safe": true },
+    { "artifact_id": "lc-card-2", "artifact_type": "knowledge-card", "title": "指标透镜", "uri": "#lc-card-2", "public_safe": true },
+    { "artifact_id": "lc-card-3", "artifact_type": "knowledge-card", "title": "证据阶梯", "uri": "#lc-card-3", "public_safe": true },
+    { "artifact_id": "lc-card-4", "artifact_type": "knowledge-card", "title": "评估蓝图", "uri": "#lc-card-4", "public_safe": true },
+    { "artifact_id": "lc-card-5", "artifact_type": "knowledge-card", "title": "取舍罗盘", "uri": "#lc-card-5", "public_safe": true },
+    { "artifact_id": "lc-card-6", "artifact_type": "knowledge-card", "title": "迁移钥匙", "uri": "#lc-card-6", "public_safe": true },
+    { "artifact_id": "lc-card-7", "artifact_type": "knowledge-card", "title": "学习闭环包", "uri": "#lc-card-7", "public_safe": true },
+    { "artifact_id": "rd-card-1", "artifact_type": "knowledge-card", "title": "目标冻结卡", "uri": "#rd-card-1", "public_safe": true },
+    { "artifact_id": "rd-card-2", "artifact_type": "knowledge-card", "title": "边界护栏", "uri": "#rd-card-2", "public_safe": true },
+    { "artifact_id": "rd-card-3", "artifact_type": "knowledge-card", "title": "基线标尺", "uri": "#rd-card-3", "public_safe": true },
+    { "artifact_id": "rd-card-4", "artifact_type": "knowledge-card", "title": "证据收据夹", "uri": "#rd-card-4", "public_safe": true },
+    { "artifact_id": "rd-card-5", "artifact_type": "knowledge-card", "title": "协作角色图", "uri": "#rd-card-5", "public_safe": true },
+    { "artifact_id": "rd-card-6", "artifact_type": "knowledge-card", "title": "发布检查单", "uri": "#rd-card-6", "public_safe": true },
+    { "artifact_id": "rd-card-7", "artifact_type": "knowledge-card", "title": "安全退出章", "uri": "#rd-card-7", "public_safe": true }
+  ],
+  "decisions": [],
+  "metrics": { "new_verified_known_knowns": 0, "corrected_misconceptions": 0, "new_known_unknowns": 1, "applied_knowledge_count": 0, "level_quiz_accuracy": null, "final_exam_accuracy": null, "transfer_task_score": null, "goal_revision_count": 0, "formal_understanding_score": null, "verified_only_for_knowledge_count": true },
+  "exam": {
+    "status": "not-started", "pass_threshold": 80,
+    "weights": { "decision_application": 60, "concept_understanding": 20, "transfer": 20, "weight_total": 100 },
+    "questions": [
+      { "question_id": "exam-application", "category": "decision-application", "prompt": "面对来源不明的模拟输入，写出一个不越权的下一步。", "question_type": "application", "answer": null, "is_correct": null, "score": null },
+      { "question_id": "exam-concept", "category": "concept-understanding", "prompt": "Candidate 为什么不能直接计入正式理解分？", "question_type": "short-answer", "answer": null, "is_correct": null, "score": null },
+      { "question_id": "exam-transfer", "category": "transfer", "prompt": "把退出条件的原则迁移到一个新的学习或软件任务。", "question_type": "application", "answer": null, "is_correct": null, "score": null }
+    ], "score": null, "passed": null, "completed_at": null
+  },
+  "auto_demo": {
+    "enabled": true, "duration_seconds": 75, "status": "idle", "deterministic_seed": 20260726, "loop": false, "current_step": 0,
+    "steps": [
+      { "step_id": "demo-1", "at_second": 0, "action": "open-campaign", "target": "learning-cognition" },
+      { "step_id": "demo-2", "at_second": 8, "action": "open-level", "target": "learning-cognition/level-1" },
+      { "step_id": "demo-3", "at_second": 16, "action": "select-choice", "target": "lc-l1-boundary" },
+      { "step_id": "demo-4", "at_second": 24, "action": "open-campaign", "target": "research-decision" },
+      { "step_id": "demo-5", "at_second": 32, "action": "select-choice", "target": "rd-l2-quarantine" },
+      { "step_id": "demo-6", "at_second": 40, "action": "verify-knowledge", "target": "verified-only-score" },
+      { "step_id": "demo-7", "at_second": 48, "action": "answer-exam", "target": "exam-transfer" },
+      { "step_id": "demo-8", "at_second": 54, "action": "export-goal", "target": "research-quest-goal.md" },
+      { "step_id": "demo-9", "at_second": 60, "action": "complete", "target": "demo-complete" }
+    ]
+  },
+  "exports": {
+    "state": { "kind": "game-state", "status": "ready", "media_type": "application/json", "filename": "research-quest-state.json", "generated_at": "2026-07-26T00:00:00Z", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "content": "示例状态由应用在运行时导出。", "schema_version": "1.0.0", "public_safe": true },
+    "goal": { "kind": "codex-goal", "status": "ready", "media_type": "text/markdown", "filename": "research-quest-goal.md", "generated_at": "2026-07-26T00:00:00Z", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "content": "# 模拟 Codex Goal\n\n只在已验证证据与明确边界内继续。", "schema_version": "1.0.0", "public_safe": true }
+  },
+  "privacy": {
+    "public_demo_disclosure": "本文件中的情境、题目、奖励和文本均为模拟、改编或脱敏的公开 Demo 素材，不代表真实科研结果。",
+    "research_claim_status": "illustrative-only", "real_research_results_included": false,
+    "sanitization": { "applied": true, "removed_categories": ["personal-identifiers", "private-paths", "credentials", "private-code", "unpublished-results", "server-details", "datasets", "checkpoints"], "review_status": "approved" }
+  },
+  "next_question": { "question_id": "prologue-start", "prompt": "你希望先解决哪一种不确定性？", "purpose": "用一个高价值选择决定起始战役。" },
+  "updated_at": "2026-07-26T00:00:00Z"
+}
