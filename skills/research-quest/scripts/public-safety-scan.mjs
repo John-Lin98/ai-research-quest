@@ -53,6 +53,7 @@ const trackedPublicPathAllowlist = [
   "PRIVACY.md",
   "SECURITY.md",
   "shared/game-state.schema.json",
+  "public/case-study-alphafold-casp14.html",
   "public/research-quest-demo-75s.webm",
 ];
 const trackedPublicPathPrefixes = [

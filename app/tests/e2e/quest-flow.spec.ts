@@ -93,6 +93,16 @@ test("键盘可使用跳转链接和自动演示控制", async ({ page }) => {
   await expect(page.getByRole("region", { name: "演示控制" })).toContainText("idle");
 });
 
+test("公开案例与完整案例博文可访问", async ({ page }) => {
+  await page.goto("/");
+  const caseStudy = page.getByRole("region", { name: "从 AlphaFold2 的 CASP14 成绩，练习“不把预测当结论”" });
+  await expect(caseStudy).toContainText("真实公开案例 · 教学决策模拟");
+  await expect(caseStudy.getByRole("link", { name: "阅读完整案例博文：当预测进入科研工作流，下一步应该是什么？" })).toHaveAttribute("href", "./case-study-alphafold-casp14.html");
+
+  await page.goto("/case-study-alphafold-casp14.html");
+  await expect(page.getByRole("heading", { name: "当 AlphaFold2 走进 CASP14：把预测当作下一步，而不是结论" })).toBeVisible();
+});
+
 test("考试 rubric 拒绝非空无关键词回答，并接受有效关键词回答", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "移动视口已由基础交互与布局用例覆盖");
   await reachFinalExam(page);
