@@ -204,11 +204,28 @@ function DemoControls({
   </section>;
 }
 
+function ActualCasePanel() {
+  return <section className="rq-case-study" aria-labelledby="actual-case-title">
+    <div className="rq-case-study__intro">
+      <p className="rq-eyebrow">真实公开案例 · 教学决策模拟</p>
+      <h2 id="actual-case-title">从 AlphaFold2 的 CASP14 成绩，练习“不把预测当结论”</h2>
+      <p>CASP14 是一次盲测评估。Jumper 等人在 2021 年发表于 Nature 的论文报告，AlphaFold2 在该评估中取得平均 GDT 92.4 的结果；这是一项公开发表的基准事实，不是本 Demo 的关卡数据或性能承诺。</p>
+    </div>
+    <div className="rq-case-study__grid">
+      <article><strong>公开事实</strong><p>论文与官方说明记录了 AlphaFold2 在 CASP14 的评估表现。本页面只把这些可追溯事实作为案例入口，不把它们写入互动关卡、游戏状态或得分。</p></article>
+      <article><strong>在 Research Quest 中怎么练</strong><p>把“得到一个高质量预测”先放入 Candidate；结合置信度、方法边界和问题匹配度推进到 Confirmed；只有获得与任务相称的独立或正交证据后，才在教学规则中记为 Verified。</p></article>
+      <article><strong>必须保留的边界</strong><p>这是一套教学推演，不对任何单一蛋白、下游实验、药物发现或研究效率作出结论。需要什么验证，取决于目标、风险与可用证据。</p></article>
+    </div>
+    <p className="rq-case-study__sources">来源：<a href="https://www.nature.com/articles/s41586-021-03819-2" target="_blank" rel="noreferrer">Jumper et al., Nature (2021)</a> · <a href="https://deepmind.google/discover/blog/alphafold-a-solution-to-a-50-year-old-grand-challenge-in-biology/" target="_blank" rel="noreferrer">Google DeepMind 的 CASP14 说明</a></p>
+    <a className="rq-case-study__link" href="./case-study-alphafold-casp14.html">阅读完整案例博文：当预测进入科研工作流，下一步应该是什么？</a>
+  </section>;
+}
+
 function Disclosure({ state }: Pick<QuestDashboardProps, "state">) {
   const auditStatus = state.privacy.sanitization.review_status === "approved"
     ? "已通过独立公开审计"
     : "待独立公开审计";
-  return <aside className="rq-disclosure" aria-label="公开演示数据说明"><strong>公开演示与隐私声明</strong><p>{state.privacy.public_demo_disclosure}</p><ul><li>仅使用模拟、改编或脱敏场景。</li><li>不包含真实研究结果、私人路径、凭据或未公开资料。</li><li>体验与得分为说明用途，不构成科研或学习效果证据。</li></ul><section className="rq-local-boundary" aria-label="本地处理边界"><strong>本地处理边界</strong><ul><li>不上传、不埋点，也不会向网络发送你的输入或游戏状态。</li><li>交互内容只保存在当前页面内存；刷新或重新开始后不会保留。</li><li>你输入的自由文本只会在你主动点击导出时，通过浏览器本地 Blob 文件下载；导出前会在本地拦截邮箱、绝对路径、密钥和令牌。</li><li>不要输入邮箱、密钥、token、本机或服务器私有路径，或未公开科研资料。</li></ul><p className="rq-muted">脱敏审核状态：{auditStatus}（{state.privacy.sanitization.review_status}）。</p></section></aside>;
+  return <aside className="rq-disclosure" aria-label="公开演示数据说明"><strong>公开演示与隐私声明</strong><p>{state.privacy.public_demo_disclosure}</p><ul><li>互动关卡仅使用模拟、改编或脱敏场景。</li><li>案例面板只摘要已公开发表的事实，并链接原始来源；不进入游戏状态或得分。</li><li>不包含真实研究结果、私人路径、凭据或未公开资料。</li><li>体验与得分为说明用途，不构成科研或学习效果证据。</li></ul><section className="rq-local-boundary" aria-label="本地处理边界"><strong>本地处理边界</strong><ul><li>不上传、不埋点，也不会向网络发送你的输入或游戏状态。</li><li>交互内容只保存在当前页面内存；刷新或重新开始后不会保留。</li><li>你输入的自由文本只会在你主动点击导出时，通过浏览器本地 Blob 文件下载；导出前会在本地拦截邮箱、绝对路径、密钥和令牌。</li><li>不要输入邮箱、密钥、token、本机或服务器私有路径，或未公开科研资料。</li></ul><p className="rq-muted">脱敏审核状态：{auditStatus}（{state.privacy.sanitization.review_status}）。</p></section></aside>;
 }
 
 export function QuestDashboard(props: QuestDashboardProps) {
@@ -216,6 +233,7 @@ export function QuestDashboard(props: QuestDashboardProps) {
   return <main className="rq-app" aria-labelledby="quest-title">
     <a className="rq-skip-link" href="#quest-main">跳至主要内容</a>
     <header className="rq-hero"><p className="rq-eyebrow">Research Quest · 公开互动 Demo</p><h1 id="quest-title">把决策变成可验证的学习闭环</h1><p>{view.projectGoal.summary}</p><p className="rq-muted">完成后将获得一份可执行、可审查、带退出条件的任务合同。</p><ProgressBar value={view.overallProgress} label="总进度" /><p className="rq-muted">预计剩余 {view.estimatedRemainingTime.min}–{view.estimatedRemainingTime.max} 分钟 · 当前阶段：{view.phase}</p></header>
+    <ActualCasePanel />
     <DemoControls {...props} />
     <div id="quest-main" className="rq-layout" tabIndex={-1}>
       <div className="rq-primary"><DecisionCard {...props} /><FinalExamGoal {...props} /></div>

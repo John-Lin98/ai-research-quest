@@ -2,6 +2,16 @@
 
 以下文案只描述公开、离线优先的教学 Demo；不把演示流程、分数或自动测试表述为科研、产品或学习效果。已发布的公开入口为 `https://john-lin98.github.io/ai-research-quest/`。
 
+## 实际案例版引流段
+
+如果你只转发一段，请转发这一段：
+
+> AlphaFold2 在 CASP14 的公开成绩很强，但一个强预测之后，研究工作并没有结束。Research Quest 用这个公开案例练习一个简单问题：它现在只是 Candidate，还是已经足够支撑下一步？真正要记为 Verified，又需要什么独立或正交证据？
+>
+> 先读案例：[当 AlphaFold2 走进 CASP14：把预测当作下一步，而不是结论](https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html)，再用约 75 秒体验完整流程：[Research Quest](https://john-lin98.github.io/ai-research-quest/)。
+
+这段只引用已公开发表的案例事实；Candidate → Confirmed → Verified 是教学推演，不是对具体蛋白、下游实验或工具效果的结论。
+
 ## 小红书：把 ChatGPT 科研变成玩游戏
 
 **标题**

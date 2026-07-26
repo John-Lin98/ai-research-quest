@@ -2,7 +2,7 @@
 
 把“读过了”变成一条可检查的证据链：在两个七关战役中作出选择、标记未知项、完成应用与迁移，再导出可执行的 Codex Goal。
 
-> 这是一个纯前端、公开安全的教学 Demo。所有内置场景都是模拟、改编或脱敏材料，不代表真实科研结果，也不证明游戏化能够提升理解、创造力或研究表现。
+> 这是一个纯前端、公开安全的教学 Demo。互动关卡均为模拟、改编或脱敏材料，不代表真实科研结果，也不证明游戏化能够提升理解、创造力或研究表现。页面另设一个带原始来源链接的公开案例阅读区，用于演示如何把“预测”继续推进为可审查的下一步；它不进入游戏状态或得分。
 
 ## 三分钟看懂
 
@@ -70,7 +70,7 @@ Skill 位于 `skills/research-quest/`，并读取仓库根目录唯一的 `share
 
 工作流会在 Pull Request 和 `main` 上运行质量检查；只有仓库已公开、事件不是 Pull Request 且分支为 `main` 时，部署 job 才能使用最小 `pages: write` / `id-token: write` 权限。首次发布仍需维护者在仓库 Settings → Pages 中选择 **GitHub Actions**。
 
-在线项目地址为 <https://john-lin98.github.io/ai-research-quest/>；同一静态站点提供 [76 秒网页演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)。
+在线项目地址为 <https://john-lin98.github.io/ai-research-quest/>；同一静态站点提供 [约 75 秒网页演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)，以及 [AlphaFold2 × CASP14 公开案例博文](https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html)。
 
 ## 公开数据与边界
 
