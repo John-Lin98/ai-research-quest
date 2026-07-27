@@ -201,16 +201,14 @@ ${list(frozenDecisions, "按照本 Goal 的默认公开试点合同执行，不�
 
 ## 14. Goal-driven 执行与交付
 
-Goal Forge 后默认继续执行，而不是只输出提示词：
+Goal Forge 后默认继续执行，而不是只输出提示词。执行顺序为：
 
-```text
-Goal Forge
-→ Agent 分工
-→ 工具与代码执行
-→ 实际验证
-→ 四象限回写
-→ Goal 修订或最终交付
-```
+1. Goal Forge；
+2. Agent 分工；
+3. 工具与代码执行；
+4. 实际验证；
+5. 四象限回写；
+6. Goal 修订或最终交付。
 
 除非用户明确只要求 Goal 文本，否则不得在生成 Goal 后停止。
 
