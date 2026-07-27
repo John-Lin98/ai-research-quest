@@ -164,7 +164,7 @@ export function CognitionMap({
           const canVerify = stage.title !== "Confirmed" || source?.quiz.status === "passed";
           const canAct = !knowledgeFrozen && canVerify;
           const disabledLabel = knowledgeFrozen ? "Goal 已冻结" : "完成小测后验证";
-          return <li key={item.knowledge_id}><span>{item.statement}</span>{stage.action ? <button type="button" disabled={!canAct} onClick={() => stage.action?.(item.knowledge_id)}>{canAct ? stage.actionLabel : disabledLabel}</button> : <em>已验证</em>}</li>;
+          return <li key={item.knowledge_id}><span>{item.statement}</span>{stage.action ? <button type="button" disabled={!canAct} onClick={() => stage.action?.(item.knowledge_id)}>{canAct ? stage.actionLabel : disabledLabel}</button> : <em>{stage.title === "Verified" ? "已验证" : stage.title === "Candidate" ? "等待回答证据" : "等待应用证据"}</em>}</li>;
         }) : <li className="rq-empty">暂无条目</li>}</ul>
       </section>)}
     </div>
@@ -262,7 +262,7 @@ function ActualCasePanel() {
     </div>
     <div className="rq-case-study__grid">
       <article><strong>真实输入</strong><p>AlphaFold DB 预测、匹配的实验 PDB 结构和公开催化残基注释；所有目标、排除和映射失败均需可追溯。</p></article>
-      <article><strong>认知自适应</strong><p>如果上一关 Verified Known Knowns 较少，下一关会自动补基础、减少术语；掌握度提升后再进入反例和研究决策。</p></article>
+      <article><strong>快速小步与认知自适应</strong><p>每回合通常只问 1 个、最多 3 个关键问题；如果上一关 Verified Known Knowns 较少，下一关会自动补基础、减少术语。</p></article>
       <article><strong>最终获得什么</strong><p>一份可直接交给 Codex 的科研任务合同，包含数据、步骤、指标、验收、用户偏好、根因分析和结论边界。</p></article>
     </div>
     <p className="rq-case-study__sources">公开背景：<a href="https://www.nature.com/articles/s41586-021-03819-2" target="_blank" rel="noreferrer">AlphaFold2 Nature 论文</a> · <a href="https://alphafold.ebi.ac.uk/" target="_blank" rel="noreferrer">AlphaFold DB</a> · <a href="https://www.ebi.ac.uk/pdbe/" target="_blank" rel="noreferrer">PDBe</a></p>
