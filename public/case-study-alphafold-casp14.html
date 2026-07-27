@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="以 AlphaFold2 在 CASP14 的公开评估为例，说明如何把模型预测转化为可审查的下一步。" />
-    <title>当 AlphaFold2 走进 CASP14：把预测当作下一步，而不是结论</title>
+    <meta name="description" content="从 AlphaFold2 与 CASP14 的公开背景出发，设计一个评估酶活性位点局部几何的可执行公开试点。" />
+    <title>从 CASP14 到真实科研需求：AlphaFold2 酶活性位点几何试点</title>
     <style>
       :root { color: #172554; background: #f8fafc; font-family: Inter, "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif; line-height: 1.7; }
       * { box-sizing: border-box; }
@@ -12,80 +12,116 @@
       a { color: #075985; font-weight: 700; }
       a:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
       .hero { padding: 4.5rem 1.25rem 3.5rem; color: #fff; background: radial-gradient(circle at 85% 10%, #2dd4bf88, transparent 19rem), linear-gradient(135deg, #172554, #1d4ed8 58%, #0e7490); }
-      .hero__inner, main, footer { width: min(820px, calc(100% - 2rem)); margin: 0 auto; }
+      .hero__inner, main, footer { width: min(900px, calc(100% - 2rem)); margin: 0 auto; }
       .eyebrow { margin: 0; color: #bfdbfe; font-size: .84rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-      h1 { max-width: 17ch; margin: .4rem 0 1rem; font-size: clamp(2.1rem, 7vw, 4rem); line-height: 1.12; }
-      .lede { max-width: 62ch; font-size: 1.14rem; }
+      h1 { max-width: 19ch; margin: .4rem 0 1rem; font-size: clamp(2.1rem, 7vw, 4rem); line-height: 1.12; }
+      .lede { max-width: 66ch; font-size: 1.14rem; }
       .badge { display: inline-block; margin-top: .5rem; padding: .38rem .7rem; border: 1px solid #99f6e4; border-radius: 999px; color: #ccfbf1; font-size: .88rem; }
       main { padding: 2.5rem 0 3.5rem; }
       article > * + * { margin-top: 1.35rem; }
       h2 { margin: 2.7rem 0 .7rem; font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.25; }
-      .fact-box, .lesson-box, .boundary-box { padding: 1.25rem 1.35rem; border-radius: 1rem; }
+      h3 { margin-bottom: .35rem; }
+      .fact-box, .lesson-box, .boundary-box, .goal-box { padding: 1.25rem 1.35rem; border-radius: 1rem; }
       .fact-box { border: 1px solid #bae6fd; background: #f0f9ff; }
       .lesson-box { border: 1px solid #99f6e4; background: #f0fdfa; }
       .boundary-box { border-left: 5px solid #f59e0b; background: #fffbeb; }
+      .goal-box { border: 1px solid #c4b5fd; background: #f5f3ff; }
       .label { margin: 0 0 .3rem; color: #0f766e; font-size: .88rem; font-weight: 800; }
       .steps { display: grid; gap: .9rem; padding: 0; list-style: none; counter-reset: step; }
       .steps li { position: relative; padding: 1rem 1rem 1rem 4rem; border: 1px solid #dbeafe; border-radius: .9rem; background: #fff; }
       .steps li::before { position: absolute; left: 1rem; top: 1.05rem; display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: #1d4ed8; color: #fff; font-weight: 800; counter-increment: step; content: counter(step); }
       .steps strong { display: block; }
+      .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .grid section { padding: 1rem 1.1rem; border: 1px solid #dbeafe; border-radius: 1rem; background: #fff; }
+      .contract { overflow-x: auto; padding: 1.25rem; border-radius: 1rem; color: #e2e8f0; background: #0f172a; }
+      .contract pre { margin: 0; white-space: pre-wrap; font: .9rem/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; }
       .cta { margin-top: 2.5rem; padding: 1.5rem; border-radius: 1rem; color: #ecfeff; background: #0f172a; }
       .cta h2 { margin-top: 0; color: #fff; }
       .cta a { color: #67e8f9; }
       .sources { font-size: .94rem; color: #475569; }
       footer { padding: 0 0 2.5rem; color: #64748b; font-size: .88rem; }
-      @media (max-width: 520px) { .hero { padding-top: 3rem; } }
+      @media (max-width: 680px) { .hero { padding-top: 3rem; } .grid { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
     <header class="hero">
       <div class="hero__inner">
-        <p class="eyebrow">Research Quest · 真实公开案例</p>
-        <h1>当 AlphaFold2 走进 CASP14：把预测当作下一步，而不是结论</h1>
-        <p class="lede">一个好案例不该用来喊“AI 已经替代科研”。它更适合让我们练习一件更难、也更实用的事：在一个强信号出现后，如何写出下一步、证据门槛和退出条件。</p>
-        <span class="badge">公开发表事实 + 教学决策模拟</span>
+        <p class="eyebrow">Research Quest · 真实科研需求 Demo</p>
+        <h1>从 CASP14 到真实科研需求：AlphaFold2 能否支持酶活性位点几何初筛？</h1>
+        <p class="lede">这不是一篇“AlphaFold2 很厉害”的回顾，而是一项尚未预设结果的公开试点设计：用 10 个可追溯酶目标，比较 AlphaFold DB 预测与实验结构中的局部活性位点几何，并把整个需求通过游戏化选择编译成可执行 Codex Goal。</p>
+        <span class="badge">公开事实 + 真实需求 + 无预设实验结果</span>
       </div>
     </header>
     <main>
       <article>
-        <h2>一个足够真实、又足够克制的起点</h2>
+        <h2>为什么原来的 CASP14 案例还不够</h2>
         <div class="fact-box">
-          <p class="label">公开事实</p>
-          <p>CASP 是蛋白质结构预测领域的盲测评估。Jumper 等人发表于 <em>Nature</em> 的论文报告，AlphaFold2 在 CASP14 中取得平均 GDT 92.4；论文将其描述为在多数案例中可与实验结构竞争的预测精度。</p>
+          <p class="label">公开背景</p>
+          <p>CASP14 提供了 AlphaFold2 结构预测能力的重要公开证据；AlphaFold DB 进一步提供了可下载的结构预测与逐残基 pLDDT。但真实科研使用不会止于“整体预测很准”：酶研究者还需要知道，局部催化残基和活性位点邻域是否足以支持下一步分析。</p>
         </div>
-        <p><strong>教学判断：</strong>这个案例把“高质量预测之后怎么办”这个问题推到台前。下面的 Candidate、Confirmed、Verified 三层划分，是 Research Quest 为训练决策纪律而设计的教学框架；它不是对 AlphaFold2、某个具体蛋白或任一实验路线的重新评估。</p>
+        <p>只讲“预测不能直接当结论”能够解释证据边界，却不能展示 Research Quest 的核心价值。真正有传播力的 Demo 应让用户看到：一个现实需求如何被拆成关键问题，每一次选择如何改变数据、指标、验收和 Agent 分工，最后如何生成可以直接执行的科研任务合同。</p>
 
-        <h2>把一个新闻标题，改写成可执行的问题</h2>
-        <p>传播时最容易出现的一步跳跃是：看到“预测很准”，就直接说“问题已经解决”。但科研工作流中，预测精度、目标是否匹配、风险能否承受、何种证据足以行动，通常是不同的问题。把它们拆开，才知道该往哪里走。</p>
+        <h2>本 Demo 采用的真实科研任务</h2>
+        <div class="goal-box">
+          <p class="label">研究问题</p>
+          <p><strong>在没有目标实验结构可直接用于下游分析的情境下，AlphaFold2 / AlphaFold DB 预测是否足以支持酶活性位点几何的初步筛选？</strong></p>
+          <p>首轮公开试点规划 10 个酶目标，要求 AlphaFold DB 预测、匹配实验 PDB 结构和公开催化残基注释三类输入齐全，并以至少 8 个目标形成有效配对分析作为完成信号。</p>
+        </div>
+
+        <h2>这项需求需要冻结什么</h2>
+        <div class="grid">
+          <section><h3>输入合同</h3><p>AlphaFold DB 模型、匹配 PDB 链、可追溯催化残基注释、来源和文件哈希。</p></section>
+          <section><h3>区域合同</h3><p>以公开催化残基为锚点，在实验结构中冻结催化残基及固定 6 Å 邻域。</p></section>
+          <section><h3>指标合同</h3><p>全局 TM-score/Cα RMSD、局部催化残基与邻域误差、pLDDT 分层、覆盖率和失败码。</p></section>
+          <section><h3>结论合同</h3><p>只讨论局部几何初筛的适用性和失败模式，不外推到催化、结合或药物发现。</p></section>
+        </div>
+
+        <h2>游戏怎样把需求编译成 Goal</h2>
         <ol class="steps">
-          <li><strong>Candidate：把预测当作候选解释。</strong>它可以帮助缩小搜索范围、提出结构假设或安排后续优先级；此时仍要写清预测对象、适用边界和不确定性。</li>
-          <li><strong>Confirmed：检查它是否足以支持当前决策。</strong>结合模型置信度、输入覆盖范围、方法限制与研究问题，判断这个候选是否值得投入下一步资源。这里的“确认”不是宣布真相，而是确认行动理由。</li>
-          <li><strong>Verified：以与目标相称的独立或正交证据收口。</strong>如果任务需要实验支撑，就把可复核的实验或其他独立证据写成门槛；若证据不够，也要允许暂停、转向或降低结论强度。</li>
+          <li><strong>冻结下游决定。</strong>先回答“我们想用预测做什么”，而不是从一个著名模型的名字开始。</li>
+          <li><strong>建立公开证据三联表。</strong>每个目标都需要预测、实验参考和活性位点注释。</li>
+          <li><strong>区分置信度与外部正确性。</strong>pLDDT 进入结果表，但不能代替局部实验参考。</li>
+          <li><strong>冻结局部区域和指标。</strong>避免分析后再挑选表现最好的残基或阈值。</li>
+          <li><strong>记录覆盖与失败。</strong>无法映射、结构状态不同和缺失残基都必须留下失败码。</li>
+          <li><strong>分配多 Agent。</strong>数据来源、映射分析、指标实现和独立复审由不同角色负责。</li>
+          <li><strong>冻结验收与退出。</strong>至少 8/10 个目标有效；同一关键问题 3–5 轮不同尝试仍失败时输出根因分析。</li>
         </ol>
 
-        <h2>为什么这比“AI 很厉害”更容易被理解和转发</h2>
-        <p>因为它给了读者一个可以带走的判断动作：看到一个看似很强的结果时，不急着争论它是否万能，而是追问“它现在属于哪一层？下一层需要什么证据？”这个问题既适用于结构预测，也适用于文献综述、实验设计、数据分析和日常与模型协作。</p>
+        <h2>通关后导出的目标提示词长什么样</h2>
+        <div class="contract" aria-label="Codex Goal 摘要">
+          <pre># Codex Goal：AlphaFold2 酶活性位点几何公开试点
+
+目标：对 10 个公开酶目标执行预测—实验结构配对分析，
+至少完成 8 个有效目标。
+
+输入：AlphaFold DB + PDB + 催化残基公开注释。
+区域：催化残基及实验结构中的固定 6 Å 邻域。
+指标：TM-score、全局/局部 RMSD、pLDDT 分层、覆盖率、失败码。
+Agent：数据、映射、分析、可视化、独立复审与总控分离。
+退出：同一关键问题 3–5 轮不同修复仍失败后输出根因分析。
+边界：不得把局部结构结果写成催化、结合或药物发现结论。</pre>
+        </div>
+
+        <h2>最终考试也必须服务真实任务</h2>
         <div class="lesson-box">
-          <p class="label">教学推演</p>
-          <p>在 Research Quest 里，互动关卡会要求玩家把候选判断写成一个可审查动作：依据是什么、边界是什么、失败信号是什么。只有完成相应的应用或验证，知识才会在模拟状态中升级。这个得分只解释流程，不衡量真实科研能力、学习效果或工具表现。</p>
+          <p class="label">应用题，而不是口号题</p>
+          <p>玩家需要处理“全局结构很接近，但催化残基邻域误差较大”的目标，解释为什么高 pLDDT 仍不等于催化几何正确，并说明若把试点迁移到分子对接，需要增加哪些配体、基线和控制。只有这些判断通过后，Goal 才能被冻结。</p>
         </div>
 
-        <h2>传播时不要省略的那句话</h2>
+        <h2>必须保留的结论边界</h2>
         <div class="boundary-box">
-          <p><strong>边界：</strong>这篇文章不声称 AlphaFold2 自动证明任何下游实验、药物发现或研究效率；也不把 Research Quest 的页面体验、演示分数或测试结果表述为科研或学习效果。真实工作中需要的证据，取决于具体问题、风险和可用资源。</p>
+          <p><strong>边界：</strong>当前页面生成的是一个真实、可执行的科研试点计划，不是已经完成的 AlphaFold2 活性位点评测。页面没有预设试点结果，不声称预测结构可以替代实验，也不把游戏得分当作科研能力或学习效果证据。</p>
         </div>
 
-        <h2>把案例变成一次三分钟体验</h2>
-        <p>回到网站，先看案例面板，再用约 75 秒自动演示走完一条确定性路径。你会看到每一步如何留下选择、知识状态、未知项和退出条件，而不是只留下一个“答案”。</p>
         <section class="cta" aria-labelledby="try-demo-title">
-          <h2 id="try-demo-title">试着把你的下一个预测放进证据链</h2>
-          <p><a href="./">打开 Research Quest 互动 Demo</a>，或直接观看 <a href="./research-quest-demo-75s.webm">约 75 秒网页演示视频</a>。</p>
+          <h2 id="try-demo-title">亲自把真实需求玩成一份 Goal</h2>
+          <p><a href="./">打开 Research Quest 互动 Demo</a>，逐关决定真实试点的数据、指标和执行方式；也可以观看 <a href="./research-quest-demo-75s.webm">约 75 秒演示视频</a>。</p>
         </section>
 
-        <h2>来源与阅读边界</h2>
-        <p class="sources">事实来源：<a href="https://www.nature.com/articles/s41586-021-03819-2">Jumper et al., “Highly accurate protein structure prediction with AlphaFold”, Nature (2021)</a>；<a href="https://deepmind.google/discover/blog/alphafold-a-solution-to-a-50-year-old-grand-challenge-in-biology/">Google DeepMind 对 CASP14 的公开说明</a>。本文只概述已公开材料；“三层证据”部分是基于这些材料的教学推演。页面内容于 2026-07-27 整理。</p>
+        <h2>公开来源与证据边界</h2>
+        <p class="sources">背景来源：<a href="https://www.nature.com/articles/s41586-021-03819-2">Jumper et al., “Highly accurate protein structure prediction with AlphaFold”, Nature (2021)</a>；<a href="https://alphafold.ebi.ac.uk/">AlphaFold Protein Structure Database</a>；<a href="https://www.ebi.ac.uk/pdbe/">PDBe</a>。CASP14 与数据库信息属于公开事实；10 个酶目标、6 Å 邻域、指标、验收和多 Agent 分工是本 Demo 为展示需求编译过程而设计的试点合同，尚不代表执行结果。</p>
       </article>
     </main>
-    <footer>Research Quest · 公开、离线优先的教学 Demo · 不上传用户输入，不构成科研或学习效果声明。</footer>
+    <footer>Research Quest · 用公开真实需求生成可执行科研 Goal · 不上传用户输入，不构成科研或学习效果声明。</footer>
   </body>
 </html>
