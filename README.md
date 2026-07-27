@@ -27,11 +27,14 @@ Research Quest 不是“游戏结束后导出一段提示词”这么简单：
 
 ## Known–Unknown 四象限
 
-认知地图严格使用四象限：
+认知地图严格使用四象限。横轴表示用户是否已经意识到这个问题，纵轴表示用户实际上是否已经掌握相关知识。
 
-### Q1｜Known Knowns
+|  | 用户已经意识到 | 用户尚未意识到 |
+| --- | --- | --- |
+| **已经掌握** | **Known Knowns**：用户知道自己知道 | **Unknown Knowns**：用户实际上知道，但还没有明确表达或意识到 |
+| **尚未掌握** | **Known Unknowns**：用户知道自己不知道 | **Unknown Unknowns**：用户尚未意识到自己不知道 |
 
-用户已经表达的知识。内部采用：
+### Known Knowns 内部认证
 
 ```text
 Candidate → Confirmed → Verified
@@ -39,28 +42,17 @@ Candidate → Confirmed → Verified
 
 只有能够在小测、选择、纠错、实验设计或迁移题中正确应用的 `Verified` 项计入正式认知分。
 
-### Q2｜Known Unknowns
-
-用户明确知道还缺少答案的问题，例如“pLDDT 能证明什么”“局部活性位点应该如何定义”“哪个 baseline 才公平”。
-
-### Q3｜Unknown Knowns
-
-用户可能已经掌握但尚未表达的知识、经验与偏好。系统通过解释理由、方案比较、过去经验和用户主动追问把它们暴露出来。
-
-### Q4｜Unknown Unknowns
-
-用户和 AI 起初都未预见的问题，由反例、失败、冲突证据和真实执行暴露。发现它们不是玩家失败，而是“解锁隐藏地图”。
-
 四个象限共同决定下一关的问题、难度、Agent 分工和 Goal 版本。
 
 ## 三分钟看懂
 
 1. 先查看完整关卡路线、预计轮次和最终 Goal 预览；
 2. 选择真实试点要服务的下游判断；
-3. 在两条七关战役中冻结研究问题、公开数据、局部区域、指标、Agent 分工和验收；
-4. 观察 Known–Unknown 四象限和 Goal vN 如何随每次选择变化；
-5. 完成针对同一真实科研任务的应用、概念和迁移考试；
-6. 锻造 Goal 后继续进入 Agent 执行，或导出可直接复用的 Codex Goal。
+3. 每回合通常只回答 1 个主问题，必要时最多追加 2 个证据或边界问题；
+4. 在两条七关战役中冻结研究问题、公开数据、局部区域、指标、Agent 分工和验收；
+5. 观察 Known–Unknown 四象限和 Goal vN 如何随每次选择变化；
+6. 完成针对同一真实科研任务的应用、概念和迁移考试；
+7. 锻造 Goal 后继续进入 Agent 执行，或导出可直接复用的 Codex Goal。
 
 ## 每回合的正反馈
 
@@ -68,10 +60,10 @@ Candidate → Confirmed → Verified
 
 - 本关完成状态；
 - 总进度和预计剩余时间；
-- Q1 Candidate / Confirmed / Verified 变化；
-- Q2 新增、关闭和剩余的 Known Unknown；
-- Q3 本轮暴露的隐含知识或偏好；
-- Q4 新发现的隐藏风险或机会；
+- Known Knowns 的 Candidate / Confirmed / Verified 变化；
+- Known Unknowns 的新增、关闭和剩余；
+- Unknown Knowns 本轮暴露的隐含知识或偏好；
+- Unknown Unknowns 新发现的隐藏风险或机会；
 - 认知分数变化；
 - 科研目标达成状态；
 - Goal vN 相比上一版的变化；
@@ -109,8 +101,9 @@ Candidate → Confirmed → Verified
 ## 功能
 
 - 同一真实科研需求贯穿序章、双战役、考试、Goal 和后续执行；
-- 每关只提出一个会改变后续方案的关键问题；
+- 每回合通常 1 个主问题，必要时最多追加 2 个证据或边界问题；
 - 用户主动提出的问题会先被回答或运行，再写入四象限和 Goal；
+- 错误或未验证回答不会进入后续 Goal；
 - 根据四象限、正确率和用户偏好自动调整下一关难度；
 - 展示本关时间、总进度、预计剩余时间、目标变化和认知分；
 - Candidate、Confirmed、Verified 三级认证及 Verified-only 计分；
@@ -139,11 +132,12 @@ Skill 会：
 
 1. 读取用户真实目标和材料；
 2. 展示完整关卡路线与预计时间；
-3. 建立 Known–Unknown 四象限；
-4. 逐关提问、执行和更新 Goal；
-5. 根据认知地图调整难度；
-6. 运行最终考试；
-7. 生成并继续执行多 Agent Goal。
+3. 建立固定坐标的 Known–Unknown 四象限；
+4. 以每轮 1–3 个关键问题进行小步对齐；
+5. 逐关提问、执行和更新 Goal；
+6. 根据认知地图调整难度；
+7. 运行最终考试；
+8. 生成并继续执行多 Agent Goal。
 
 Skill 读取仓库根目录唯一的 `shared/game-state.schema.json`。安装与 ZIP 步骤见 [Skill 安装指南](docs/usage/skill-installation.md)。
 
@@ -161,8 +155,8 @@ Skill 读取仓库根目录唯一的 `shared/game-state.schema.json`。安装与
 
 - [GitHub Pages 互动 Demo](https://john-lin98.github.io/ai-research-quest/)
 - [真实科研需求案例页](https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html)
-- [约 75 秒网页演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)
-- [Research Quest Skill Release](https://github.com/John-Lin98/ai-research-quest/releases/tag/v1.0.0)
+- [四象限目标驱动演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)
+- [Research Quest Skill v1.1.0](https://github.com/John-Lin98/ai-research-quest/releases/tag/v1.1.0)
 
 ## 本地运行与验证
 
