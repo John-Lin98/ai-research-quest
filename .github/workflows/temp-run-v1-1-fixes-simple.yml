@@ -31,7 +31,12 @@ jobs:
           text = p.read_text(encoding='utf-8')
           start = text.index('# 3. 通过答案和小测自动补充认证证据。')
           end = text.index('# 5. Skill：任意需求动态生成关卡、自动认证、动态考试、强制游戏界面输出。')
-          p.write_text(text[:start] + text[end:], encoding='utf-8')
+          text = text[:start] + text[end:]
+          old = """    if old not in text:\n        raise SystemExit(f'未找到待替换片段: {path}: {old[:80]!r}')\n    p.write_text(text.replace(old, new), encoding='utf-8')"""
+          new = """    if old not in text:\n        if new in text:\n            return\n        raise SystemExit(f'未找到待替换片段: {path}: {old[:80]!r}')\n    p.write_text(text.replace(old, new), encoding='utf-8')"""
+          if old not in text:
+              raise SystemExit('未找到 replace helper')
+          p.write_text(text.replace(old, new), encoding='utf-8')
           PY
           python /tmp/apply-fixes.py
       - name: 运行自动认证补丁
