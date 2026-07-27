@@ -23,6 +23,7 @@ jobs:
         shell: bash
         run: |
           set +e
+          sed -i 's#\.github/workflows/generate-v1-1-video.yml#.github/workflows/video-generation.yml#g' scripts/apply-v1-1-all-fixes.py
           python scripts/apply-v1-1-all-fixes.py > /tmp/v1-1-all-fixes.log 2>&1
           status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -52,7 +53,7 @@ jobs:
             README.md \
             docs/usage/social-copy.md \
             app/scripts/record-research-quest-demo.mjs \
-            .github/workflows/generate-v1-1-video.yml
+            .github/workflows/video-generation.yml
           git commit -m "完善自适应关卡、自动认证与游戏界面"
           git push origin "HEAD:${{ github.head_ref }}"
       - name: 根据修复结果结束
