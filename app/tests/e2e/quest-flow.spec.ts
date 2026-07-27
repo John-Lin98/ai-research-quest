@@ -45,10 +45,10 @@ test("桌面端展示真实科研任务、四象限与可操作的 Candidate→V
 
   const cognitionMap = page.getByRole("region", { name: "Known–Unknown 四象限" });
   await expect(cognitionMap).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Known Knowns" })).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Known Unknowns" })).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Unknown Knowns" })).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Unknown Unknowns" })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Known Knowns", exact: true })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Known Unknowns", exact: true })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Unknown Knowns", exact: true })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Unknown Unknowns", exact: true })).toBeVisible();
   await expect(cognitionMap).toContainText("AlphaFold2 预测是否足以支持酶活性位点几何初筛");
   await expect(cognitionMap).toContainText("局部结构比较、活性位点判断或失败分析经验");
   await expect(cognitionMap).toContainText("序列、链、残基编号、缺失区域和构象状态");
