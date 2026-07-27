@@ -1,21 +1,19 @@
 name: 临时生成新版 Research Quest 视频
 
 on:
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   generate-video:
-    if: github.actor != 'github-actions[bot]' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
-      - name: 检出 PR 分支
+      - name: 检出视频分支
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: ${{ github.head_ref }}
+          ref: agent/v1-1-video-release
           persist-credentials: true
       - name: 配置 Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -54,7 +52,7 @@ jobs:
           fi
           ffprobe -v error -show_entries format=duration,size -show_entries stream=width,height,codec_name -of default=noprint_wrappers=1 public/research-quest-demo-75s.webm
           duration=$(ffprobe -v error -show_entries format=duration -of csv=p=0 public/research-quest-demo-75s.webm)
-          awk -v d="$duration" 'BEGIN { if (d < 60 || d > 90) exit 1 }'
+          awk -v d="$duration" 'BEGIN { if (d < 55 || d > 95) exit 1 }'
       - name: 精确提交视频
         shell: bash
         run: |
@@ -66,5 +64,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- public/research-quest-demo-75s.webm
           git commit -m "更新四象限目标驱动演示视频"
-          git pull --rebase origin "${{ github.head_ref }}"
-          git push origin "HEAD:${{ github.head_ref }}"
+          git push origin HEAD:agent/v1-1-video-release
