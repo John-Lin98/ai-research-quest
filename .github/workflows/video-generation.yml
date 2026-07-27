@@ -43,11 +43,18 @@ jobs:
           RESEARCH_QUEST_URL: http://127.0.0.1:4174/
           RESEARCH_QUEST_VIDEO: /tmp/research-quest-recording.webm
         run: node app/scripts/record-research-quest-demo.mjs
-      - name: 压缩视频
+      - name: 压缩并验证视频
         shell: bash
         run: |
-          ffmpeg -y -i /tmp/research-quest-recording.webm -an -c:v libvpx-vp9 -crf 38 -b:v 0 -deadline good -cpu-used 2 public/research-quest-demo-75s.webm
+          if ffmpeg -y -i /tmp/research-quest-recording.webm -an -c:v libvpx-vp9 -crf 38 -b:v 0 -deadline good -cpu-used 2 public/research-quest-demo-75s.webm; then
+            echo "VP9 压缩成功。"
+          else
+            echo "VP9 压缩失败，回退使用 Chromium 原始 WebM。"
+            cp /tmp/research-quest-recording.webm public/research-quest-demo-75s.webm
+          fi
           ffprobe -v error -show_entries format=duration,size -show_entries stream=width,height,codec_name -of default=noprint_wrappers=1 public/research-quest-demo-75s.webm
+          duration=$(ffprobe -v error -show_entries format=duration -of csv=p=0 public/research-quest-demo-75s.webm)
+          awk -v d="$duration" 'BEGIN { if (d < 60 || d > 90) exit 1 }'
       - name: 精确提交视频
         shell: bash
         run: |
@@ -59,4 +66,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- public/research-quest-demo-75s.webm
           git commit -m "更新四象限目标驱动演示视频"
+          git pull --rebase origin "${{ github.head_ref }}"
           git push origin "HEAD:${{ github.head_ref }}"
