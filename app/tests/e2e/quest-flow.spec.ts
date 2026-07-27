@@ -45,10 +45,10 @@ test("桌面端展示真实科研任务、四象限与可操作的 Candidate→V
 
   const cognitionMap = page.getByRole("region", { name: "Known–Unknown 四象限" });
   await expect(cognitionMap).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Q1｜Known Knowns" })).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Q2｜Known Unknowns" })).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Q3｜Unknown Knowns" })).toBeVisible();
-  await expect(cognitionMap.getByRole("heading", { name: "Q4｜Unknown Unknowns" })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Known Knowns" })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Known Unknowns" })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Unknown Knowns" })).toBeVisible();
+  await expect(cognitionMap.getByRole("heading", { name: "Unknown Unknowns" })).toBeVisible();
   await expect(cognitionMap).toContainText("AlphaFold2 预测是否足以支持酶活性位点几何初筛");
   await expect(cognitionMap).toContainText("局部结构比较、活性位点判断或失败分析经验");
   await expect(cognitionMap).toContainText("序列、链、残基编号、缺失区域和构象状态");
@@ -110,12 +110,14 @@ test("真实需求面板与完整案例博文可访问", async ({ page }) => {
   await page.goto("/");
   const caseStudy = page.getByRole("region", { name: "AlphaFold2 预测能否支持酶活性位点几何初筛？" });
   await expect(caseStudy).toContainText("真实公开科研需求 · 无预设结果");
-  await expect(caseStudy).toContainText("Known Knowns");
+  await expect(caseStudy).toContainText("固定坐标的 Known–Unknown 四象限");
+  await expect(caseStudy).toContainText("每回合通常只问 1 个、最多 3 个关键问题");
   await expect(caseStudy.getByRole("link", { name: "查看完整真实需求：从 CASP14 到活性位点公开试点" })).toHaveAttribute("href", "./case-study-alphafold-casp14.html");
 
   await page.goto("/case-study-alphafold-casp14.html");
   await expect(page.getByRole("heading", { name: "从 CASP14 到真实科研需求：AlphaFold2 能否支持酶活性位点几何初筛？" })).toBeVisible();
-  await expect(page.getByText("Known–Unknown 四象限")).toBeVisible();
+  await expect(page.getByText("Known–Unknown 四象限采用固定坐标")).toBeVisible();
+  await expect(page.getByText("每回合为什么只问 1–3 个问题")).toBeVisible();
 });
 
 test("考试 rubric 拒绝无关回答，并接受真实任务判断", async ({ page }, testInfo) => {
@@ -134,7 +136,7 @@ test("考试 rubric 拒绝无关回答，并接受真实任务判断", async ({ 
   await expect(page.getByText("考试状态：")).toContainText("passed");
 });
 
-test("考试未通过时可清空答案并重新参加", async ({ page }, testInfo) => {
+test("考试未通过时只回到薄弱关卡并可重新参加", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "移动视口已由基础交互与布局用例覆盖");
   await reachFinalExam(page);
   const answers = page.getByPlaceholder("输入你的研究判断");
@@ -142,7 +144,7 @@ test("考试未通过时可清空答案并重新参加", async ({ page }, testIn
   await answers.nth(1).fill("无效回答二");
   await answers.nth(2).fill("无效回答三");
   await page.getByRole("button", { name: "提交考试" }).click();
-  await expect(page.getByText("本次未达到通关线。请回看已有证据后重新作答；重试会清空本次考试答案。")).toBeVisible();
+  await expect(page.getByText("本次未达到通关线。只回到最薄弱的一关补证据，不重新完成整套题。")).toBeVisible();
   await page.getByRole("button", { name: "重新参加最终考试" }).click();
   await expect(page.getByPlaceholder("输入你的研究判断")).toHaveCount(3);
 });
