@@ -1,20 +1,22 @@
-name: 临时导出真实科研默认状态
+name: 临时同步真实科研默认状态
 
 on:
   pull_request:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   generate-default-fixture:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
-      - name: 检出当前提交
+      - name: 检出 PR 分支
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          persist-credentials: false
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
       - name: 配置 Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
@@ -25,10 +27,15 @@ jobs:
         run: npm ci --prefix app
       - name: 生成默认真实科研状态
         run: npm run fixture:generate --prefix app
-      - name: 上传默认状态
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: default-game-state
-          path: public/demo-data/default-game-state.json
-          if-no-files-found: error
-          retention-days: 1
+      - name: 精确提交默认状态
+        shell: bash
+        run: |
+          if git diff --quiet -- public/demo-data/default-game-state.json; then
+            echo "默认状态已经同步，无需提交。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- public/demo-data/default-game-state.json
+          git commit -m "同步真实科研任务默认状态"
+          git push origin "HEAD:${{ github.head_ref }}"
