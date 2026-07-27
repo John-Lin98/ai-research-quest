@@ -96,8 +96,40 @@ export default function App() {
           "关卡选择已记录；试点 Goal、认知地图和下一步已同步更新。",
         )}
         onSubmitLevelQuiz={(campaignId, levelId, accuracy) => run(
-          () => store.dispatch({ type: "SUBMIT_LEVEL_QUIZ", campaignId, levelId, accuracy }),
-          accuracy >= 0.8 ? "关卡小测已通过，下一关已解锁。" : "本关小测未通过，请查看知识卡后重试。",
+          () => {
+            const before = store.getState();
+            const campaign = campaignId === "learning-cognition"
+              ? before.campaigns.learning_cognition
+              : before.campaigns.research_decision;
+            const knowledgeId = campaign.levels.find((item) => item.level_id === levelId)
+              ?.cognition_map_delta.candidate_added[0];
+            store.dispatch({ type: "SUBMIT_LEVEL_QUIZ", campaignId, levelId, accuracy });
+            if (accuracy >= 0.8 && knowledgeId) {
+              let current = store.getState();
+              if (current.known_knowns.candidate.some((item) => item.knowledge_id === knowledgeId)) {
+                store.dispatch({
+                  type: "CONFIRM_KNOWLEDGE",
+                  knowledgeId,
+                  evidenceType: "user-confirmation",
+                  sourceRef: "public-demo:choice-and-quiz",
+                  score: 100,
+                });
+              }
+              current = store.getState();
+              if (current.known_knowns.confirmed.some((item) => item.knowledge_id === knowledgeId)) {
+                store.dispatch({
+                  type: "VERIFY_KNOWLEDGE",
+                  knowledgeId,
+                  evidenceType: "level-quiz",
+                  sourceRef: "public-demo:auto-level-quiz",
+                  score: 100,
+                });
+              }
+            }
+          },
+          accuracy >= 0.8
+            ? "关卡小测已通过；系统已自动记录 Confirmed / Verified 证据并解锁下一关。"
+            : "本关小测未通过；回答不会进入后续 Goal，请查看知识卡后重试。",
         )}
         onConfirmKnowledge={(knowledgeId) => run(
           () => store.dispatch({ type: "CONFIRM_KNOWLEDGE", knowledgeId }),
