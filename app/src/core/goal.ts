@@ -13,7 +13,17 @@ export function generateCodexGoal(state: GameState): string {
   const verifiedKnowledge = state.known_knowns.verified.map(
     (knowledge) => knowledge.statement,
   );
-  const openUnknowns = state.known_unknowns
+  const pendingKnowledge = [
+    ...state.known_knowns.candidate,
+    ...state.known_knowns.confirmed,
+  ].map((knowledge) => `${knowledge.status}: ${knowledge.statement}`);
+  const knownUnknowns = state.known_unknowns
+    .filter((item) => item.status !== "resolved")
+    .map((item) => item.statement);
+  const unknownKnowns = state.unknown_knowns
+    .filter((item) => item.status !== "resolved")
+    .map((item) => item.statement);
+  const unknownUnknowns = state.unknown_unknowns
     .filter((item) => item.status !== "resolved")
     .map((item) => item.statement);
   const demoBoundary = state.interaction_mode === "auto-demo"
@@ -29,11 +39,36 @@ export function generateCodexGoal(state: GameState): string {
 本任务不验证催化活性、配体结合、药物发现效果或实验成功率。所有结果只解释公开试点中局部结构几何的适用性、覆盖率与失败模式。
 
 - 当前目标：${state.project_goal.summary}
-- 交互模式：controlled-loop；一次只处理一个会改变后续方案的关键问题。
-- 认知规则：Candidate → Confirmed → Verified，只有 Verified 计入正式理解。
+- 工作模式：Goal-driven Research Quest；游戏循环负责建立认知地图，Goal 循环负责继续执行真实任务。
+- 交互原则：一次只处理一个会改变后续方案的关键问题，同时完成当前可安全执行的工作。
+- 认知规则：Known Knowns 内部使用 Candidate → Confirmed → Verified，只有 Verified 计入正式理解。
 - 演示边界：${demoBoundary}
 
-## 2. 公开输入合同
+## 2. Known–Unknown 四象限
+
+### Q1｜Known Knowns：已验证认识
+
+${list(verifiedKnowledge, "尚无来自真实执行的 Verified 结果；不要把计划或演示轨迹当成实验结论。")}
+
+### Q1｜Known Knowns：待补证认识
+
+${list(pendingKnowledge, "没有待补证的 Candidate 或 Confirmed。")}
+
+### Q2｜Known Unknowns：用户明确知道还缺少的答案
+
+${list(knownUnknowns, "执行中持续记录数据可得性、映射失败、构象差异与局部误差边界。")}
+
+### Q3｜Unknown Knowns：用户可能已掌握但尚未表达的经验与偏好
+
+${list(unknownKnowns, "通过解释理由、方案比较、过去经验和迁移题继续提取用户的隐含知识与偏好。")}
+
+### Q4｜Unknown Unknowns：用户和 AI 起初都未预见的问题
+
+${list(unknownUnknowns, "通过失败样本、冲突证据、真实执行和独立审查继续暴露隐藏风险与机会。")}
+
+四个象限必须在每轮执行后更新，并用于调整下一轮问题难度、Agent 分工和 Goal 版本。
+
+## 3. 公开输入合同
 
 每个候选目标必须同时具备：
 
@@ -45,7 +80,7 @@ export function generateCodexGoal(state: GameState): string {
 
 所有纳入、排除和映射失败都必须写入 manifest，不得静默删除失败样本。
 
-## 3. 冻结成功标准
+## 4. 冻结成功标准
 
 ${list(state.project_goal.success_criteria, "完成 10 个公开酶目标的试点分析。")}
 
@@ -57,19 +92,9 @@ ${list(state.project_goal.success_criteria, "完成 10 个公开酶目标的试�
 - 结果必须同时包含全局结构、局部活性位点、pLDDT 分层与有效覆盖率；
 - 最终报告必须区分事实、分析结果、合理解释和仍待验证的问题。
 
-## 4. 已冻结决策
+## 5. 已冻结决策
 
 ${list(frozenDecisions, "按照本 Goal 的默认公开试点合同执行，不重新扩大任务范围。")}
-
-## 5. 已验证认识与开放未知
-
-### Verified
-
-${list(verifiedKnowledge, "尚无来自真实执行的 Verified 结果；不要把计划或演示轨迹当成实验结论。")}
-
-### Known Unknowns
-
-${list(openUnknowns, "执行中持续记录数据可得性、映射失败、构象差异与局部误差边界。")}
 
 ## 6. 数据与区域定义
 
@@ -97,17 +122,26 @@ ${list(openUnknowns, "执行中持续记录数据可得性、映射失败、构�
 
 ## 8. 多 Agent 并行执行
 
-- Orchestrator：冻结合同、管理依赖、维护任务板和最终集成。
-- Data Agent：检索公开目标，维护来源、许可、manifest、哈希与失败码。
+- Orchestrator：维护 Goal、Known–Unknown 四象限、依赖、任务板和最终集成。
+- Source Agent：检索公开目标，维护来源、许可、manifest、哈希与失败码。
 - Mapping Agent：完成序列映射、链选择、覆盖率和残基对应审计。
 - Analysis Agent：实现全局与局部结构指标，生成逐目标结果和可复现命令。
 - Visualization Agent：生成主结果表、pLDDT-局部误差图和逐目标 QA 页面。
 - Independent Reviewer：从公开输入和 manifest 重新抽查映射、指标和结论边界，不复用实现者的未验证判断。
 - Integrator：精确集成文件、测试与文档，不带入无关或私有资产。
 
-各 Agent 必须使用明确文件所有权，交接内容包含输入、输出、决定、验证、blocker 和下一动作。
+各 Agent 必须使用明确文件所有权，交接内容包含输入、输出、决定、验证、blocker、attempt_round 和下一动作。
 
-## 9. 执行步骤
+## 9. 认知自适应与用户偏好
+
+- Known Knowns 较少时，减少术语，先给具体对比与二选一问题。
+- Known Knowns 较多时，使用冲突证据、失败案例、迁移题和方法取舍。
+- Known Unknowns 决定下一关要回答的核心问题。
+- Unknown Knowns 通过解释理由、过去经验和用户主动追问暴露，并转入 Candidate / Confirmed。
+- Unknown Unknowns 通过真实执行、反例和失败发现；发现它们视为认知进展，不视为玩家失败。
+- 用户主动提出的新问题应先被回答或运行，再归入四象限并更新 Goal。
+
+## 10. 执行步骤
 
 1. 建立公开数据源与目标候选表。
 2. 冻结纳入、排除、序列一致性和结构状态规则。
@@ -117,10 +151,11 @@ ${list(openUnknowns, "执行中持续记录数据可得性、映射失败、构�
 6. 汇总全局结构、局部位点、pLDDT、覆盖率和失败码。
 7. 对“全局表现良好但局部位点误差较大”的目标单独进行失败分析。
 8. 启动独立 Reviewer，复核至少 3 个有效目标和全部失败目标。
-9. 修复 P0/P1 后重新运行测试与结果生成。
-10. 创建中文 PR，列出数据来源、实现、指标、实际结果、边界和复现命令；检查通过后安全合并。
+9. 将执行结果回写四象限：关闭已回答的 Known Unknown，暴露新的 Unknown Known / Unknown Unknown，并升级有证据的 Known Known。
+10. 修复 P0/P1 后重新运行测试与结果生成。
+11. 创建中文 PR，列出数据来源、实现、指标、实际结果、四象限变化、边界和复现命令；检查通过后安全合并。
 
-## 10. 验证
+## 11. 验证
 
 至少验证：
 
@@ -134,7 +169,7 @@ ${list(openUnknowns, "执行中持续记录数据可得性、映射失败、构�
 - README 可让新用户复现 smoke；
 - 公开安全扫描不含个人信息、凭据、私有路径或未公开资产。
 
-## 11. 结果与结论边界
+## 12. 结果与结论边界
 
 允许回答：
 
@@ -150,7 +185,7 @@ ${list(openUnknowns, "执行中持续记录数据可得性、映射失败、构�
 - 本试点证明预测结构可以替代湿实验；
 - 页面演示分数或自动测试证明 Research Quest 提升科研能力。
 
-## 12. 失败重试与根因分析
+## 13. 失败重试与根因分析
 
 不得因第一次数据、映射、构建、测试或权限失败而停止。
 
@@ -164,7 +199,22 @@ ${list(openUnknowns, "执行中持续记录数据可得性、映射失败、构�
 
 连续 3–5 轮仍失败时，生成 root_cause_analysis.md，包含最小复现、日志、已排除原因、最可能根因、置信度、最大可交付子集与恢复条件，然后安全退出该问题。其他不依赖该 blocker 的工作继续完成。
 
-## 13. 交付物
+## 14. Goal-driven 执行与交付
+
+Goal Forge 后默认继续执行，而不是只输出提示词：
+
+```text
+Goal Forge
+→ Agent 分工
+→ 工具与代码执行
+→ 实际验证
+→ 四象限回写
+→ Goal 修订或最终交付
+```
+
+除非用户明确只要求 Goal 文本，否则不得在生成 Goal 后停止。
+
+交付物：
 
 - 公开目标 manifest；
 - 下载与来源记录；
@@ -174,6 +224,7 @@ ${list(openUnknowns, "执行中持续记录数据可得性、映射失败、构�
 - 主结果表与校准图；
 - 覆盖率和失败码报告；
 - 至少 3 个代表目标的 QA 页面；
+- 四象限认知地图变化报告；
 - 独立审查报告；
 - root cause 报告（如发生）；
 - 中文 PR、测试记录、合并提交和完成报告。
