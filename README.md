@@ -1,4 +1,4 @@
-# AI Research Quest
+# Research Quest｜AI Research Game
 
 把一个真实科研需求变成一场可玩的回合制游戏，并让 ChatGPT、Codex 或多 Agent 队伍依据用户的认知地图持续执行，直到生成可验证的科研交付。
 
@@ -104,7 +104,7 @@ Candidate → Confirmed → Verified
 - 每回合通常 1 个主问题，必要时最多追加 2 个证据或边界问题；
 - 用户主动提出的问题会先被回答或运行，再写入四象限和 Goal；
 - 错误或未验证回答不会进入后续 Goal；
-- 根据四象限、正确率和用户偏好自动调整下一关难度；
+- 根据四象限、正确率和用户偏好自动调整下一关难度，并在每关明确显示调整原因；
 - 展示本关时间、总进度、预计剩余时间、目标变化和认知分；
 - Candidate、Confirmed、Verified 三级认证及 Verified-only 计分；
 - 决策应用 60%、概念理解 20%、迁移 20% 的透明演示评分；

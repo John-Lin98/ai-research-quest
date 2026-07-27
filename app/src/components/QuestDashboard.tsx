@@ -99,6 +99,12 @@ function DecisionCard({
     : null;
   if (!prompt || !choices) return null;
   const title = state.phase === "prologue" ? "序章：冻结真实科研问题" : `${level!.order}. ${level!.title}`;
+  const verifiedCount = state.known_knowns.verified.length;
+  const adaptiveMessage = verifiedCount <= 2
+    ? "上一关显示 Verified Known Knowns 较少：本关自动切换为基础认知提升，减少术语并增加具体对比。"
+    : verifiedCount <= 8
+      ? "当前认知地图已具备基础：本关进入正常研究决策，要求说明理由和证据边界。"
+      : "当前 Verified Known Knowns 较充足：本关升级为高阶挑战，加入反例、冲突证据或迁移判断。";
   return (
     <section className="rq-panel rq-decision" aria-labelledby="decision-title">
       <p className="rq-eyebrow">当前决策</p>
@@ -106,6 +112,7 @@ function DecisionCard({
       <p className="rq-task">{task}</p>
       {estimate ? <p className="rq-muted">预计用时：{estimate.min}–{estimate.max} 分钟</p> : null}
       <p className="rq-question-budget">本回合认知测试：1 个主问题；只有必要时追加最多 2 个证据或边界问题。</p>
+      {level ? <aside className="rq-adaptive-hint" aria-label="认知地图自适应提示"><strong>认知地图自适应</strong><p>{adaptiveMessage}</p></aside> : null}
       <p className="rq-question">{prompt.prompt}</p>
       <p className="rq-muted">{prompt.purpose}</p>
       {level ? <aside className="rq-knowledge-card"><strong>本关目标预览</strong><p>{level.goal_preview}</p><p className="rq-muted">四象限变化：Known Knowns 候选 +{level.cognition_map_delta.candidate_added.length}；Known Unknowns +{level.cognition_map_delta.known_unknowns_added.length}；潜在 Unknown Knowns 与 Unknown Unknowns 将由解释、反例和真实执行继续暴露。</p></aside> : null}
@@ -136,8 +143,8 @@ export function CognitionMap({
   onVerifyKnowledge,
 }: Pick<QuestDashboardProps, "state" | "onConfirmKnowledge" | "onVerifyKnowledge">) {
   const knownKnownStages: Array<{ title: string; hint: string; items: GameState["known_knowns"][keyof GameState["known_knowns"]]; action?: (id: string) => void; actionLabel?: string }> = [
-    { title: "Candidate", hint: "AI 或材料提取的候选认识，不计分", items: state.known_knowns.candidate, action: onConfirmKnowledge, actionLabel: "升为 Confirmed" },
-    { title: "Confirmed", hint: "用户已确认，仍需应用或小测", items: state.known_knowns.confirmed, action: onVerifyKnowledge, actionLabel: "升为 Verified" },
+    { title: "Candidate", hint: "AI 或材料提取的候选认识，不计分", items: state.known_knowns.candidate },
+    { title: "Confirmed", hint: "已由回答或选择确认，等待应用证据", items: state.known_knowns.confirmed },
     { title: "Verified", hint: "已在任务中正确应用，唯一计分层", items: state.known_knowns.verified },
   ];
   const knowledgeFrozen = state.phase === "completed" || state.project_goal.status === "frozen";
@@ -148,6 +155,7 @@ export function CognitionMap({
   const knownKnownPanel = <article className="rq-quadrant rq-quadrant--known-knowns" aria-labelledby="quadrant-known-knowns">
     <h3 id="quadrant-known-knowns">Known Knowns</h3>
     <p>用户知道自己知道。内部按 Candidate → Confirmed → Verified 认证。</p>
+    <p className="rq-auto-evidence">系统会依据关卡选择、小测和任务结果自动补充 Confirmed / Verified 证据，无需手动升级。</p>
     <div className="rq-known-known-stages">
       {knownKnownStages.map((stage) => <section className="rq-cognition-column" key={stage.title} aria-label={stage.title}>
         <h4>{stage.title}</h4><p>{stage.hint}</p>
@@ -224,7 +232,7 @@ function FinalExamGoal({
   const canAnswer = state.exam.status === "in-progress";
   return <section className="rq-panel rq-final" aria-labelledby="final-title"><p className="rq-eyebrow">结业关</p><h2 id="final-title">最终考试与真实试点 Goal</h2>
     {state.exam.status === "not-started" || state.exam.status === "failed" ? <div><p className="rq-muted">{state.exam.status === "failed" ? "本次未达到通关线。只回到最薄弱的一关补证据，不重新完成整套题。" : "最终考试只包含三个关键问题：决策应用、核心理解和新项目迁移。"}</p><button type="button" className="rq-button rq-button--primary" onClick={onStartExam}>{state.exam.status === "failed" ? "重新参加最终考试" : "开始最终考试"}</button></div> : null}
-    {canAnswer ? <div className="rq-exam-questions"><p className="rq-muted">只输入公开且非敏感的研究判断；邮箱、绝对路径、密钥或令牌会在本地导出前被拦截。本 Demo 使用透明关键词 rubric，不代表真实学习或科研效果。</p>{state.exam.questions.map((question) => <label key={question.question_id}><span>{question.prompt}</span><input maxLength={1000} onChange={(event) => onAnswerExam(question.question_id, event.target.value)} placeholder="输入你的研究判断" /></label>)}<button type="button" className="rq-button rq-button--primary" onClick={onSubmitExam}>提交考试</button></div> : null}
+    {canAnswer ? <div className="rq-exam-questions"><p className="rq-muted">只输入公开且非敏感的研究判断；邮箱、绝对路径、密钥或令牌会在本地导出前被拦截。为保证公开网页完全离线、结果可复验，本 Demo 使用公开关键词规则。正式 Skill 不使用固定关键词，而是由 AI 根据当前四象限与任务 Context 动态生成三道应用题，并按推理、证据和边界进行解释式评分。</p>{state.exam.questions.map((question) => <label key={question.question_id}><span>{question.prompt}</span><input maxLength={1000} onChange={(event) => onAnswerExam(question.question_id, event.target.value)} placeholder="输入你的研究判断" /></label>)}<button type="button" className="rq-button rq-button--primary" onClick={onSubmitExam}>提交考试</button></div> : null}
     {state.exam.status === "passed" || state.phase === "goal-forge" || state.phase === "completed" ? <div className="rq-goal"><p>考试状态：<strong>{state.exam.status}</strong>；得分：{state.exam.score ?? "待计算"}</p>{state.phase === "goal-forge" ? <button type="button" className="rq-button rq-button--primary" onClick={onForgeGoal}>锻造真实试点 Codex Goal</button> : null}{state.goal_versions.length ? <><section className="rq-knowledge-card" aria-label="Codex Goal 摘要"><strong>可执行科研任务合同</strong><p>目标：用 10 个公开酶目标评估 AlphaFold2 是否足以支持活性位点几何初筛，至少完成 8 个有效配对分析。</p><p>输入：AlphaFold DB 预测、匹配 PDB 结构和可追溯催化残基注释。</p><p>指标：全局 TM-score/Cα RMSD、局部催化残基与 6 Å 邻域误差、pLDDT 分层和覆盖率。</p><p>认知 Context：Goal 同时记录固定四象限中的已验证认识、开放未知、隐含偏好和执行中新发现的风险。</p><p>边界：不把结构或置信度结果写成催化、结合或药物发现结论。</p><p>退出：同一关键问题经过 3–5 轮不同尝试仍失败时，输出根因分析。</p></section><details><summary>展开完整 Codex Goal</summary><pre aria-label="Codex Goal 预览">{state.goal_versions.at(-1)?.goal_text}</pre></details></> : null}</div> : null}
   </section>;
 }
@@ -254,7 +262,7 @@ function ActualCasePanel() {
     </div>
     <div className="rq-case-study__grid">
       <article><strong>真实输入</strong><p>AlphaFold DB 预测、匹配的实验 PDB 结构和公开催化残基注释；所有目标、排除和映射失败均需可追溯。</p></article>
-      <article><strong>快速小步</strong><p>每回合通常只问 1 个、最多 3 个关键问题；错误回答停留在 Candidate 或误解记录，不进入后续 Goal。</p></article>
+      <article><strong>认知自适应</strong><p>如果上一关 Verified Known Knowns 较少，下一关会自动补基础、减少术语；掌握度提升后再进入反例和研究决策。</p></article>
       <article><strong>最终获得什么</strong><p>一份可直接交给 Codex 的科研任务合同，包含数据、步骤、指标、验收、用户偏好、根因分析和结论边界。</p></article>
     </div>
     <p className="rq-case-study__sources">公开背景：<a href="https://www.nature.com/articles/s41586-021-03819-2" target="_blank" rel="noreferrer">AlphaFold2 Nature 论文</a> · <a href="https://alphafold.ebi.ac.uk/" target="_blank" rel="noreferrer">AlphaFold DB</a> · <a href="https://www.ebi.ac.uk/pdbe/" target="_blank" rel="noreferrer">PDBe</a></p>
@@ -273,7 +281,7 @@ export function QuestDashboard(props: QuestDashboardProps) {
   const { state, view } = props;
   return <main className="rq-app" aria-labelledby="quest-title">
     <a className="rq-skip-link" href="#quest-main">跳至主要内容</a>
-    <header className="rq-hero"><p className="rq-eyebrow">Research Quest · 真实科研任务 Demo</p><h1 id="quest-title">把一个真实科研需求玩成可执行 Goal</h1><p>{view.projectGoal.summary}</p><p className="rq-muted">每回合只处理 1–3 个关键问题，并更新固定坐标的 Known–Unknown 四象限；通关后得到可直接交给 Agent 的科研任务合同。</p><ProgressBar value={view.overallProgress} label="总进度" /><p className="rq-muted">预计剩余 {view.estimatedRemainingTime.min}–{view.estimatedRemainingTime.max} 分钟 · 当前阶段：{view.phase}</p></header>
+    <header className="rq-hero"><p className="rq-eyebrow">Research Quest｜AI Research Game · 真实科研任务 Demo</p><h1 id="quest-title">把一个真实科研需求玩成可执行 Goal</h1><p>{view.projectGoal.summary}</p><p className="rq-muted">每回合只处理 1–3 个关键问题，并更新固定坐标的 Known–Unknown 四象限；通关后得到可直接交给 Agent 的科研任务合同。</p><ProgressBar value={view.overallProgress} label="总进度" /><p className="rq-muted">预计剩余 {view.estimatedRemainingTime.min}–{view.estimatedRemainingTime.max} 分钟 · 当前阶段：{view.phase}</p></header>
     <ActualCasePanel />
     <DemoControls {...props} />
     <div id="quest-main" className="rq-layout" tabIndex={-1}>

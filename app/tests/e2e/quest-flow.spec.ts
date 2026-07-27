@@ -7,9 +7,7 @@ async function reachFinalExam(page: Page) {
 
   for (let level = 0; level < 14; level += 1) {
     await page.getByRole("group", { name: "选择一个下一步" }).getByRole("button").first().click();
-    await cognitionMap.getByRole("button", { name: "升为 Confirmed" }).click();
     await page.getByRole("group", { name: "回答关卡小测" }).getByRole("button").first().click();
-    await cognitionMap.getByRole("button", { name: "升为 Verified" }).click();
   }
 
   await expect(page.getByRole("heading", { name: "最终考试与真实试点 Goal" })).toBeVisible();
@@ -57,12 +55,9 @@ test("桌面端展示真实科研任务、四象限与可操作的 Candidate→V
   await page.getByRole("group", { name: "选择一个下一步" }).getByRole("button").first().click();
   await expect(page.getByRole("complementary", { name: "关卡小测" })).toContainText("真实需求定位");
   await expect(page.getByRole("complementary", { name: "关卡小测" })).toContainText("AlphaFold2 很准");
-  await expect(cognitionMap.getByRole("button", { name: "升为 Confirmed" })).toBeVisible();
-  await cognitionMap.getByRole("button", { name: "升为 Confirmed" }).click();
-  await expect(cognitionMap.getByRole("button", { name: "完成小测后验证" })).toBeDisabled();
+  await expect(page.getByRole("complementary", { name: "认知地图自适应提示" })).toContainText("基础认知提升");
   await page.getByRole("group", { name: "回答关卡小测" }).getByRole("button").first().click();
-  await expect(cognitionMap.getByRole("button", { name: "升为 Verified" })).toBeVisible();
-  await cognitionMap.getByRole("button", { name: "升为 Verified" }).click();
+  await expect(cognitionMap).toContainText("系统会依据关卡选择、小测和任务结果自动补充");
   await expect(cognitionMap).toContainText("已验证");
 
   const metricsPanel = page.locator("section").filter({
@@ -74,11 +69,11 @@ test("桌面端展示真实科研任务、四象限与可操作的 Candidate→V
   await expect(metricsPanel).toContainText("Unknown Unknown");
 });
 
-test("锻造 Goal 后会冻结认证操作且 Goal 包含四象限与持续执行", async ({ page }, testInfo) => {
+test("锻造 Goal 后可导出且 Goal 包含四象限与持续执行", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "移动视口已由基础交互与布局用例覆盖");
   await reachFrozenGoalWithCandidates(page);
   const cognitionMap = page.getByRole("region", { name: "Known–Unknown 四象限" });
-  await expect(cognitionMap.getByRole("button", { name: "Goal 已冻结" }).first()).toBeDisabled();
+  await expect(cognitionMap).toContainText("系统会依据关卡选择、小测和任务结果自动补充");
   await expect(page.getByRole("region", { name: "演示控制" }).getByRole("button", { name: "导出 Codex Goal" })).toBeEnabled();
   await page.getByText("展开完整 Codex Goal").click();
   const goalPreview = page.getByLabel("Codex Goal 预览");
