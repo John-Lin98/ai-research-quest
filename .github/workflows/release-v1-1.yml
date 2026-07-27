@@ -1,0 +1,91 @@
+name: 发布 Research Quest Skill v1.1.0
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查 Release 是否已存在
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v1.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: 检出主分支
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: 配置 Node.js
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: 创建 Skill 发行包
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          git archive --format=zip --output=research-quest-skill-v1.1.0.zip HEAD \
+            skills/research-quest \
+            shared/game-state.schema.json \
+            LICENSE \
+            THIRD_PARTY_NOTICES
+          sha256sum research-quest-skill-v1.1.0.zip | tee research-quest-skill-v1.1.0.sha256
+      - name: 解包与实际 smoke
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          mkdir /tmp/research-quest-skill-v1.1.0
+          unzip -q research-quest-skill-v1.1.0.zip -d /tmp/research-quest-skill-v1.1.0
+          cd /tmp/research-quest-skill-v1.1.0
+          node skills/research-quest/scripts/generate-test-sessions.mjs --check-only
+      - name: 写入 Release 说明
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          cat > release-notes-v1.1.0.md <<'EOF'
+          ## Research Quest Skill v1.1.0
+
+          本版本将 Research Quest 升级为目标驱动的 AI 科研游戏：
+
+          - 用游戏化方式帮助用户澄清真实目标；
+          - 使用固定坐标的 Known–Unknown 四象限建立认知地图；
+          - 每回合通常 1 个、最多 3 个关键问题；
+          - 未验证或错误回答不会进入后续 Goal；
+          - AI 整理 Context、实现方案和 Goal，并交给 ChatGPT、Codex 或多 Agent 队伍继续执行；
+          - 每轮展示认知分、科研进度、预计剩余时间和 Goal 版本变化；
+          - 默认真实科研任务示例为 AlphaFold2 酶活性位点几何公开试点。
+
+          ### 安装包
+
+          `research-quest-skill-v1.1.0.zip` 保留 Skill、Canonical Schema、MIT License 与第三方说明的相对目录结构。
+
+          ZIP SHA-256 见随附 `.sha256` 文件。
+
+          ### 边界
+
+          本版本展示产品机制与可执行试点设计，不声称游戏化已经证明提升科研能力、创造力或任务完成效果。
+          EOF
+      - name: 创建 GitHub Release
+        if: steps.release.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.1.0 \
+            research-quest-skill-v1.1.0.zip \
+            research-quest-skill-v1.1.0.sha256 \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Research Quest Skill v1.1.0" \
+            --notes-file release-notes-v1.1.0.md
