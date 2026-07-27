@@ -23,11 +23,26 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - name: 安装锁定依赖
         run: npm ci --prefix app
-      - name: 输出精简类型错误
+      - name: 运行类型检查并保存日志
+        id: typecheck
         shell: bash
+        continue-on-error: true
         run: |
-          set +e
           npm run typecheck --prefix app > /tmp/typecheck.log 2>&1
           status=$?
-          grep -E "error TS|Found [0-9]+ error" /tmp/typecheck.log || tail -n 30 /tmp/typecheck.log
+          echo "status=$status" >> "$GITHUB_OUTPUT"
           exit "$status"
+      - name: 上传类型检查日志
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: typecheck-log
+          path: /tmp/typecheck.log
+          if-no-files-found: error
+          retention-days: 1
+      - name: 根据类型检查结果结束
+        if: always()
+        shell: bash
+        run: |
+          cat /tmp/typecheck.log
+          test "${{ steps.typecheck.outputs.status }}" = "0"
