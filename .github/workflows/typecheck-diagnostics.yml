@@ -1,0 +1,33 @@
+name: 临时 TypeScript 诊断
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck-diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出当前提交
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: 配置 Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: 安装锁定依赖
+        run: npm ci --prefix app
+      - name: 输出精简类型错误
+        shell: bash
+        run: |
+          set +e
+          npm run typecheck --prefix app > /tmp/typecheck.log 2>&1
+          status=$?
+          grep -E "error TS|Found [0-9]+ error" /tmp/typecheck.log || tail -n 30 /tmp/typecheck.log
+          exit "$status"
