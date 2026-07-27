@@ -54,7 +54,13 @@ jobs:
             docs/usage/social-copy.md \
             app/scripts/record-research-quest-demo.mjs \
             .github/workflows/video-generation.yml
+          git status --short
+          if git diff --cached --quiet; then
+            echo "修复内容已经存在，无需重复提交。"
+            exit 0
+          fi
           git commit -m "完善自适应关卡、自动认证与游戏界面"
+          git pull --rebase origin "${{ github.head_ref }}"
           git push origin "HEAD:${{ github.head_ref }}"
       - name: 根据修复结果结束
         if: always()
