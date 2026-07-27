@@ -7,12 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "fixture:generate": "tsx tests/generate-default-fixture.ts",
+    "fixture:check": "tsx tests/generate-default-fixture.ts --check-only",
     "lint": "npm run typecheck",
     "test": "npm run test:contract && npm run test:e2e",
-    "test:contract": "tsx tests/contract.spec.ts && tsx tests/security-contract.spec.ts && node tests/validate-fixtures.mjs && node ../skills/research-quest/scripts/generate-test-sessions.mjs --check-only",
+    "test:contract": "npm run fixture:check && tsx tests/contract.spec.ts && tsx tests/security-contract.spec.ts && node tests/validate-fixtures.mjs && node ../skills/research-quest/scripts/generate-test-sessions.mjs --check-only",
     "test:e2e": "playwright test",
     "typecheck": "npm run typecheck:core",
-    "typecheck:core": "tsc --noEmit -p tsconfig.json"
+    "typecheck:core": "tsc --noEmit -p tsconfig.json --pretty false"
   },
   "dependencies": {
     "react": "^19.2.8",

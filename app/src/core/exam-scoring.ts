@@ -6,9 +6,45 @@ export interface ExamAnswerScore {
 }
 
 const KEYWORDS: Readonly<Record<string, readonly string[]>> = {
-  "exam-decision-application": ["隔离", "暂停", "记录", "验证", "核验", "quarantine", "pause", "verify"],
-  "exam-concept-understanding": ["candidate", "候选", "确认", "verified", "验证"],
-  "exam-transfer": ["退出", "停止", "条件", "边界", "检查", "exit", "stop", "boundary"],
+  "exam-decision-application": [
+    "局部",
+    "活性位点",
+    "催化",
+    "复核",
+    "排除",
+    "限制结论",
+    "单独报告",
+    "local",
+    "active site",
+    "review",
+    "exclude",
+  ],
+  "exam-concept-understanding": [
+    "plddt",
+    "置信度",
+    "不等于",
+    "不能证明",
+    "催化几何",
+    "配体",
+    "辅因子",
+    "confidence",
+    "ligand",
+    "cofactor",
+  ],
+  "exam-transfer": [
+    "配体",
+    "对接",
+    "实验结构",
+    "基线",
+    "控制",
+    "质子化",
+    "搜索框",
+    "正交",
+    "ligand",
+    "docking",
+    "baseline",
+    "control",
+  ],
 };
 
 /**

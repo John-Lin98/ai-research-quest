@@ -1,134 +1,1436 @@
 {
   "schema_version": "1.0.0",
-  "state_id": "demo-research-quest-v1",
+  "state_id": "demo-real-research-quest-v2",
   "revision": 0,
-  "session": { "started_at": "2026-07-26T00:00:00Z", "reset_count": 0, "last_reset_at": null, "can_restart": true },
+  "session": {
+    "started_at": "2026-07-26T00:00:00.000Z",
+    "reset_count": 0,
+    "last_reset_at": null,
+    "can_restart": true
+  },
   "project_goal": {
-    "summary": "在一个公开、安全的模拟项目中，将零散材料整理为可审查的学习与研究决策计划。",
-    "success_criteria": ["完成两条七关主线", "通过应用与迁移题", "导出可审查的 Codex Goal"],
-    "constraints": ["只使用模拟、改编或脱敏内容", "候选信息不得直接计入正式理解分"],
+    "summary": "设计一个公开可复现的 10 个酶目标试点，评估 AlphaFold2 预测是否足以支持活性位点几何初筛，并生成可直接执行的 Codex Goal。",
+    "success_criteria": [
+      "完成围绕同一真实科研需求的学习认知与科研决策两条七关战役",
+      "冻结公开数据来源、纳入规则、局部区域、指标、Agent 分工和失败退出条件",
+      "至少规划 10 个公开酶目标，并要求不少于 8 个目标形成有效配对分析",
+      "通过应用、概念理解和迁移三类最终考试",
+      "导出包含输入、步骤、指标、验收、根因分析和多 Agent 分工的完整 Codex Goal"
+    ],
+    "constraints": [
+      "只使用公开 AlphaFold DB、PDB 和可追溯活性位点注释",
+      "不包含尚未执行的实验结果，也不把 pLDDT 或结构相似性写成催化、结合或药物发现结论",
+      "所有纳入、排除、映射失败和覆盖率必须可追溯",
+      "关键问题只有在 3–5 轮实质不同的尝试仍失败后才允许退出，并必须生成根因分析"
+    ],
     "status": "draft"
   },
   "mode": "controlled-loop",
   "interaction_mode": "interactive",
   "phase": "prologue",
   "prologue": {
-    "status": "active",
-    "task": "选择本次 Quest 的起点：先练习辨认信息状态，或先练习研究决策。",
-    "estimated_time": { "min": 1, "max": 2, "unit": "minutes" },
-    "question": { "question_id": "prologue-start", "prompt": "你希望先解决哪一种不确定性？", "purpose": "用一个高价值选择决定起始战役。" },
+    "task": "选择真实科研试点首先要服务的下游判断。",
+    "estimated_time": {
+      "min": 1,
+      "max": 2,
+      "unit": "minutes"
+    },
+    "question": {
+      "question_id": "question-prologue-control",
+      "prompt": "这个公开试点最先应该回答哪一个问题？",
+      "purpose": "把 AlphaFold2 的传播话题冻结为可执行的科研需求。"
+    },
     "choices": [
-      { "choice_id": "start-learning", "label": "先练习学习认知", "impact_preview": "先建立 Candidate → Confirmed → Verified 的边界。" },
-      { "choice_id": "start-research", "label": "先练习研究决策", "impact_preview": "先建立目标、证据与退出条件。" }
+      {
+        "choice_id": "choice-prologue-active-site",
+        "label": "能否支持酶活性位点几何初筛",
+        "impact_preview": "后续围绕局部结构、公开参考和实验边界生成 Goal。"
+      },
+      {
+        "choice_id": "choice-prologue-global-fold",
+        "label": "只复述 CASP14 的全局成绩",
+        "impact_preview": "可以解释历史成绩，但不能展示如何解决一个新的科研需求。"
+      }
     ],
+    "goal_preview": "目标预览：把一个真实公开科研需求逐关编译为数据、分析、验收和多 Agent 执行合同。",
+    "cognition_map_delta": {
+      "candidate_added": [],
+      "confirmed_added": [],
+      "verified_added": [],
+      "known_unknowns_added": [
+        "af-real-need"
+      ],
+      "misconceptions_corrected": []
+    },
+    "reward": {
+      "title": "真实科研任务入口",
+      "artifact_ids": [
+        "artifact-prologue-real-task"
+      ]
+    },
+    "status": "active",
     "selected_choice_id": null,
-    "goal_preview": "最终把选择、证据状态和验收条件汇成一份可执行 Goal。",
-    "cognition_map_delta": { "candidate_added": [], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["starting-uncertainty"], "misconceptions_corrected": [] },
-    "reward": { "title": "Quest 地图已展开", "artifact_ids": ["map-overview"] },
     "next_level_id": "level-1"
   },
-  "current_campaign": "learning-cognition",
-  "current_level": "level-1",
+  "current_campaign": null,
+  "current_level": "prologue",
   "overall_progress": 0,
-  "estimated_remaining_time": { "min": 28, "max": 42, "unit": "minutes" },
+  "estimated_remaining_time": {
+    "min": 36,
+    "max": 69,
+    "unit": "minutes"
+  },
   "campaigns": {
     "learning_cognition": {
       "campaign_id": "learning-cognition",
-      "title": "学习认知战役：从线索到可验证理解",
-      "description": "用一个虚构学习主题练习拆解概念、指标、评估与实验设计；所有材料均为模拟内容。",
-      "status": "active",
+      "title": "战役一：理解真实需求与证据边界",
+      "description": "围绕 AlphaFold2 是否足以支持酶活性位点几何初筛，建立任务、公开输入、置信度、局部区域、指标和结论边界。",
+      "status": "available",
       "progress": 0,
-      "provenance": { "data_classification": "simulated", "display_label": "模拟数据", "public_safe": true, "contains_real_research_results": false, "source_traceability": "为公开 Demo 编写的虚构学习情境，不对应真实课程、项目或结果。" },
+      "provenance": {
+        "data_classification": "adapted",
+        "display_label": "改编场景",
+        "public_safe": true,
+        "contains_real_research_results": false,
+        "source_traceability": "基于 AlphaFold2/CASP14 与 AlphaFold DB 公开资料改编的真实科研需求；只设计公开试点，不包含尚未执行的实验结果。"
+      },
       "levels": [
-        { "level_id": "level-1", "order": 1, "title": "概念定位", "status": "active", "task": "把一个宽泛主题改写为可讨论的核心概念。", "knowledge_card": "知识卡：概念不是口号；应说明对象、关系与边界。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 7, "question": { "question_id": "lc-l1-q", "prompt": "先固定哪一项最能减少后续歧义？", "purpose": "建立问题边界。" }, "choices": [{ "choice_id": "lc-l1-boundary", "label": "写出对象与边界", "impact_preview": "后续指标有明确适用范围。" }, { "choice_id": "lc-l1-slogan", "label": "先收集更多口号", "impact_preview": "信息变多，但定义仍可能漂移。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到一条可被证据支持或反驳的概念陈述。", "cognition_map_delta": { "candidate_added": ["lc-concept"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-boundary"], "misconceptions_corrected": ["lc-slogan-is-definition"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l1-quiz"], "accuracy": null }, "reward": { "title": "概念边界卡", "artifact_ids": ["lc-card-1"] }, "next_level_id": "level-2" },
-        { "level_id": "level-2", "order": 2, "title": "指标辨析", "status": "locked", "task": "为概念选择一个可观测且不夸大的指标。", "knowledge_card": "知识卡：指标是观察窗口，不等同于对象本身。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 14, "question": { "question_id": "lc-l2-q", "prompt": "哪种表述更适合作为指标？", "purpose": "区分目标与可观测信号。" }, "choices": [{ "choice_id": "lc-l2-observable", "label": "记录可复核的行为信号", "impact_preview": "可在后续评估中重复检查。" }, { "choice_id": "lc-l2-claim", "label": "直接宣称能力提升", "impact_preview": "缺少测量路径，仍是待验证主张。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "将抽象目标连接到一个明确的观测方式。", "cognition_map_delta": { "candidate_added": ["lc-metric"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-metric-validity"], "misconceptions_corrected": ["lc-metric-equals-goal"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l2-quiz"], "accuracy": null }, "reward": { "title": "指标透镜", "artifact_ids": ["lc-card-2"] }, "next_level_id": "level-3" },
-        { "level_id": "level-3", "order": 3, "title": "证据分层", "status": "locked", "task": "将一条 AI 摘要放入恰当的信息状态。", "knowledge_card": "知识卡：AI 提取可生成 Candidate，不自动成为 Verified。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 21, "question": { "question_id": "lc-l3-q", "prompt": "未经回查的摘要应放在哪里？", "purpose": "练习证据状态的单向升级。" }, "choices": [{ "choice_id": "lc-l3-candidate", "label": "Candidate", "impact_preview": "保留线索，同时要求后续核验。" }, { "choice_id": "lc-l3-verified", "label": "Verified", "impact_preview": "会越过必要的确认与核验步骤。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "形成可审查的 Candidate → Confirmed → Verified 队列。", "cognition_map_delta": { "candidate_added": ["lc-evidence"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-source-check"], "misconceptions_corrected": ["lc-ai-output-is-proof"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l3-quiz"], "accuracy": null }, "reward": { "title": "证据阶梯", "artifact_ids": ["lc-card-3"] }, "next_level_id": "level-4" },
-        { "level_id": "level-4", "order": 4, "title": "评估设计", "status": "locked", "task": "为模拟干预设计一个前后可比较的检查。", "knowledge_card": "知识卡：评估要预先说明比较对象、记录方式与局限。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 28, "question": { "question_id": "lc-l4-q", "prompt": "哪项先写入评估草案？", "purpose": "让比较可复核。" }, "choices": [{ "choice_id": "lc-l4-baseline", "label": "定义比较基线", "impact_preview": "后续变化有参照物。" }, { "choice_id": "lc-l4-polish", "label": "先美化结论", "impact_preview": "不能增加评估有效性。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到一个不把相关性写成因果的评估草案。", "cognition_map_delta": { "candidate_added": ["lc-evaluation"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-confounder"], "misconceptions_corrected": ["lc-post-hoc-baseline"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l4-quiz"], "accuracy": null }, "reward": { "title": "评估蓝图", "artifact_ids": ["lc-card-4"] }, "next_level_id": "level-5" },
-        { "level_id": "level-5", "order": 5, "title": "实验取舍", "status": "locked", "task": "在时间有限的模拟场景中选择信息量更高的小实验。", "knowledge_card": "知识卡：优先做能改变下一步决策的检查。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 35, "question": { "question_id": "lc-l5-q", "prompt": "有限预算应优先支持什么？", "purpose": "学习用信息价值排序。" }, "choices": [{ "choice_id": "lc-l5-decisive", "label": "能改变路线的检查", "impact_preview": "减少无效投入。" }, { "choice_id": "lc-l5-many", "label": "数量最多的低风险任务", "impact_preview": "完成感较强，但决策信息有限。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "把资源投入到能降低关键不确定性的动作。", "cognition_map_delta": { "candidate_added": ["lc-information-value"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-cost-of-check"], "misconceptions_corrected": ["lc-more-tasks-is-progress"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l5-quiz"], "accuracy": null }, "reward": { "title": "取舍罗盘", "artifact_ids": ["lc-card-5"] }, "next_level_id": "level-6" },
-        { "level_id": "level-6", "order": 6, "title": "迁移应用", "status": "locked", "task": "把证据分层方法迁移到一个陌生的学习问题。", "knowledge_card": "知识卡：迁移不是套用答案，而是保留判据、替换情境。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 42, "question": { "question_id": "lc-l6-q", "prompt": "面对新情境，先迁移什么？", "purpose": "检验是否掌握可泛化判据。" }, "choices": [{ "choice_id": "lc-l6-criterion", "label": "迁移证据判据", "impact_preview": "可重新判断新材料的状态。" }, { "choice_id": "lc-l6-answer", "label": "复制旧答案", "impact_preview": "可能忽略新情境的边界。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "证明方法可应用于不同的模拟问题。", "cognition_map_delta": { "candidate_added": ["lc-transfer"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-new-context"], "misconceptions_corrected": ["lc-transfer-is-copy"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l6-quiz"], "accuracy": null }, "reward": { "title": "迁移钥匙", "artifact_ids": ["lc-card-6"] }, "next_level_id": "level-7" },
-        { "level_id": "level-7", "order": 7, "title": "学习闭环", "status": "locked", "task": "用已验证内容和未解决问题生成一份学习行动清单。", "knowledge_card": "知识卡：好的闭环同时陈述已知、未知、下一步和退出条件。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 50, "question": { "question_id": "lc-l7-q", "prompt": "行动清单必须保留哪类项目？", "purpose": "防止把未验证推断写成结论。" }, "choices": [{ "choice_id": "lc-l7-unknowns", "label": "已知未知与下一步", "impact_preview": "让计划保持可审查。" }, { "choice_id": "lc-l7-only-wins", "label": "只保留已完成项", "impact_preview": "会隐藏关键风险。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "为最终应用题准备可追溯的学习记录。", "cognition_map_delta": { "candidate_added": ["lc-closure"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["lc-exit-condition"], "misconceptions_corrected": ["lc-unknowns-are-failures"] }, "quiz": { "status": "not-started", "question_ids": ["lc-l7-quiz"], "accuracy": null }, "reward": { "title": "学习闭环包", "artifact_ids": ["lc-card-7"] }, "next_level_id": "final-exam" }
+        {
+          "level_id": "level-1",
+          "order": 1,
+          "title": "真实需求定位",
+          "task": "把“AlphaFold2 很准”改写为一个能执行、能被证伪的科研需求。",
+          "knowledge_card": "知识卡：本试点只回答 AlphaFold2 预测是否足以支持酶活性位点几何初筛，不直接证明催化、结合或药物发现结论。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-learning-cognition-level-1",
+            "prompt": "第一版公开试点最应该服务哪个下游决定？",
+            "purpose": "把传播话题收敛为真实研究问题。"
+          },
+          "choices": [
+            {
+              "choice_id": "lc-l1-local-site",
+              "label": "判断活性位点几何是否值得继续验证",
+              "impact_preview": "聚焦可公开复现的局部结构比较，并保留后续实验门槛。"
+            },
+            {
+              "choice_id": "lc-l1-function-claim",
+              "label": "直接判断催化或结合功能是否可靠",
+              "impact_preview": "超出单体结构预测能直接支持的证据范围。"
+            }
+          ],
+          "goal_preview": "研究问题：在无实验结构可用的情境下，AlphaFold2 是否足以支持酶活性位点几何的初步判断？",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-need-scope"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-downstream-decision"
+            ],
+            "misconceptions_corrected": [
+              "af-fold-equals-function"
+            ]
+          },
+          "reward": {
+            "title": "真实需求卡",
+            "artifact_ids": [
+              "artifact-learning-cognition-level-1"
+            ]
+          },
+          "next_level_id": "level-2",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-1"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-2",
+          "order": 2,
+          "title": "公开证据三联表",
+          "task": "确定一个目标进入试点前必须具备的公开输入。",
+          "knowledge_card": "知识卡：每个目标至少需要 AlphaFold DB 预测、匹配的实验 PDB 结构，以及可追溯的活性/催化残基注释。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-learning-cognition-level-2",
+            "prompt": "哪种输入合同更适合公开复现？",
+            "purpose": "确保每个样本都有预测、参考与位点定义。"
+          },
+          "choices": [
+            {
+              "choice_id": "lc-l2-public-triplet",
+              "label": "只纳入公开三联数据齐全的目标",
+              "impact_preview": "预测、实验参考和位点注释均可追溯。"
+            },
+            {
+              "choice_id": "lc-l2-partial",
+              "label": "缺少参考结构也先纳入",
+              "impact_preview": "无法计算真实局部误差，只能停留在置信度描述。"
+            }
+          ],
+          "goal_preview": "输入合同：AlphaFold DB 模型 + 匹配 PDB 结构 + 公开活性位点注释。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-public-inputs"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-source-availability"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "公开输入清单",
+            "artifact_ids": [
+              "artifact-learning-cognition-level-2"
+            ]
+          },
+          "next_level_id": "level-3",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-2"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-3",
+          "order": 3,
+          "title": "置信度不等于正确性",
+          "task": "区分 pLDDT 的含义与本试点真正要测量的局部误差。",
+          "knowledge_card": "知识卡：pLDDT 是逐残基局部置信度；高 pLDDT 不能自动证明活性位点化学构型、配体位置或生物功能正确。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-learning-cognition-level-3",
+            "prompt": "看到活性位点残基 pLDDT > 90，下一步最合理的判断是什么？",
+            "purpose": "避免把模型自信当作实验真值。"
+          },
+          "choices": [
+            {
+              "choice_id": "lc-l3-compare-reference",
+              "label": "与实验结构的局部几何做配对比较",
+              "impact_preview": "把模型置信度与可观测局部误差放在同一张表中。"
+            },
+            {
+              "choice_id": "lc-l3-trust-score",
+              "label": "直接认定活性位点准确",
+              "impact_preview": "把内部置信度误写成外部验证结论。"
+            }
+          ],
+          "goal_preview": "同时报告 pLDDT 与实验参考的局部误差，不用单一置信度替代验证。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-confidence-boundary"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-plddt-calibration"
+            ],
+            "misconceptions_corrected": [
+              "af-confidence-is-truth"
+            ]
+          },
+          "reward": {
+            "title": "置信度边界卡",
+            "artifact_ids": [
+              "artifact-learning-cognition-level-3"
+            ]
+          },
+          "next_level_id": "level-4",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-3"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-4",
+          "order": 4,
+          "title": "局部区域定义",
+          "task": "把“活性位点”转成可复现的残基集合。",
+          "knowledge_card": "知识卡：使用公开注释的催化残基作为锚点，并在实验结构中定义固定邻域；区域规则必须在分析前冻结。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-learning-cognition-level-4",
+            "prompt": "第一版局部比较应该如何定义区域？",
+            "purpose": "避免事后挑选表现最好的残基。"
+          },
+          "choices": [
+            {
+              "choice_id": "lc-l4-fixed-neighborhood",
+              "label": "催化残基加固定 6 Å 邻域",
+              "impact_preview": "每个目标使用同一、可复现的局部区域规则。"
+            },
+            {
+              "choice_id": "lc-l4-best-looking",
+              "label": "分析后挑选最接近的残基",
+              "impact_preview": "会引入事后选择偏差。"
+            }
+          ],
+          "goal_preview": "区域合同：公开催化残基及其在实验结构中的固定 6 Å 邻域。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-site-definition"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-residue-mapping"
+            ],
+            "misconceptions_corrected": [
+              "af-pick-best-residues"
+            ]
+          },
+          "reward": {
+            "title": "位点区域合同",
+            "artifact_ids": [
+              "artifact-learning-cognition-level-4"
+            ]
+          },
+          "next_level_id": "level-5",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-4"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-5",
+          "order": 5,
+          "title": "指标与问题匹配",
+          "task": "选择能回答局部几何需求、而不是只展示全局折叠的指标。",
+          "knowledge_card": "知识卡：全局 TM-score 或 RMSD 可以描述整体折叠，但活性位点任务还需要催化残基和局部邻域的配对误差。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-learning-cognition-level-5",
+            "prompt": "哪组指标最能回答本试点问题？",
+            "purpose": "让指标直接对应真实下游需求。"
+          },
+          "choices": [
+            {
+              "choice_id": "lc-l5-local-global",
+              "label": "全局结构 + 局部位点误差 + pLDDT 分层",
+              "impact_preview": "能区分“整体正确但局部不适用”的目标。"
+            },
+            {
+              "choice_id": "lc-l5-global-only",
+              "label": "只报告全局平均分",
+              "impact_preview": "可能掩盖活性位点局部错误。"
+            }
+          ],
+          "goal_preview": "指标：全局 TM-score/Cα RMSD、催化残基与邻域局部 RMSD、pLDDT 分层和有效覆盖率。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-metric-contract"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-sidechain-metric"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "指标组合卡",
+            "artifact_ids": [
+              "artifact-learning-cognition-level-5"
+            ]
+          },
+          "next_level_id": "level-6",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-5"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-6",
+          "order": 6,
+          "title": "覆盖与选择偏差",
+          "task": "决定如何处理无法匹配、低置信度或结构状态不同的目标。",
+          "knowledge_card": "知识卡：真实试点必须报告排除样本和失败原因；只保留高置信度、易对齐目标会夸大适用性。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-learning-cognition-level-6",
+            "prompt": "遇到无法稳定映射的目标时怎么办？",
+            "purpose": "把失败样本也变成结论边界。"
+          },
+          "choices": [
+            {
+              "choice_id": "lc-l6-report-failures",
+              "label": "保留失败码并报告覆盖率",
+              "impact_preview": "结果同时展示成功样本与方法适用边界。"
+            },
+            {
+              "choice_id": "lc-l6-drop-silently",
+              "label": "静默删除失败目标",
+              "impact_preview": "无法判断结果是否来自选择偏差。"
+            }
+          ],
+          "goal_preview": "所有纳入、排除和映射失败均进入 manifest 与覆盖率报告。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-coverage-reporting"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-exclusion-bias"
+            ],
+            "misconceptions_corrected": [
+              "af-failures-are-noise"
+            ]
+          },
+          "reward": {
+            "title": "覆盖率收据",
+            "artifact_ids": [
+              "artifact-learning-cognition-level-6"
+            ]
+          },
+          "next_level_id": "level-7",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-6"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-7",
+          "order": 7,
+          "title": "可写结论边界",
+          "task": "冻结试点完成后允许写出的最强结论。",
+          "knowledge_card": "知识卡：本试点最多评估活性位点几何初筛的适用性；它不直接验证催化活性、配体结合或药物发现效果。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-learning-cognition-level-7",
+            "prompt": "哪种结论与本试点证据相匹配？",
+            "purpose": "防止真实任务在传播时重新变成口号。"
+          },
+          "choices": [
+            {
+              "choice_id": "lc-l7-triage-claim",
+              "label": "说明哪些局部结构适合或不适合继续分析",
+              "impact_preview": "结论限定在公开试点、位点几何和覆盖范围内。"
+            },
+            {
+              "choice_id": "lc-l7-function-claim",
+              "label": "宣称预测证明酶功能正确",
+              "impact_preview": "超出结构比较可以支持的范围。"
+            }
+          ],
+          "goal_preview": "结论边界：只讨论公开试点中的局部几何适用性和失败模式。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-claim-boundary"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-external-generalization"
+            ],
+            "misconceptions_corrected": [
+              "af-geometry-proves-function"
+            ]
+          },
+          "reward": {
+            "title": "结论边界章",
+            "artifact_ids": [
+              "artifact-learning-cognition-level-7"
+            ]
+          },
+          "next_level_id": "final-exam",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-7"
+            ],
+            "accuracy": null
+          }
+        }
       ]
     },
     "research_decision": {
       "campaign_id": "research-decision",
-      "title": "科研决策战役：从目标到安全退出",
-      "description": "在一个改编且脱敏的虚构研究协作情境中练习目标、数据边界、基线、验收与退出条件。",
-      "status": "available",
+      "title": "战役二：冻结公开试点与执行合同",
+      "description": "把同一需求转化为 10 个公开酶目标的可复现试点，冻结纳入规则、结构映射、指标、Agent 分工、验收和失败退出。",
+      "status": "locked",
       "progress": 0,
-      "provenance": { "data_classification": "deidentified", "display_label": "脱敏场景", "public_safe": true, "contains_real_research_results": false, "source_traceability": "为公开 Demo 编写的改编与脱敏情境；不含真实项目身份、数据、代码或结论。" },
+      "provenance": {
+        "data_classification": "adapted",
+        "display_label": "改编场景",
+        "public_safe": true,
+        "contains_real_research_results": false,
+        "source_traceability": "基于 AlphaFold2/CASP14 与 AlphaFold DB 公开资料改编的真实科研需求；只设计公开试点，不包含尚未执行的实验结果。"
+      },
       "levels": [
-        { "level_id": "level-1", "order": 1, "title": "目标冻结", "status": "available", "task": "把一个模糊研究愿望改写为可验收目标。", "knowledge_card": "知识卡：目标应包含产物、边界和验收信号。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 7, "question": { "question_id": "rd-l1-q", "prompt": "目标草案优先补全什么？", "purpose": "防止范围持续扩张。" }, "choices": [{ "choice_id": "rd-l1-acceptance", "label": "明确验收信号", "impact_preview": "后续决策可回到同一标准。" }, { "choice_id": "rd-l1-more-features", "label": "增加更多功能", "impact_preview": "范围会扩大，验收仍不清晰。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到一个能判断完成与否的研究目标。", "cognition_map_delta": { "candidate_added": ["rd-goal"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-acceptance"], "misconceptions_corrected": ["rd-scope-is-goal"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l1-quiz"], "accuracy": null }, "reward": { "title": "目标冻结卡", "artifact_ids": ["rd-card-1"] }, "next_level_id": "level-2" },
-        { "level_id": "level-2", "order": 2, "title": "数据边界", "status": "locked", "task": "识别哪些输入可以进入公开模拟流程。", "knowledge_card": "知识卡：可读取不等于可公开、可训练或可发布。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 14, "question": { "question_id": "rd-l2-q", "prompt": "发现来源不明的材料时怎么办？", "purpose": "建立 fail-closed 数据边界。" }, "choices": [{ "choice_id": "rd-l2-quarantine", "label": "隔离并记录待核验", "impact_preview": "不将来源不明材料当作合格输入。" }, { "choice_id": "rd-l2-use", "label": "先用再补记录", "impact_preview": "会破坏可追溯性。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "每项输入都拥有清晰的许可与来源状态。", "cognition_map_delta": { "candidate_added": ["rd-data-boundary"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-provenance"], "misconceptions_corrected": ["rd-readable-means-authorized"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l2-quiz"], "accuracy": null }, "reward": { "title": "边界护栏", "artifact_ids": ["rd-card-2"] }, "next_level_id": "level-3" },
-        { "level_id": "level-3", "order": 3, "title": "基线对照", "status": "locked", "task": "为一个模拟方案指定公平、可复现的比较对象。", "knowledge_card": "知识卡：可运行的实现不等于可比较的基线。", "estimated_time": { "min": 3, "max": 5, "unit": "minutes" }, "progress": 21, "question": { "question_id": "rd-l3-q", "prompt": "选择基线时首先检查什么？", "purpose": "避免不对称比较。" }, "choices": [{ "choice_id": "rd-l3-contract", "label": "检查数据与评测契约一致性", "impact_preview": "比较前提可被复查。" }, { "choice_id": "rd-l3-best-number", "label": "挑选最高历史数字", "impact_preview": "可能跨越不同设定。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "比较限制和结论边界均被明确记录。", "cognition_map_delta": { "candidate_added": ["rd-baseline"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-parity"], "misconceptions_corrected": ["rd-green-test-is-parity"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l3-quiz"], "accuracy": null }, "reward": { "title": "基线标尺", "artifact_ids": ["rd-card-3"] }, "next_level_id": "level-4" },
-        { "level_id": "level-4", "order": 4, "title": "指标与收据", "status": "locked", "task": "把一次模拟评估的证据与结论拆开记录。", "knowledge_card": "知识卡：收据证明流程发生过，不自动证明科学或产品效果。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 28, "question": { "question_id": "rd-l4-q", "prompt": "一份绿色测试收据能证明什么？", "purpose": "区分工程检查与性能主张。" }, "choices": [{ "choice_id": "rd-l4-process", "label": "证明该检查通过", "impact_preview": "结论保持在收据覆盖范围内。" }, { "choice_id": "rd-l4-performance", "label": "证明方案效果更好", "impact_preview": "会超出收据证据范围。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "让每条主张都能追溯到恰当的证据。", "cognition_map_delta": { "candidate_added": ["rd-receipt"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-claim-boundary"], "misconceptions_corrected": ["rd-pass-is-performance"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l4-quiz"], "accuracy": null }, "reward": { "title": "证据收据夹", "artifact_ids": ["rd-card-4"] }, "next_level_id": "level-5" },
-        { "level_id": "level-5", "order": 5, "title": "多 Agent 分工", "status": "locked", "task": "在模拟协作中分离计划、执行与独立审查职责。", "knowledge_card": "知识卡：独立审查不能由同一实现角色自证完成。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 35, "question": { "question_id": "rd-l5-q", "prompt": "哪项分工最能提高可审查性？", "purpose": "避免角色自审。" }, "choices": [{ "choice_id": "rd-l5-separate-review", "label": "分离实施与审查", "impact_preview": "缺陷检查拥有独立视角。" }, { "choice_id": "rd-l5-single-agent", "label": "同一角色完成并自审", "impact_preview": "速度可能更快，独立性降低。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "让职责、交接物和审查边界可见。", "cognition_map_delta": { "candidate_added": ["rd-roles"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-review-independence"], "misconceptions_corrected": ["rd-self-review-is-independent"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l5-quiz"], "accuracy": null }, "reward": { "title": "协作角色图", "artifact_ids": ["rd-card-5"] }, "next_level_id": "level-6" },
-        { "level_id": "level-6", "order": 6, "title": "安全发布", "status": "locked", "task": "在发布前检查示例是否包含不应公开的线索。", "knowledge_card": "知识卡：脱敏不是删掉名字；还要移除路径、密钥、私有资产与未公开结论。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 42, "question": { "question_id": "rd-l6-q", "prompt": "发现绝对环境路径时应如何处理？", "purpose": "练习公开发布前的隐私审查。" }, "choices": [{ "choice_id": "rd-l6-remove", "label": "移除并用通用描述替代", "impact_preview": "保留教学意义，不暴露环境细节。" }, { "choice_id": "rd-l6-keep", "label": "保留以便复现", "impact_preview": "可能泄露私有环境线索。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "得到可公开、可审查但不含私有资产的演示包。", "cognition_map_delta": { "candidate_added": ["rd-sanitization"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-release-review"], "misconceptions_corrected": ["rd-path-is-harmless"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l6-quiz"], "accuracy": null }, "reward": { "title": "发布检查单", "artifact_ids": ["rd-card-6"] }, "next_level_id": "level-7" },
-        { "level_id": "level-7", "order": 7, "title": "退出条件", "status": "locked", "task": "为模拟路线写下继续、暂停或退出的可观察条件。", "knowledge_card": "知识卡：提前写退出条件能避免把投入沉没成本误作证据。", "estimated_time": { "min": 4, "max": 6, "unit": "minutes" }, "progress": 50, "question": { "question_id": "rd-l7-q", "prompt": "当关键资格条件未闭合时，下一步是什么？", "purpose": "练习 fail-closed 决策。" }, "choices": [{ "choice_id": "rd-l7-stop", "label": "暂停并记录缺口", "impact_preview": "避免越过未满足的门槛。" }, { "choice_id": "rd-l7-escalate-run", "label": "继续昂贵执行", "impact_preview": "会放大未解决风险。" }], "selected_choice_id": null, "choice_impact": null, "goal_preview": "将行动授权与退出条件一起写入 Goal。", "cognition_map_delta": { "candidate_added": ["rd-exit"], "confirmed_added": [], "verified_added": [], "known_unknowns_added": ["rd-authorization"], "misconceptions_corrected": ["rd-effort-justifies-run"] }, "quiz": { "status": "not-started", "question_ids": ["rd-l7-quiz"], "accuracy": null }, "reward": { "title": "安全退出章", "artifact_ids": ["rd-card-7"] }, "next_level_id": "final-exam" }
+        {
+          "level_id": "level-1",
+          "order": 1,
+          "title": "试点规模",
+          "task": "冻结首轮真实公开试点的规模和完成信号。",
+          "knowledge_card": "知识卡：首轮目标是验证流程是否可复现，而不是追求大而全；建议选择 10 个公开酶目标，并要求至少 8 个完成有效配对分析。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-research-decision-level-1",
+            "prompt": "第一版试点采用哪种规模更容易形成可信闭环？",
+            "purpose": "在可执行性与代表性之间做出明确取舍。"
+          },
+          "choices": [
+            {
+              "choice_id": "rd-l1-ten-targets",
+              "label": "10 个目标，至少 8 个有效完成",
+              "impact_preview": "规模足以暴露映射问题，又能在短周期内完成复核。"
+            },
+            {
+              "choice_id": "rd-l1-hundreds",
+              "label": "直接扩展到数百个目标",
+              "impact_preview": "数据清洗和失败诊断会掩盖核心方法验证。"
+            }
+          ],
+          "goal_preview": "试点规模：10 个公开酶目标，至少 8 个形成有效结果。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-pilot-size"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-target-availability"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "试点规模卡",
+            "artifact_ids": [
+              "artifact-research-decision-level-1"
+            ]
+          },
+          "next_level_id": "level-2",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-1"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-2",
+          "order": 2,
+          "title": "纳入与排除",
+          "task": "定义一个目标进入 benchmark 的最低资格。",
+          "knowledge_card": "知识卡：优先纳入单体酶、序列可精确映射、存在实验结构且有公开催化残基注释的目标；所有排除原因必须记录。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-research-decision-level-2",
+            "prompt": "哪种纳入规则能保证结果可解释？",
+            "purpose": "避免把不同序列、构象或无注释目标混在一起。"
+          },
+          "choices": [
+            {
+              "choice_id": "rd-l2-strict-contract",
+              "label": "冻结序列、结构和位点三项资格",
+              "impact_preview": "每个目标都能回答同一个局部几何问题。"
+            },
+            {
+              "choice_id": "rd-l2-any-protein",
+              "label": "只要有 AlphaFold 模型就纳入",
+              "impact_preview": "缺少实验参考或位点定义时无法完成主分析。"
+            }
+          ],
+          "goal_preview": "纳入合同：公开单体酶、可映射序列、匹配 PDB、可追溯催化残基注释。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-inclusion-contract"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-conformation-state"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "纳入排除表",
+            "artifact_ids": [
+              "artifact-research-decision-level-2"
+            ]
+          },
+          "next_level_id": "level-3",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-2"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-3",
+          "order": 3,
+          "title": "结构映射与对齐",
+          "task": "确定 AlphaFold 模型与 PDB 参考之间的序列映射和对齐方式。",
+          "knowledge_card": "知识卡：必须记录链、残基编号、缺失残基、覆盖率和构象差异；对齐失败不能静默修补。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-research-decision-level-3",
+            "prompt": "结构比较前必须先冻结哪项合同？",
+            "purpose": "让局部误差来自真实对应残基，而不是编号错位。"
+          },
+          "choices": [
+            {
+              "choice_id": "rd-l3-sequence-map",
+              "label": "先做序列映射和覆盖率审计",
+              "impact_preview": "只有一一对应残基进入结构误差计算。"
+            },
+            {
+              "choice_id": "rd-l3-coordinate-only",
+              "label": "只按坐标最近邻直接匹配",
+              "impact_preview": "可能把缺失残基和编号差异误当成结构误差。"
+            }
+          ],
+          "goal_preview": "对齐合同：序列映射、链选择、覆盖率、缺失残基和结构状态均可追溯。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-alignment-contract"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-missing-residues"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "映射审计表",
+            "artifact_ids": [
+              "artifact-research-decision-level-3"
+            ]
+          },
+          "next_level_id": "level-4",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-3"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-4",
+          "order": 4,
+          "title": "局部几何计算",
+          "task": "冻结活性位点及其邻域的具体计算方式。",
+          "knowledge_card": "知识卡：在全局对齐后，分别计算催化残基和固定邻域的 Cα/主链误差；侧链结果单列并说明配体、辅因子和构象限制。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-research-decision-level-4",
+            "prompt": "主分析应该以哪种局部结果为核心？",
+            "purpose": "获得可重复、不过度依赖侧链构象的首轮指标。"
+          },
+          "choices": [
+            {
+              "choice_id": "rd-l4-backbone-first",
+              "label": "催化残基与 6 Å 邻域的主链误差",
+              "impact_preview": "首轮结果更稳定，侧链和配体问题作为补充分析。"
+            },
+            {
+              "choice_id": "rd-l4-docking-score",
+              "label": "直接用对接分数作为主指标",
+              "impact_preview": "会引入配体、质子化、口袋准备和搜索框等额外变量。"
+            }
+          ],
+          "goal_preview": "主分析：全局对齐后计算催化残基和固定邻域的局部主链误差。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-local-analysis"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-sidechain-state"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "局部分析协议",
+            "artifact_ids": [
+              "artifact-research-decision-level-4"
+            ]
+          },
+          "next_level_id": "level-5",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-4"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-5",
+          "order": 5,
+          "title": "指标与报告",
+          "task": "冻结输出表格、图和失败分析。",
+          "knowledge_card": "知识卡：结果应同时报告全局结构、局部位点、pLDDT 分层、有效覆盖和失败码，避免用单个平均值讲完整故事。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-research-decision-level-5",
+            "prompt": "最终结果包必须包含什么？",
+            "purpose": "让结论可复查并能解释失败样本。"
+          },
+          "choices": [
+            {
+              "choice_id": "rd-l5-full-report",
+              "label": "主表、校准图、逐目标 QA 和失败清单",
+              "impact_preview": "读者能追溯每个目标为何成功、失败或被排除。"
+            },
+            {
+              "choice_id": "rd-l5-one-number",
+              "label": "只发布一个总体平均值",
+              "impact_preview": "无法判断覆盖率、异常值和局部失败。"
+            }
+          ],
+          "goal_preview": "输出：manifest、主结果表、pLDDT-局部误差图、逐目标 QA、失败码和结论边界。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-report-contract"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-uncertainty-interval"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "结果包清单",
+            "artifact_ids": [
+              "artifact-research-decision-level-5"
+            ]
+          },
+          "next_level_id": "level-6",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-5"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-6",
+          "order": 6,
+          "title": "多 Agent 执行",
+          "task": "把公开数据整理、分析实现和独立复审拆给不同角色。",
+          "knowledge_card": "知识卡：Data Agent 维护来源与映射，Analysis Agent 实现计算，Reviewer 从 manifest 和结果重新核验；三者共享同一合同但不能互相自证。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-research-decision-level-6",
+            "prompt": "哪种分工最能减少同源错误？",
+            "purpose": "把科研计划直接转换为可执行团队结构。"
+          },
+          "choices": [
+            {
+              "choice_id": "rd-l6-separated-agents",
+              "label": "数据、分析和复审角色分离",
+              "impact_preview": "每条结果都有独立来源检查和实现复验。"
+            },
+            {
+              "choice_id": "rd-l6-one-agent",
+              "label": "同一 Agent 找数据、计算并自审",
+              "impact_preview": "速度更快，但映射错误和结论偏差更难发现。"
+            }
+          ],
+          "goal_preview": "Agent 结构：数据与来源、分析实现、独立复审、总控集成四类职责。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-agent-plan"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-review-disagreement"
+            ],
+            "misconceptions_corrected": []
+          },
+          "reward": {
+            "title": "Agent 任务图",
+            "artifact_ids": [
+              "artifact-research-decision-level-6"
+            ]
+          },
+          "next_level_id": "level-7",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-6"
+            ],
+            "accuracy": null
+          }
+        },
+        {
+          "level_id": "level-7",
+          "order": 7,
+          "title": "验收与失败退出",
+          "task": "冻结什么算完成，以及流程连续失败时如何退出。",
+          "knowledge_card": "知识卡：至少 8/10 个目标完成有效分析；若同一映射或数据问题经过 3–5 轮实质不同的修复仍失败，必须输出根因分析，而不是无限重试。",
+          "estimated_time": {
+            "min": 3,
+            "max": 6,
+            "unit": "minutes"
+          },
+          "question": {
+            "question_id": "question-research-decision-level-7",
+            "prompt": "哪种退出规则更适合真实科研试点？",
+            "purpose": "让自动执行既不轻易停，也不无限消耗资源。"
+          },
+          "choices": [
+            {
+              "choice_id": "rd-l7-root-cause",
+              "label": "3–5 轮不同尝试后输出根因分析",
+              "impact_preview": "保留失败证据、最大可交付子集和恢复条件。"
+            },
+            {
+              "choice_id": "rd-l7-first-failure",
+              "label": "第一次失败就停止",
+              "impact_preview": "无法区分暂时工程问题与真实不可行条件。"
+            }
+          ],
+          "goal_preview": "验收：至少 8/10 个目标有效；关键问题 3–5 轮失败后生成根因报告并安全退出。",
+          "cognition_map_delta": {
+            "candidate_added": [
+              "af-acceptance-exit"
+            ],
+            "confirmed_added": [],
+            "verified_added": [],
+            "known_unknowns_added": [
+              "af-minimum-valid-count"
+            ],
+            "misconceptions_corrected": [
+              "af-first-failure-stop"
+            ]
+          },
+          "reward": {
+            "title": "试点执行合同",
+            "artifact_ids": [
+              "artifact-research-decision-level-7"
+            ]
+          },
+          "next_level_id": "final-exam",
+          "status": "locked",
+          "progress": 0,
+          "selected_choice_id": null,
+          "choice_impact": null,
+          "quiz": {
+            "status": "not-started",
+            "question_ids": [
+              "quiz-level-7"
+            ],
+            "accuracy": null
+          }
+        }
       ]
     }
   },
   "player_choices": [],
-  "goal_versions": [{ "version": 1, "status": "draft", "goal_text": "在公开的模拟情境中完成双战役，输出仅含已验证内容、未决问题和下一步检查的 Codex Goal。", "source_decision_ids": [], "created_at": "2026-07-26T00:00:00Z" }],
-  "known_knowns": { "candidate": [], "confirmed": [], "verified": [] },
-  "known_unknowns": [{ "item_id": "demo-open-question", "statement": "该 Quest 是否提升长期理解仍待用户研究验证。", "campaign_id": "learning-cognition", "introduced_level_id": "level-1", "status": "open" }],
-  "unknown_knowns": [],
-  "unknown_unknowns": [],
+  "goal_versions": [
+    {
+      "version": 1,
+      "status": "draft",
+      "goal_text": "目标预览：把一个真实公开科研需求逐关编译为数据、分析、验收和多 Agent 执行合同。",
+      "source_decision_ids": [],
+      "created_at": "2026-07-26T00:00:00.000Z"
+    }
+  ],
+  "known_knowns": {
+    "candidate": [],
+    "confirmed": [],
+    "verified": []
+  },
+  "known_unknowns": [
+    {
+      "item_id": "af-core-known-unknown",
+      "statement": "AlphaFold2 预测是否足以支持酶活性位点几何初筛，仍需要公开试点回答。",
+      "campaign_id": "learning-cognition",
+      "introduced_level_id": "level-1",
+      "status": "open"
+    }
+  ],
+  "unknown_knowns": [
+    {
+      "item_id": "af-user-implicit-knowledge",
+      "statement": "用户可能已经具备局部结构比较、活性位点判断或失败分析经验，但尚未明确表达其判据与偏好。",
+      "campaign_id": "learning-cognition",
+      "introduced_level_id": "level-1",
+      "status": "under-investigation"
+    }
+  ],
+  "unknown_unknowns": [
+    {
+      "item_id": "af-hidden-mapping-risk",
+      "statement": "序列、链、残基编号、缺失区域和构象状态的组合冲突，可能在真实映射中暴露新的失败类型。",
+      "campaign_id": "research-decision",
+      "introduced_level_id": "level-2",
+      "status": "open"
+    }
+  ],
   "prompt_clues": [
-    { "clue_id": "clue-single-question", "clue_type": "workflow-clue", "text": "每关只提出一个会改变后续路径的高价值问题。", "source_kind": "sanitized-context", "evidence_status": "confirmed" },
-    { "clue_id": "clue-verified-score", "clue_type": "acceptance-clue", "text": "只有 Verified 信息计入正式理解分。", "source_kind": "public-context", "evidence_status": "verified" },
-    { "clue_id": "clue-demo-simulation", "clue_type": "constraint-clue", "text": "公开示例必须是模拟、改编或脱敏内容。", "source_kind": "public-context", "evidence_status": "verified" }
+    {
+      "clue_id": "clue-real-need",
+      "clue_type": "goal-clue",
+      "text": "Demo 必须从真实科研需求出发，并最终生成能执行该需求的 Codex Goal。",
+      "source_kind": "public-context",
+      "evidence_status": "verified"
+    },
+    {
+      "clue_id": "clue-public-sources",
+      "clue_type": "constraint-clue",
+      "text": "试点只使用 AlphaFold DB、PDB 与可追溯公开注释，不包含未公开结果。",
+      "source_kind": "public-context",
+      "evidence_status": "verified"
+    },
+    {
+      "clue_id": "clue-controlled-loop",
+      "clue_type": "workflow-clue",
+      "text": "一次只提出一个会改变后续方案的高价值问题。",
+      "source_kind": "public-context",
+      "evidence_status": "verified"
+    },
+    {
+      "clue_id": "clue-root-cause-exit",
+      "clue_type": "failure-clue",
+      "text": "同一关键问题经过 3–5 轮不同尝试仍失败时，输出根因分析再退出。",
+      "source_kind": "public-context",
+      "evidence_status": "verified"
+    }
   ],
-  "artifacts": [
-    { "artifact_id": "map-overview", "artifact_type": "cognition-map", "title": "Quest 世界地图", "uri": "#map-overview", "public_safe": true },
-    { "artifact_id": "lc-card-1", "artifact_type": "knowledge-card", "title": "概念边界卡", "uri": "#lc-card-1", "public_safe": true },
-    { "artifact_id": "lc-card-2", "artifact_type": "knowledge-card", "title": "指标透镜", "uri": "#lc-card-2", "public_safe": true },
-    { "artifact_id": "lc-card-3", "artifact_type": "knowledge-card", "title": "证据阶梯", "uri": "#lc-card-3", "public_safe": true },
-    { "artifact_id": "lc-card-4", "artifact_type": "knowledge-card", "title": "评估蓝图", "uri": "#lc-card-4", "public_safe": true },
-    { "artifact_id": "lc-card-5", "artifact_type": "knowledge-card", "title": "取舍罗盘", "uri": "#lc-card-5", "public_safe": true },
-    { "artifact_id": "lc-card-6", "artifact_type": "knowledge-card", "title": "迁移钥匙", "uri": "#lc-card-6", "public_safe": true },
-    { "artifact_id": "lc-card-7", "artifact_type": "knowledge-card", "title": "学习闭环包", "uri": "#lc-card-7", "public_safe": true },
-    { "artifact_id": "rd-card-1", "artifact_type": "knowledge-card", "title": "目标冻结卡", "uri": "#rd-card-1", "public_safe": true },
-    { "artifact_id": "rd-card-2", "artifact_type": "knowledge-card", "title": "边界护栏", "uri": "#rd-card-2", "public_safe": true },
-    { "artifact_id": "rd-card-3", "artifact_type": "knowledge-card", "title": "基线标尺", "uri": "#rd-card-3", "public_safe": true },
-    { "artifact_id": "rd-card-4", "artifact_type": "knowledge-card", "title": "证据收据夹", "uri": "#rd-card-4", "public_safe": true },
-    { "artifact_id": "rd-card-5", "artifact_type": "knowledge-card", "title": "协作角色图", "uri": "#rd-card-5", "public_safe": true },
-    { "artifact_id": "rd-card-6", "artifact_type": "knowledge-card", "title": "发布检查单", "uri": "#rd-card-6", "public_safe": true },
-    { "artifact_id": "rd-card-7", "artifact_type": "knowledge-card", "title": "安全退出章", "uri": "#rd-card-7", "public_safe": true }
-  ],
+  "artifacts": [],
   "decisions": [],
-  "metrics": { "new_verified_known_knowns": 0, "corrected_misconceptions": 0, "new_known_unknowns": 1, "applied_knowledge_count": 0, "level_quiz_accuracy": null, "final_exam_accuracy": null, "transfer_task_score": null, "goal_revision_count": 0, "formal_understanding_score": null, "verified_only_for_knowledge_count": true },
+  "metrics": {
+    "new_verified_known_knowns": 0,
+    "corrected_misconceptions": 0,
+    "new_known_unknowns": 1,
+    "applied_knowledge_count": 0,
+    "level_quiz_accuracy": null,
+    "final_exam_accuracy": null,
+    "transfer_task_score": null,
+    "goal_revision_count": 0,
+    "formal_understanding_score": 0,
+    "verified_only_for_knowledge_count": true
+  },
   "exam": {
-    "status": "not-started", "pass_threshold": 80,
-    "weights": { "decision_application": 60, "concept_understanding": 20, "transfer": 20, "weight_total": 100 },
+    "status": "not-started",
+    "pass_threshold": 80,
+    "weights": {
+      "decision_application": 60,
+      "concept_understanding": 20,
+      "transfer": 20,
+      "weight_total": 100
+    },
     "questions": [
-      { "question_id": "exam-application", "category": "decision-application", "prompt": "面对来源不明的模拟输入，写出一个不越权的下一步。", "question_type": "application", "answer": null, "is_correct": null, "score": null },
-      { "question_id": "exam-concept", "category": "concept-understanding", "prompt": "Candidate 为什么不能直接计入正式理解分？", "question_type": "short-answer", "answer": null, "is_correct": null, "score": null },
-      { "question_id": "exam-transfer", "category": "transfer", "prompt": "把退出条件的原则迁移到一个新的学习或软件任务。", "question_type": "application", "answer": null, "is_correct": null, "score": null }
-    ], "score": null, "passed": null, "completed_at": null
+      {
+        "question_id": "exam-decision-application",
+        "category": "decision-application",
+        "prompt": "一个目标的全局结构很接近实验参考，但催化残基邻域误差明显偏大。你会如何处理这个目标和结论？",
+        "question_type": "application",
+        "answer": null,
+        "is_correct": null,
+        "score": null
+      },
+      {
+        "question_id": "exam-concept-understanding",
+        "category": "concept-understanding",
+        "prompt": "为什么活性位点残基 pLDDT 很高，仍不能直接证明催化几何或配体结合正确？",
+        "question_type": "short-answer",
+        "answer": null,
+        "is_correct": null,
+        "score": null
+      },
+      {
+        "question_id": "exam-transfer",
+        "category": "transfer",
+        "prompt": "如果把本试点迁移到分子对接任务，至少需要新增哪两类证据或控制？",
+        "question_type": "application",
+        "answer": null,
+        "is_correct": null,
+        "score": null
+      }
+    ],
+    "score": null,
+    "passed": null,
+    "completed_at": null
   },
   "auto_demo": {
-    "enabled": true, "duration_seconds": 75, "status": "idle", "deterministic_seed": 20260726, "loop": false, "current_step": 0,
+    "enabled": false,
+    "duration_seconds": 75,
+    "status": "idle",
+    "deterministic_seed": 20260726,
+    "loop": false,
+    "current_step": 0,
     "steps": [
-      { "step_id": "demo-1", "at_second": 0, "action": "open-campaign", "target": "learning-cognition" },
-      { "step_id": "demo-2", "at_second": 8, "action": "open-level", "target": "learning-cognition/level-1" },
-      { "step_id": "demo-3", "at_second": 16, "action": "select-choice", "target": "lc-l1-boundary" },
-      { "step_id": "demo-4", "at_second": 24, "action": "open-campaign", "target": "research-decision" },
-      { "step_id": "demo-5", "at_second": 32, "action": "select-choice", "target": "rd-l2-quarantine" },
-      { "step_id": "demo-6", "at_second": 40, "action": "verify-knowledge", "target": "verified-only-score" },
-      { "step_id": "demo-7", "at_second": 48, "action": "answer-exam", "target": "exam-transfer" },
-      { "step_id": "demo-8", "at_second": 54, "action": "export-goal", "target": "research-quest-goal.md" },
-      { "step_id": "demo-9", "at_second": 60, "action": "complete", "target": "demo-complete" }
+      {
+        "step_id": "demo-prologue",
+        "at_second": 0,
+        "action": "select-choice",
+        "target": "prologue/choice-prologue-active-site"
+      },
+      {
+        "step_id": "demo-select-learning-cognition-level-1",
+        "at_second": 1.5,
+        "action": "select-choice",
+        "target": "learning-cognition/level-1/lc-l1-local-site"
+      },
+      {
+        "step_id": "demo-confirm-learning-cognition-level-1",
+        "at_second": 3,
+        "action": "confirm-knowledge",
+        "target": "af-need-scope"
+      },
+      {
+        "step_id": "demo-verify-learning-cognition-level-1",
+        "at_second": 4.5,
+        "action": "verify-knowledge",
+        "target": "af-need-scope"
+      },
+      {
+        "step_id": "demo-select-learning-cognition-level-2",
+        "at_second": 6,
+        "action": "select-choice",
+        "target": "learning-cognition/level-2/lc-l2-public-triplet"
+      },
+      {
+        "step_id": "demo-confirm-learning-cognition-level-2",
+        "at_second": 7.5,
+        "action": "confirm-knowledge",
+        "target": "af-public-inputs"
+      },
+      {
+        "step_id": "demo-verify-learning-cognition-level-2",
+        "at_second": 9,
+        "action": "verify-knowledge",
+        "target": "af-public-inputs"
+      },
+      {
+        "step_id": "demo-select-learning-cognition-level-3",
+        "at_second": 10.5,
+        "action": "select-choice",
+        "target": "learning-cognition/level-3/lc-l3-compare-reference"
+      },
+      {
+        "step_id": "demo-confirm-learning-cognition-level-3",
+        "at_second": 12,
+        "action": "confirm-knowledge",
+        "target": "af-confidence-boundary"
+      },
+      {
+        "step_id": "demo-verify-learning-cognition-level-3",
+        "at_second": 13.5,
+        "action": "verify-knowledge",
+        "target": "af-confidence-boundary"
+      },
+      {
+        "step_id": "demo-select-learning-cognition-level-4",
+        "at_second": 15,
+        "action": "select-choice",
+        "target": "learning-cognition/level-4/lc-l4-fixed-neighborhood"
+      },
+      {
+        "step_id": "demo-confirm-learning-cognition-level-4",
+        "at_second": 16.5,
+        "action": "confirm-knowledge",
+        "target": "af-site-definition"
+      },
+      {
+        "step_id": "demo-verify-learning-cognition-level-4",
+        "at_second": 18,
+        "action": "verify-knowledge",
+        "target": "af-site-definition"
+      },
+      {
+        "step_id": "demo-select-learning-cognition-level-5",
+        "at_second": 19.5,
+        "action": "select-choice",
+        "target": "learning-cognition/level-5/lc-l5-local-global"
+      },
+      {
+        "step_id": "demo-confirm-learning-cognition-level-5",
+        "at_second": 21,
+        "action": "confirm-knowledge",
+        "target": "af-metric-contract"
+      },
+      {
+        "step_id": "demo-verify-learning-cognition-level-5",
+        "at_second": 22.5,
+        "action": "verify-knowledge",
+        "target": "af-metric-contract"
+      },
+      {
+        "step_id": "demo-select-learning-cognition-level-6",
+        "at_second": 24,
+        "action": "select-choice",
+        "target": "learning-cognition/level-6/lc-l6-report-failures"
+      },
+      {
+        "step_id": "demo-confirm-learning-cognition-level-6",
+        "at_second": 25.5,
+        "action": "confirm-knowledge",
+        "target": "af-coverage-reporting"
+      },
+      {
+        "step_id": "demo-verify-learning-cognition-level-6",
+        "at_second": 27,
+        "action": "verify-knowledge",
+        "target": "af-coverage-reporting"
+      },
+      {
+        "step_id": "demo-select-learning-cognition-level-7",
+        "at_second": 28.5,
+        "action": "select-choice",
+        "target": "learning-cognition/level-7/lc-l7-triage-claim"
+      },
+      {
+        "step_id": "demo-confirm-learning-cognition-level-7",
+        "at_second": 30,
+        "action": "confirm-knowledge",
+        "target": "af-claim-boundary"
+      },
+      {
+        "step_id": "demo-verify-learning-cognition-level-7",
+        "at_second": 31.5,
+        "action": "verify-knowledge",
+        "target": "af-claim-boundary"
+      },
+      {
+        "step_id": "demo-select-research-decision-level-1",
+        "at_second": 33,
+        "action": "select-choice",
+        "target": "research-decision/level-1/rd-l1-ten-targets"
+      },
+      {
+        "step_id": "demo-confirm-research-decision-level-1",
+        "at_second": 34.5,
+        "action": "confirm-knowledge",
+        "target": "af-pilot-size"
+      },
+      {
+        "step_id": "demo-verify-research-decision-level-1",
+        "at_second": 36,
+        "action": "verify-knowledge",
+        "target": "af-pilot-size"
+      },
+      {
+        "step_id": "demo-select-research-decision-level-2",
+        "at_second": 37.5,
+        "action": "select-choice",
+        "target": "research-decision/level-2/rd-l2-strict-contract"
+      },
+      {
+        "step_id": "demo-confirm-research-decision-level-2",
+        "at_second": 39,
+        "action": "confirm-knowledge",
+        "target": "af-inclusion-contract"
+      },
+      {
+        "step_id": "demo-verify-research-decision-level-2",
+        "at_second": 40.5,
+        "action": "verify-knowledge",
+        "target": "af-inclusion-contract"
+      },
+      {
+        "step_id": "demo-select-research-decision-level-3",
+        "at_second": 42,
+        "action": "select-choice",
+        "target": "research-decision/level-3/rd-l3-sequence-map"
+      },
+      {
+        "step_id": "demo-confirm-research-decision-level-3",
+        "at_second": 43.5,
+        "action": "confirm-knowledge",
+        "target": "af-alignment-contract"
+      },
+      {
+        "step_id": "demo-verify-research-decision-level-3",
+        "at_second": 45,
+        "action": "verify-knowledge",
+        "target": "af-alignment-contract"
+      },
+      {
+        "step_id": "demo-select-research-decision-level-4",
+        "at_second": 46.5,
+        "action": "select-choice",
+        "target": "research-decision/level-4/rd-l4-backbone-first"
+      },
+      {
+        "step_id": "demo-confirm-research-decision-level-4",
+        "at_second": 48,
+        "action": "confirm-knowledge",
+        "target": "af-local-analysis"
+      },
+      {
+        "step_id": "demo-verify-research-decision-level-4",
+        "at_second": 49.5,
+        "action": "verify-knowledge",
+        "target": "af-local-analysis"
+      },
+      {
+        "step_id": "demo-select-research-decision-level-5",
+        "at_second": 51,
+        "action": "select-choice",
+        "target": "research-decision/level-5/rd-l5-full-report"
+      },
+      {
+        "step_id": "demo-confirm-research-decision-level-5",
+        "at_second": 52.5,
+        "action": "confirm-knowledge",
+        "target": "af-report-contract"
+      },
+      {
+        "step_id": "demo-verify-research-decision-level-5",
+        "at_second": 54,
+        "action": "verify-knowledge",
+        "target": "af-report-contract"
+      },
+      {
+        "step_id": "demo-select-research-decision-level-6",
+        "at_second": 55.5,
+        "action": "select-choice",
+        "target": "research-decision/level-6/rd-l6-separated-agents"
+      },
+      {
+        "step_id": "demo-confirm-research-decision-level-6",
+        "at_second": 57,
+        "action": "confirm-knowledge",
+        "target": "af-agent-plan"
+      },
+      {
+        "step_id": "demo-verify-research-decision-level-6",
+        "at_second": 58.5,
+        "action": "verify-knowledge",
+        "target": "af-agent-plan"
+      },
+      {
+        "step_id": "demo-select-research-decision-level-7",
+        "at_second": 60,
+        "action": "select-choice",
+        "target": "research-decision/level-7/rd-l7-root-cause"
+      },
+      {
+        "step_id": "demo-confirm-research-decision-level-7",
+        "at_second": 61.5,
+        "action": "confirm-knowledge",
+        "target": "af-acceptance-exit"
+      },
+      {
+        "step_id": "demo-verify-research-decision-level-7",
+        "at_second": 63,
+        "action": "verify-knowledge",
+        "target": "af-acceptance-exit"
+      },
+      {
+        "step_id": "demo-exam-exam-decision-application",
+        "at_second": 64.5,
+        "action": "answer-exam",
+        "target": "exam-decision-application"
+      },
+      {
+        "step_id": "demo-exam-exam-concept-understanding",
+        "at_second": 66,
+        "action": "answer-exam",
+        "target": "exam-concept-understanding"
+      },
+      {
+        "step_id": "demo-exam-exam-transfer",
+        "at_second": 67.5,
+        "action": "answer-exam",
+        "target": "exam-transfer"
+      },
+      {
+        "step_id": "demo-complete",
+        "at_second": 69,
+        "action": "complete",
+        "target": "final-exam-and-goal"
+      },
+      {
+        "step_id": "demo-export-state",
+        "at_second": 70.5,
+        "action": "export-state",
+        "target": "game-state"
+      },
+      {
+        "step_id": "demo-export-goal",
+        "at_second": 72,
+        "action": "export-goal",
+        "target": "codex-goal"
+      }
     ]
   },
   "exports": {
-    "state": { "kind": "game-state", "status": "ready", "media_type": "application/json", "filename": "research-quest-state.json", "generated_at": "2026-07-26T00:00:00Z", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "content": "示例状态由应用在运行时导出。", "schema_version": "1.0.0", "public_safe": true },
-    "goal": { "kind": "codex-goal", "status": "ready", "media_type": "text/markdown", "filename": "research-quest-goal.md", "generated_at": "2026-07-26T00:00:00Z", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "content": "# 模拟 Codex Goal\n\n只在已验证证据与明确边界内继续。", "schema_version": "1.0.0", "public_safe": true }
+    "state": {
+      "kind": "game-state",
+      "status": "not-generated",
+      "media_type": "application/json",
+      "filename": null,
+      "generated_at": null,
+      "sha256": null,
+      "content": null,
+      "schema_version": "1.0.0",
+      "public_safe": true
+    },
+    "goal": {
+      "kind": "codex-goal",
+      "status": "not-generated",
+      "media_type": "text/markdown",
+      "filename": null,
+      "generated_at": null,
+      "sha256": null,
+      "content": null,
+      "schema_version": "1.0.0",
+      "public_safe": true
+    }
   },
   "privacy": {
-    "public_demo_disclosure": "本文件中的情境、题目、奖励和文本均为模拟、改编或脱敏的公开 Demo 素材，不代表真实科研结果。",
-    "research_claim_status": "illustrative-only", "real_research_results_included": false,
-    "sanitization": { "applied": true, "removed_categories": ["personal-identifiers", "private-paths", "credentials", "private-code", "unpublished-results", "server-details", "datasets", "checkpoints"], "review_status": "approved" }
+    "public_demo_disclosure": "本状态围绕真实公开科研需求设计，只包含公开事实、试点方案和认知地图；不含尚未执行的真实实验结果，不构成科研结论。",
+    "research_claim_status": "illustrative-only",
+    "real_research_results_included": false,
+    "sanitization": {
+      "applied": true,
+      "removed_categories": [
+        "personal-identifiers",
+        "private-paths",
+        "credentials",
+        "private-code",
+        "unpublished-results",
+        "server-details",
+        "datasets",
+        "checkpoints"
+      ],
+      "review_status": "approved"
+    }
   },
-  "next_question": { "question_id": "prologue-start", "prompt": "你希望先解决哪一种不确定性？", "purpose": "用一个高价值选择决定起始战役。" },
-  "updated_at": "2026-07-26T00:00:00Z"
+  "next_question": {
+    "question_id": "question-prologue-control",
+    "prompt": "这个公开试点最先应该回答哪一个问题？",
+    "purpose": "把 AlphaFold2 的传播话题冻结为可执行的科研需求。"
+  },
+  "updated_at": "2026-07-26T00:00:00.000Z"
 }

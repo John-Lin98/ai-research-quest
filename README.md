@@ -1,85 +1,189 @@
 # AI Research Quest
 
-把“读过了”变成一条可检查的证据链：在两个七关战役中作出选择、标记未知项、完成应用与迁移，再导出可执行的 Codex Goal。
+把一个真实科研需求变成一场可玩的回合制游戏，并让 ChatGPT、Codex 或多 Agent 队伍依据用户的认知地图持续执行，直到生成可验证的科研交付。
 
-> 这是一个纯前端、公开安全的教学 Demo。互动关卡均为模拟、改编或脱敏材料，不代表真实科研结果，也不证明游戏化能够提升理解、创造力或研究表现。页面另设一个带原始来源链接的公开案例阅读区，用于演示如何把“预测”继续推进为可审查的下一步；它不进入游戏状态或得分。
+当前默认 Demo 围绕一个真实公开需求展开：
+
+> **设计一个 10 个公开酶目标的试点，评估 AlphaFold2 / AlphaFold DB 预测是否足以支持酶活性位点几何初筛。**
+
+玩家不是回答泛泛的“AI 是否有用”，而是逐关冻结公开输入、活性位点区域、全局与局部指标、覆盖率、多 Agent 分工、验收和失败退出条件。页面不会预设试点结果，也不会把 pLDDT、结构相似性或游戏得分写成催化、结合、药物发现或科研能力结论。
+
+## 核心定位：Game Loop + Goal Loop
+
+```text
+真实科研目标
+→ Game Loop：建立 Known–Unknown 四象限
+→ 自适应关卡、提问与正反馈
+→ Goal Loop：持续精炼并执行目标任务
+→ Agent 分工、工具调用与验证
+→ 四象限回写、Goal 修订或最终交付
+```
+
+Research Quest 不是“游戏结束后导出一段提示词”这么简单：
+
+- **Game Loop** 帮助用户理解项目、发现未知、表达隐含经验并获得持续正反馈；
+- **Goal Loop** 把每轮选择写入目标合同，并让 Agent 继续执行真实任务；
+- 除非用户只要求目标提示词，否则 Goal Forge 后默认继续执行、验证和交付。
+
+## Known–Unknown 四象限
+
+认知地图严格使用四象限：
+
+### Q1｜Known Knowns
+
+用户已经表达的知识。内部采用：
+
+```text
+Candidate → Confirmed → Verified
+```
+
+只有能够在小测、选择、纠错、实验设计或迁移题中正确应用的 `Verified` 项计入正式认知分。
+
+### Q2｜Known Unknowns
+
+用户明确知道还缺少答案的问题，例如“pLDDT 能证明什么”“局部活性位点应该如何定义”“哪个 baseline 才公平”。
+
+### Q3｜Unknown Knowns
+
+用户可能已经掌握但尚未表达的知识、经验与偏好。系统通过解释理由、方案比较、过去经验和用户主动追问把它们暴露出来。
+
+### Q4｜Unknown Unknowns
+
+用户和 AI 起初都未预见的问题，由反例、失败、冲突证据和真实执行暴露。发现它们不是玩家失败，而是“解锁隐藏地图”。
+
+四个象限共同决定下一关的问题、难度、Agent 分工和 Goal 版本。
 
 ## 三分钟看懂
 
-1. 点击“播放自动演示”，用 75 秒走完一条确定性路径；或手动逐关选择。
-2. 观察认识如何沿 `Candidate → Confirmed → Verified` 单向升级。
-3. 查看 Known Unknown、选择记录和 Goal 预览如何随关卡变化。
-4. 完成最终考试后，在浏览器本地导出 game-state JSON 与 Codex Goal Markdown。
+1. 先查看完整关卡路线、预计轮次和最终 Goal 预览；
+2. 选择真实试点要服务的下游判断；
+3. 在两条七关战役中冻结研究问题、公开数据、局部区域、指标、Agent 分工和验收；
+4. 观察 Known–Unknown 四象限和 Goal vN 如何随每次选择变化；
+5. 完成针对同一真实科研任务的应用、概念和迁移考试；
+6. 锻造 Goal 后继续进入 Agent 执行，或导出可直接复用的 Codex Goal。
 
-只有带应用、测验、迁移或纠错证据的 `Verified` 项会计入正式理解分。`Candidate` 是候选认识，`Confirmed` 只是已确认陈述，两者都不会因为 AI 摘要或一次选择而自动升级。
+## 每回合的正反馈
+
+每一关都应展示：
+
+- 本关完成状态；
+- 总进度和预计剩余时间；
+- Q1 Candidate / Confirmed / Verified 变化；
+- Q2 新增、关闭和剩余的 Known Unknown；
+- Q3 本轮暴露的隐含知识或偏好；
+- Q4 新发现的隐藏风险或机会；
+- 认知分数变化；
+- 科研目标达成状态；
+- Goal vN 相比上一版的变化；
+- 解锁的知识卡、决策卡、实验卡或 Agent；
+- 下一关为什么会更简单或更困难。
+
+## 真实需求怎样进入游戏
+
+### 战役一：理解真实需求与证据边界
+
+七关依次处理：
+
+- 真实需求定位；
+- AlphaFold DB、PDB 与催化残基注释三类公开输入；
+- pLDDT 与外部正确性的区别；
+- 催化残基和固定 6 Å 邻域；
+- 全局与局部指标；
+- 覆盖率与选择偏差；
+- 可写结论边界。
+
+### 战役二：冻结公开试点与执行合同
+
+七关依次处理：
+
+- 10 个目标、至少 8 个有效结果的试点规模；
+- 纳入与排除合同；
+- 序列映射和结构对齐；
+- 活性位点局部几何计算；
+- 主表、校准图、逐目标 QA 与失败码；
+- 数据、分析、复审与集成 Agent 分工；
+- 3–5 轮实质不同尝试失败后的根因分析退出。
+
+完整说明见[真实科研需求案例](public/case-study-alphafold-casp14.html)和[设计说明](docs/usage/real-research-task.md)。
 
 ## 功能
 
-- 学习认知、科研决策两条战役，各七个主线关卡。
-- 单一高价值问题、可见选择影响、知识卡、认知地图和奖励。
-- 决策应用 60%、概念理解 20%、迁移 20% 的透明演示评分。
-- 固定 seed、75 秒、不循环的自动演示。
-- 符合 [Canonical Schema 1.0.0](shared/game-state.schema.json) 的状态与 Goal 导出。
-- 桌面和移动端布局，以及键盘可访问的交互控件。
+- 同一真实科研需求贯穿序章、双战役、考试、Goal 和后续执行；
+- 每关只提出一个会改变后续方案的关键问题；
+- 用户主动提出的问题会先被回答或运行，再写入四象限和 Goal；
+- 根据四象限、正确率和用户偏好自动调整下一关难度；
+- 展示本关时间、总进度、预计剩余时间、目标变化和认知分；
+- Candidate、Confirmed、Verified 三级认证及 Verified-only 计分；
+- 决策应用 60%、概念理解 20%、迁移 20% 的透明演示评分；
+- 固定 seed、约 75 秒、不循环的自动演示；
+- 符合 [Canonical Schema 1.0.0](shared/game-state.schema.json) 的状态与 Goal 导出；
+- 桌面与移动端布局、键盘可访问交互；
+- 纯前端、无账户、无遥测、无应用后端。
+
+## 公开事实与尚未执行的部分
+
+公开背景来自 AlphaFold2 论文、AlphaFold DB 和 PDB/PDBe。页面中“10 个酶目标”“6 Å 邻域”“至少 8 个有效结果”等是为展示需求编译过程而冻结的真实试点合同，**不是已经完成的实验结果**。
+
+页面允许回答“应该如何设计并执行这项研究”，但不声称：
+
+- AlphaFold2 已证明任何目标酶具有正确催化活性；
+- 高 pLDDT 证明活性位点化学构型、配体或辅因子正确；
+- 预测结构能够替代湿实验；
+- Research Quest 已证明能够提高科研能力或创造力。
+
+## Research Quest Skill
+
+Skill 位于 `skills/research-quest/`，适用于论文投稿、实验规划、方向选择、数据集构建、方法改进和科研项目复盘。
+
+Skill 会：
+
+1. 读取用户真实目标和材料；
+2. 展示完整关卡路线与预计时间；
+3. 建立 Known–Unknown 四象限；
+4. 逐关提问、执行和更新 Goal；
+5. 根据认知地图调整难度；
+6. 运行最终考试；
+7. 生成并继续执行多 Agent Goal。
+
+Skill 读取仓库根目录唯一的 `shared/game-state.schema.json`。安装与 ZIP 步骤见 [Skill 安装指南](docs/usage/skill-installation.md)。
 
 ## 隐私模型
 
-- 页面加载静态文件后，不上传用户输入、不发送遥测，也没有分析、账户或服务端 API。
-- 运行状态只保存在当前页面内存；刷新或关闭页面即丢失。
-- 考试中的自由文本只进入本地内存，并且只会随用户主动点击导出，经浏览器 `Blob` 下载到本机。
-- 导出前会阻止邮箱、常见密钥/令牌、私人绝对路径和过长文本。
+- 页面加载静态文件后，不上传用户输入、不发送遥测，也没有账户或服务端 API；
+- 状态只保存在当前页面内存，刷新或关闭页面即丢失；
+- 自由文本只会在用户主动导出时通过浏览器本地 `Blob` 下载；
+- 导出前会阻止邮箱、常见密钥/令牌、私人绝对路径和过长文本；
 - 不要输入邮箱、API Key、Token、密码、私人路径、未公开结果、私有代码、数据集或 checkpoint。
 
 更完整的边界见 [PRIVACY.md](PRIVACY.md)；漏洞报告方式见 [SECURITY.md](SECURITY.md)。
 
-## 本地运行
+## 在线入口
+
+- [GitHub Pages 互动 Demo](https://john-lin98.github.io/ai-research-quest/)
+- [真实科研需求案例页](https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html)
+- [约 75 秒网页演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)
+- [Research Quest Skill Release](https://github.com/John-Lin98/ai-research-quest/releases/tag/v1.0.0)
+
+## 本地运行与验证
 
 需要 Node.js 20 或更高版本。
 
 ```powershell
 npm ci --prefix app
-npm run dev --prefix app
-```
-
-生产构建与本地预览：
-
-```powershell
-npm run build --prefix app
-npm run preview --prefix app -- --host 127.0.0.1
-```
-
-构建输出位于 `app/dist`。完整测试：
-
-```powershell
 npm run lint --prefix app
 npm run test:contract --prefix app
 npx --prefix app playwright install chromium
 npm run test:e2e --prefix app
+npm run build --prefix app
 node skills/research-quest/scripts/public-safety-scan.mjs --include-dist
 ```
-
-更多细节见[新手指南](docs/usage/getting-started.md)、[Demo 数据说明](docs/usage/demo-data.md)、[75 秒网页通关视频](docs/usage/demo-video.md)与[发布社交文案](docs/usage/social-copy.md)。
-
-## Research Quest Skill
-
-Skill 位于 `skills/research-quest/`，并读取仓库根目录唯一的 `shared/game-state.schema.json`。为了保留这个相对布局，首选克隆仓库后创建 junction/symlink；发布 ZIP 也必须同时包含 Skill、Schema、许可证和第三方 notices。
-
-标准“只复制 Skill 目录”的安装方式不会带上仓库外 Schema，因此不是受支持的独立安装路线。可复现的 Windows、macOS/Linux 和 ZIP 步骤见 [Skill 安装指南](docs/usage/skill-installation.md)。
-
-## GitHub Pages
-
-工作流会在 Pull Request 和 `main` 上运行质量检查；只有仓库已公开、事件不是 Pull Request 且分支为 `main` 时，部署 job 才能使用最小 `pages: write` / `id-token: write` 权限。首次发布仍需维护者在仓库 Settings → Pages 中选择 **GitHub Actions**。
-
-在线项目地址为 <https://john-lin98.github.io/ai-research-quest/>；同一静态站点提供 [约 75 秒网页演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)，以及 [AlphaFold2 × CASP14 公开案例博文](https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html)。
 
 ## 公开数据与边界
 
 - 默认状态：[public/demo-data/default-game-state.json](public/demo-data/default-game-state.json)
 - 唯一 Schema：[shared/game-state.schema.json](shared/game-state.schema.json)
-- 三个完整 Skill fixture：[skills/research-quest/references/test-sessions.md](skills/research-quest/references/test-sessions.md)
-- 数据分类和审批状态：[docs/usage/demo-data.md](docs/usage/demo-data.md)
-
-默认状态的 `privacy.sanitization.review_status` 只有在独立候选快照审计通过后才能设为 `approved`。CI 会把未审批状态视为发布 blocker。
+- 三个 Skill fixture：[skills/research-quest/references/test-sessions.md](skills/research-quest/references/test-sessions.md)
+- 数据分类与审批状态：[docs/usage/demo-data.md](docs/usage/demo-data.md)
 
 ## 许可证
 

@@ -149,16 +149,40 @@ export function createInitialGameState(
       confirmed: [],
       verified: [],
     },
-    known_unknowns: [],
-    unknown_knowns: [],
-    unknown_unknowns: [],
+    known_unknowns: [
+      {
+        item_id: "af-core-known-unknown",
+        statement: "AlphaFold2 预测是否足以支持酶活性位点几何初筛，仍需要公开试点回答。",
+        campaign_id: "learning-cognition",
+        introduced_level_id: "level-1",
+        status: "open",
+      },
+    ],
+    unknown_knowns: [
+      {
+        item_id: "af-user-implicit-knowledge",
+        statement: "用户可能已经具备局部结构比较、活性位点判断或失败分析经验，但尚未明确表达其判据与偏好。",
+        campaign_id: "learning-cognition",
+        introduced_level_id: "level-1",
+        status: "under-investigation",
+      },
+    ],
+    unknown_unknowns: [
+      {
+        item_id: "af-hidden-mapping-risk",
+        statement: "序列、链、残基编号、缺失区域和构象状态的组合冲突，可能在真实映射中暴露新的失败类型。",
+        campaign_id: "research-decision",
+        introduced_level_id: "level-2",
+        status: "open",
+      },
+    ],
     prompt_clues: content.prompt_clues.map((clue) => ({ ...clue })),
     artifacts: [],
     decisions: [],
     metrics: {
       new_verified_known_knowns: 0,
       corrected_misconceptions: 0,
-      new_known_unknowns: 0,
+      new_known_unknowns: 1,
       applied_knowledge_count: 0,
       level_quiz_accuracy: null,
       final_exam_accuracy: null,
@@ -221,7 +245,7 @@ export function createInitialGameState(
     },
     privacy: {
       public_demo_disclosure:
-        "本状态仅含模拟、改编或脱敏演示内容；不含真实科研结果，不构成科研结论。",
+        "本状态围绕真实公开科研需求设计，只包含公开事实、试点方案和认知地图；不含尚未执行的真实实验结果，不构成科研结论。",
       research_claim_status: "illustrative-only",
       real_research_results_included: false,
       sanitization: {

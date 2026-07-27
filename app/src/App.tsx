@@ -19,7 +19,7 @@ function download(record: { content: string | null; filename: string | null; med
 
 export default function App() {
   const [state, setState] = useState<GameState>(() => store.getState());
-  const [notice, setNotice] = useState("准备开始互动演示。");
+  const [notice, setNotice] = useState("准备把真实科研需求编译成执行 Goal。");
   const startedAt = useRef<number | null>(null);
   const view = useMemo(() => selectQuestView(state), [state]);
 
@@ -40,7 +40,7 @@ export default function App() {
   useEffect(() => {
     if (state.auto_demo.status === "completed") {
       startedAt.current = null;
-      setNotice("75 秒自动演示已完成；它只展示流程，不计入用户正式理解分。可下载公开安全的状态和 Codex Goal。 ");
+      setNotice("约 75 秒自动演示已完成；它展示真实需求如何变成试点 Goal，但不计入用户正式理解分。");
     }
   }, [state.auto_demo.status]);
 
@@ -57,7 +57,7 @@ export default function App() {
     startedAt.current = Date.now();
     run(
       () => { store.startAutoDemo(); },
-      "自动演示运行中：会以确定性步骤展示双战役、考试和导出准备；不会计入用户正式理解分。",
+      "自动演示运行中：会展示 AlphaFold2 活性位点试点如何经过双战役、考试和 Goal 导出；不会计入用户正式理解分。",
     );
   };
 
@@ -75,7 +75,7 @@ export default function App() {
     try {
       const result = await store.exportGoal();
       if (download(result.record)) store.markDownloaded("goal");
-      setNotice("已通过浏览器本地 Blob 生成 Codex Goal Markdown 下载；不会上传或发送到网络。");
+      setNotice("已通过浏览器本地 Blob 生成 AlphaFold2 活性位点试点 Goal；不会上传或发送到网络。");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Goal 导出尚不可用。");
     }
@@ -89,11 +89,11 @@ export default function App() {
         view={view}
         onAnswerPrologue={(choiceId) => run(
           () => store.dispatch({ type: "ANSWER_PROLOGUE", choiceId }),
-          "序章选择已记录。",
+          "真实科研问题已记录，第一条战役已解锁。",
         )}
         onChooseLevel={(campaignId: CampaignId, levelId: LevelId, choiceId) => run(
           () => store.dispatch({ type: "SELECT_LEVEL_CHOICE", campaignId, levelId, choiceId }),
-          "关卡选择已记录，并已更新受控状态。",
+          "关卡选择已记录；试点 Goal、认知地图和下一步已同步更新。",
         )}
         onSubmitLevelQuiz={(campaignId, levelId, accuracy) => run(
           () => store.dispatch({ type: "SUBMIT_LEVEL_QUIZ", campaignId, levelId, accuracy }),
@@ -109,14 +109,14 @@ export default function App() {
         )}
         onStartExam={() => run(
           () => store.dispatch({ type: "START_EXAM" }),
-          "最终考试已开始。",
+          "真实科研任务最终考试已开始。",
         )}
         onAnswerExam={(questionId, answer) => {
           const result = scoreExamAnswer(questionId, answer);
           run(
             () => store.dispatch({ type: "ANSWER_EXAM", questionId, answer, ...result }),
             result.isCorrect
-              ? "考试回答符合公开演示 rubric，已保存。"
+              ? "研究判断符合公开演示 rubric，已保存。"
               : "回答已保存，但尚未命中本题公开演示 rubric。",
           );
         }}
@@ -126,12 +126,12 @@ export default function App() {
         )}
         onForgeGoal={() => run(
           () => store.dispatch({ type: "FORGE_GOAL" }),
-          "Codex Goal 已锻造完成。",
+          "AlphaFold2 酶活性位点公开试点 Codex Goal 已锻造完成。",
         )}
         onStartAutoDemo={beginAutoDemo}
         onRestart={() => run(
           () => { startedAt.current = null; store.restart(); },
-          "已重启为交互模式。",
+          "已重启真实科研任务互动流程。",
         )}
         onExportState={() => { void exportState(); }}
         onExportGoal={() => { void exportGoal(); }}
