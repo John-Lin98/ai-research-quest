@@ -1,0 +1,40 @@
+name: 临时提交 v1.1 最终界面修复
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  final-ui-fix:
+    if: github.actor != 'github-actions[bot]' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出 PR 分支
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
+          fetch-depth: 0
+      - name: 应用认知状态标签修复
+        run: python scripts/temp-final-ui-fix.py
+      - name: 精确提交并推送
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- app/src/components/QuestDashboard.tsx
+          git diff --cached --quiet && { echo "界面修复已经存在。"; exit 0; }
+          git commit -m "修正认知状态标签与自适应案例卡片"
+          branch="${{ github.head_ref }}"
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            if git rebase "origin/$branch" && git push origin "HEAD:$branch"; then
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep 3
+          done
+          exit 1
