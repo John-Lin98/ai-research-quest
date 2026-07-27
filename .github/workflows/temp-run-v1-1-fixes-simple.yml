@@ -17,30 +17,8 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           persist-credentials: true
-      - name: 运行通用修复
-        shell: bash
-        run: |
-          awk '
-            /python - <<.PY./ { capture=1; next }
-            capture && /^          PY$/ { capture=0; exit }
-            capture { sub(/^          /, ""); print }
-          ' .github/workflows/temp-apply-v1-1-product-fixes.yml > /tmp/apply-fixes.py
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('/tmp/apply-fixes.py')
-          text = p.read_text(encoding='utf-8')
-          start = text.index('# 3. 通过答案和小测自动补充认证证据。')
-          end = text.index('# 5. Skill：任意需求动态生成关卡、自动认证、动态考试、强制游戏界面输出。')
-          text = text[:start] + text[end:]
-          old = """    if old not in text:\n        raise SystemExit(f'未找到待替换片段: {path}: {old[:80]!r}')\n    p.write_text(text.replace(old, new), encoding='utf-8')"""
-          new = """    if old not in text:\n        if new in text:\n            return\n        raise SystemExit(f'未找到待替换片段: {path}: {old[:80]!r}')\n    p.write_text(text.replace(old, new), encoding='utf-8')"""
-          if old not in text:
-              raise SystemExit('未找到 replace helper')
-          p.write_text(text.replace(old, new), encoding='utf-8')
-          PY
-          python /tmp/apply-fixes.py
-      - name: 运行自动认证补丁
-        run: python scripts/temp-v1-1-targeted-fixes.py
+      - name: 应用完整修复
+        run: python scripts/apply-v1-1-all-fixes.py
       - name: 精确提交修复
         shell: bash
         run: |
