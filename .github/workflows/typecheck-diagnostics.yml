@@ -1,4 +1,4 @@
-name: 临时 TypeScript 诊断
+name: 临时浏览器测试诊断
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  typecheck-diagnostics:
+  playwright-diagnostics:
     runs-on: ubuntu-latest
     steps:
       - name: 检出当前提交
@@ -23,26 +23,28 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - name: 安装锁定依赖
         run: npm ci --prefix app
-      - name: 运行类型检查并保存日志
-        id: typecheck
+      - name: 安装 Chromium
+        run: npx --prefix app playwright install --with-deps chromium
+      - name: 运行浏览器测试并保存日志
+        id: e2e
         shell: bash
         continue-on-error: true
         run: |
-          npm run typecheck --prefix app > /tmp/typecheck.log 2>&1
+          npm run test:e2e --prefix app -- --reporter=line > /tmp/playwright.log 2>&1
           status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
           exit "$status"
-      - name: 上传类型检查日志
+      - name: 上传浏览器测试日志
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: typecheck-log
-          path: /tmp/typecheck.log
+          name: playwright-log
+          path: /tmp/playwright.log
           if-no-files-found: error
           retention-days: 1
-      - name: 根据类型检查结果结束
+      - name: 根据浏览器测试结果结束
         if: always()
         shell: bash
         run: |
-          cat /tmp/typecheck.log
-          test "${{ steps.typecheck.outputs.status }}" = "0"
+          tail -n 80 /tmp/playwright.log
+          test "${{ steps.e2e.outputs.status }}" = "0"
