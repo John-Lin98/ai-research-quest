@@ -18,7 +18,7 @@ jobs:
           ref: ${{ github.head_ref }}
           persist-credentials: true
       - name: 配置 Node.js
-        uses: actions/setup-node@49933ea5288ca8642d1e84afbd3f7d6820020
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
