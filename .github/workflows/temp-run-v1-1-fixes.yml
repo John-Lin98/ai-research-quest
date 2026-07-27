@@ -17,7 +17,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           persist-credentials: true
-      - name: 提取并运行分支内修复脚本
+      - name: 提取修复脚本
         shell: bash
         run: |
           awk '
@@ -26,8 +26,27 @@ jobs:
             capture { sub(/^          /, ""); print }
           ' .github/workflows/temp-apply-v1-1-product-fixes.yml > /tmp/apply-fixes.py
           test -s /tmp/apply-fixes.py
-          python /tmp/apply-fixes.py
+      - name: 运行修复脚本
+        id: fixes
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python /tmp/apply-fixes.py > /tmp/apply-fixes.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat /tmp/apply-fixes.log
+          exit "$status"
+      - name: 上传修复日志
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: v1-1-product-fix-log
+          path: /tmp/apply-fixes.log
+          if-no-files-found: error
+          retention-days: 1
       - name: 精确提交修复
+        if: steps.fixes.outputs.status == '0'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -49,3 +68,7 @@ jobs:
           fi
           git commit -m "完善自适应关卡、自动认证与游戏界面"
           git push origin "HEAD:${{ github.head_ref }}"
+      - name: 根据修复结果结束
+        if: always()
+        shell: bash
+        run: test "${{ steps.fixes.outputs.status }}" = "0"
