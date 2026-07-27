@@ -23,7 +23,7 @@ jobs:
         run: |
           sed -i 's#\.github/workflows/generate-v1-1-video.yml#.github/workflows/video-generation.yml#g' scripts/apply-v1-1-all-fixes.py
           python scripts/apply-v1-1-all-fixes.py
-          git restore -- scripts/apply-v1-1-all-fixes.py
+          git restore -- scripts/apply-v1-1-all-fixes.py .github/workflows/video-generation.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- \
@@ -35,8 +35,7 @@ jobs:
             public/case-study-alphafold-casp14.html \
             README.md \
             docs/usage/social-copy.md \
-            app/scripts/record-research-quest-demo.mjs \
-            .github/workflows/video-generation.yml
+            app/scripts/record-research-quest-demo.mjs
           git status --short
           git diff --cached --quiet && { echo "修复已存在，无需提交。"; exit 0; }
           git commit -m "完善自适应关卡、自动认证与游戏界面"
