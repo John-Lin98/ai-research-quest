@@ -23,6 +23,7 @@ jobs:
         run: |
           sed -i 's#\.github/workflows/generate-v1-1-video.yml#.github/workflows/video-generation.yml#g' scripts/apply-v1-1-all-fixes.py
           python scripts/apply-v1-1-all-fixes.py
+          python scripts/temp-final-ui-fix.py
           git restore -- scripts/apply-v1-1-all-fixes.py .github/workflows/video-generation.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -37,11 +38,16 @@ jobs:
             docs/usage/social-copy.md \
             app/scripts/record-research-quest-demo.mjs
           git status --short
-          git diff --cached --quiet && { echo "修复已存在，无需提交。"; exit 0; }
-          git commit -m "完善自适应关卡、自动认证与游戏界面"
+          if git diff --cached --quiet; then
+            echo "修复已存在，无需提交。"
+            touch /tmp/no-v1-1-commit
+          else
+            git commit -m "完善自适应关卡、自动认证与游戏界面"
+          fi
       - name: 同步并重试推送
         shell: bash
         run: |
+          test -f /tmp/no-v1-1-commit && exit 0
           branch="${{ github.head_ref }}"
           for attempt in 1 2 3; do
             echo "推送尝试 $attempt/3"
