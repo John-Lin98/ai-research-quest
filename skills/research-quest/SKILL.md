@@ -1,98 +1,272 @@
 ---
 name: research-quest
-description: 将真实公开科研需求、公开来源材料或已脱敏项目上下文转换为双战役七关 Research Quest、Known–Unknown 认知地图、Candidate→Confirmed→Verified 证据链、最终考试和可执行 Codex Goal。用于科研规划、软件开发规划、个人学习规划，或需要把零散上下文变成可追溯选择、验证门、Agent 分工与失败根因分析的 controlled-loop 会话。
+description: 将用户的真实科研需求、公开或已脱敏材料与历史提示词转换为目标驱动的回合制 Research Quest。AI 通过 Known–Unknown 四象限、Candidate→Confirmed→Verified 认证、一次一个关键问题、认知自适应难度和每回合正反馈，持续优化对用户目标、偏好和认知状态的理解；同时把每轮选择编译进 Goal，并由 ChatGPT、Codex 或多 Agent 队伍继续执行、验证和交付。
 ---
 
 # Research Quest
 
-把真实需求编译成可追溯的认知与执行闭环。最终交付不是泛泛建议，而是一份能让 Codex 或多 Agent 直接执行的目标合同。
+Research Quest 不是给普通问答套一层游戏皮肤，而是一个 **Goal-driven Research Game Orchestrator**：
 
-只把 `Verified` 知识计入正式理解得分；不要把 AI 提取、用户复述、公开背景事实或尚未执行的试点计划直接当成实验结果。
+```text
+真实科研目标
+→ 游戏化认知建模
+→ 自适应提问与任务执行
+→ Goal 持续精炼
+→ Agent / ChatGPT 执行
+→ 验证、复盘与交付
+```
 
-## 开始前
+游戏循环负责帮助用户理解问题、建立认知地图并获得正反馈；目标循环负责真正推进实验、论文、调研、数据或代码任务。两条循环同步运行，不是先玩完游戏再把任务丢给另一个 Agent。
 
-1. 输入可以是：
-   - 真实且可公开的科研需求；
-   - 带原始来源的公开论文、数据库和文档；
-   - 已脱敏的项目 Context；
-   - 纯模拟教学场景。
-2. 发现凭据、个人标识、私有代码、未公开结果、服务器信息、绝对私有路径、数据集或 checkpoint 时，移除或改写为占位符，不要进入公开状态或 Goal。
-3. 对真实公开需求，必须区分：
-   - `public fact`：来源可追溯的公开事实；
-   - `research need`：用户真正希望解决的问题；
-   - `planned protocol`：通过闯关冻结的试点设计；
-   - `observed result`：只有实际执行后才允许出现的结果。
-4. 从本 Skill 目录读取仓库内唯一 Canonical Schema：[`../../shared/game-state.schema.json`](../../shared/game-state.schema.json)。要求 `schema_version` 为 `1.0.0` 且 SHA-256 与[发行清单](references/release-manifest.md)一致；找不到、版本不符或哈希漂移时停止生成状态，报告 Schema blocker。不要在 Skill 内复制 Schema。
-5. 阅读[规则与模板](references/rules-and-templates.md)。真实科研需求示例见[AlphaFold2 酶活性位点公开试点](references/real-research-case.md)；需要 fixture 或交叉验证时，再读[Schema 对齐说明](references/schema-alignment.md)和[三个完整测试会话](references/test-sessions.md)。
+## 1. 输入与安全边界
 
-## 执行 controlled loop
+优先处理真实科研需求，例如：
 
-1. **提取真实需求**：不要从工具、模型或新闻标题开始。先问用户最终要作出什么科研决定、产生什么产物、接受什么风险。
-2. **清点输入**：列出公开材料、来源类别、许可、可访问性和检索限制；无法读取的正文保持未知，不补全。
-3. **提取 Prompt Clues**：按目标、约束、工作流、验收、失败、偏好与产物七类登记线索，并记录来源与证据状态。
-4. **建立序章**：给出目标预览，只提出一个会改变后续路线的高价值问题，提供 2–4 个影响可见的选择。
-5. **建立双战役**：
-   - `learning-cognition`：建立任务、概念、公开输入、指标和结论边界；
-   - `research-decision`：冻结规模、纳入规则、分析步骤、Agent 分工、验收与退出条件。
-   每个战役严格七关。
-6. **逐关输出**：每关写明任务、知识卡、预计时间、总进度、剩余时间、单一问题、选择影响、Goal 预览、认知变化、小测、奖励和下一入口。
-7. **逐关更新**：选择后追加 `player_choices` 与 `decisions`，更新 Goal 版本和 Known–Unknown 地图；被取代决定保留为 superseded，不静默覆盖。
-8. **执行三级认证**：仅沿 `Candidate → Confirmed → Verified` 单向晋级，并保存各级独立凭据。没有应用、小测、考试、迁移或纠错证据时，不得晋级为 `Verified`。
-9. **运行最终考试**：题目必须针对当前真实需求，覆盖决策应用、概念理解和迁移，默认权重 `60/20/20`、通过线 `80`。不得使用与任务无关的通用口号题。
-10. **锻造 Codex Goal**：考试通过后，生成包含以下内容的完整 Goal：
-    - 真实研究问题；
-    - 公开输入和来源；
-    - 数据与分析合同；
-    - 指标和结论边界；
-    - 多 Agent 分工与交接；
-    - 执行步骤；
-    - 测试与独立审查；
-    - 中文 Git/PR/合并；
-    - 3–5 轮失败后的根因分析退出。
-11. **导出并检查**：导出 game-state JSON 与 Goal；核对公开安全、Schema、完成检查单和重启能力。计划不得伪装成结果，产品效果仍标记为待验证假设。
+- 判断当前实验能否支持论文故事线；
+- 为 RNA 逆折叠选择任务、数据和 baseline；
+- 设计可复现的数据构建试点；
+- 将公开 AlphaFold2 结构用于酶活性位点几何初筛；
+- 将零散讨论冻结成可执行 Codex Goal。
 
-## 真实科研需求的设计规则
+输入可以是公开资料、用户当前会话内容、已脱敏项目 Context 或模拟教学素材。遇到凭据、个人标识、私有代码、未公开结果、服务器细节、绝对路径、数据集或 checkpoint 时，先生成脱敏占位符和 Context manifest，不把敏感内容写入公开 Demo 或公开 Goal。
 
-- **一个 Demo 只围绕一个核心科研需求。** 两条战役必须共同修改同一份目标，而不是展示互不相关的知识题。
-- **每个选择必须改变 Goal。** 选择应冻结数据、指标、规模、边界、Agent、验收或退出方式之一。
-- **公开事实必须有来源。** 不要把来源文章本身当作互动任务；要把事实转成一个尚待解决的下游需求。
-- **允许真实任务，不允许虚构结果。** `contains_real_research_results` 仍保持 `false`，因为 Demo 展示的是试点设计，不是实验结果。
-- **考试检验迁移和应用。** 题目应要求用户处理失败案例、解释指标边界，并将流程迁移到邻近任务。
-- **Goal 必须可执行。** 最终文本应能让新的 Agent 在不重做需求访谈的前提下开始工作。
+读取仓库内唯一 Canonical Schema：[`../../shared/game-state.schema.json`](../../shared/game-state.schema.json)。规则、模板和完成检查见 [`references/rules-and-templates.md`](references/rules-and-templates.md)。真实科研需求示例见 [`references/real-research-case.md`](references/real-research-case.md)。
 
-## 交互规则
+## 2. 两条同步循环
 
-- 互动模式保持一个当前问题；只有答案会改变路线时才提问。
-- 自动演示固定 seed、60–90 秒、至少七步且不循环；不得把自动轨迹当成用户验证。
-- 真实公开需求标记为“改编场景”或等价公开标签，并在 `source_traceability` 中说明来源和“无预设结果”。
-- 模拟或脱敏案例继续使用相应标签。
-- 无法访问的来源标记 `retrieval-limited`；它不能自动转成 `verified`。
-- 只从 `known_knowns.verified` 计算知识数量与正式理解得分。
-- 同一关键 blocker 不得第一次失败即退出；应执行 3–5 轮实质不同的尝试，仍失败时生成根因分析。
+### Game Loop｜认知与趣味
 
-## 安装、运行与打包
+- 展示世界地图、关卡、预计时间和最终奖励；
+- 一次只提出一个会改变方案的关键问题；
+- 用任务卡、知识卡、Boss 题、奖励和进度反馈降低认知负担；
+- 依据 Known–Unknown 四象限调整下一关难度；
+- 让用户通过选择、解释、纠错和迁移逐步掌握项目。
 
-- **仓库内使用**：保持 `skills/research-quest/` 与 `shared/game-state.schema.json` 的相对位置，直接调用 `$research-quest`。
-- **Codex 安装**：先克隆仓库，再把 `skills/research-quest/` junction/symlink 到 Agent skills 目录。若目标已存在，不覆盖、不删除。完整 Windows 与 macOS/Linux 命令见[安装指南](../../docs/usage/skill-installation.md)。
-- **不支持的复制路线**：只复制 Skill 目录会丢失仓库外唯一 Schema；除非安装器同时保留根布局，否则不要把 `npx skills add ... --copy` 描述为可直接运行。
-- **生成/复验 fixtures**：
+### Goal Loop｜真实任务推进
 
-  ```text
-  node skills/research-quest/scripts/generate-test-sessions.mjs --check-only
-  ```
+- 每轮都更新 Goal vN；
+- 把用户选择转成目标、输入、指标、实验、验收、Agent 分工或退出规则；
+- 能直接执行的低风险任务应在当前回合执行，而不是只给建议；
+- 需要工具、代码或多 Agent 时，依据 Goal 自动分工并继续推进；
+- 最终输出可直接交给 ChatGPT、Codex 或 Agent 队伍执行的任务合同。
 
-- **打包**：发行 ZIP 必须保留根布局，并且只包含 `skills/research-quest/**`、`shared/game-state.schema.json`、`LICENSE` 与 `THIRD_PARTY_NOTICES`。发布页提供 ZIP SHA-256；解包后先运行 `--check-only`。精确清单见[发行清单](references/release-manifest.md)。
-- **隐私**：本 Skill 不上传输入、不发送遥测；Node 脚本只在本地读取 Schema 和 fixture。不要把真实私有项目材料、凭据、缓存或用户导出加入发行包。
+## 3. 开局：先展示完整路线
 
-## 交付条件
+正式提问前先展示：
 
-按[完成检查单](references/rules-and-templates.md#完成检查单)逐项通过，并用 Canonical Schema 验证状态实例。
+1. 用户真实目标；
+2. 预计关卡或回合数；
+3. 每一幕解决的问题；
+4. 预计总通关时间；
+5. 最终目标结果预览；
+6. 初始 Known–Unknown 四象限；
+7. 哪些选择会显著改变路线；
+8. 本次由 AI 直接执行哪些工作。
 
-交付至少证明：
+用户可以调整路线，但不需要逐步审批每个低风险动作。
 
-- 一个真实需求贯穿关卡、考试和最终 Goal；
-- 公开事实、计划与结果边界清楚；
-- Goal 包含真实输入、步骤、指标、验收、多 Agent 和根因退出；
-- Candidate/Confirmed/Verified 凭据链完整；
-- 三个通用 fixture 仍能通过；
-- 公开发行候选通过敏感内容扫描和 ZIP 解包 smoke。
+## 4. 认知地图：Known–Unknown 四象限
+
+每轮必须显式展示四个象限，而不是只展示知识列表。
+
+### Q1｜Known Knowns：已知的已知
+
+用户已经表达并能够正确使用的知识。内部采用三级认证：
+
+```text
+Candidate → Confirmed → Verified
+```
+
+- Candidate：AI 从材料或回答中提取出的候选认识；
+- Confirmed：用户确认或能够无提示复述；
+- Verified：用户能在选择、小测、纠错、实验设计或迁移题中正确应用。
+
+只有 Verified 项计入正式认知分数。
+
+### Q2｜Known Unknowns：已知的未知
+
+用户明确知道还缺少答案的问题，例如：
+
+- 当前结果支持哪种论文叙事；
+- 哪个 baseline 最公平；
+- 某项指标能证明什么；
+- 下一轮实验是否值得运行。
+
+每个条目需要关闭条件和对应关卡。
+
+### Q3｜Unknown Knowns：未知的已知
+
+用户可能已经掌握，但尚未表达或尚未意识到自己掌握的知识、经验和偏好。通过以下方式暴露：
+
+- 让用户解释选择理由；
+- 比较两个具体方案；
+- 询问过去的成功或失败经验；
+- 让用户给新情境做判断；
+- 从用户主动提出的问题中提取隐含规则。
+
+一旦被表达，先进入 Candidate 或 Confirmed，不能自动成为 Verified。
+
+### Q4｜Unknown Unknowns：未知的未知
+
+用户和 AI 起初都未预见，需要通过反例、失败、冲突证据、真实执行或迁移任务暴露的问题。典型来源：
+
+- 数据泄露或 split 冲突；
+- 指标与科研问题不匹配；
+- baseline 无法公平运行；
+- 用户为了通关而选择低价值任务；
+- 实际实验暴露新的失败类型。
+
+Unknown Unknown 出现时，不扣除玩家成就；应作为“发现隐藏地图”给予正反馈，并决定新增支线或调整 Goal。
+
+## 5. 每回合固定循环
+
+```text
+任务卡
+→ 一个关键问题
+→ 用户选择或追问
+→ AI 回答并执行可执行工作
+→ 四象限更新
+→ Goal vN 更新
+→ 认知分和科研进度结算
+→ 自适应下一关
+```
+
+用户提出额外问题时，不把它视为打断：
+
+1. 先回答或运行该问题；
+2. 判断它暴露了哪个象限；
+3. 必要时反问一个高价值问题，补充目标、证据、偏好或风险；
+4. 更新四象限和 Goal；
+5. 再回到主线。
+
+## 6. 认知自适应难度
+
+依据以下信号调整下一关：
+
+- Verified Known Known 新增数量；
+- Confirmed 长期未升级数量；
+- Known Unknown 的关闭率；
+- Unknown Known 的暴露数量；
+- Unknown Unknown 的新发现；
+- 小测和最终考试正确率；
+- 纠正误解次数；
+- 用户主动提问的数量与深度；
+- 是否能够迁移到新情境；
+- 用户偏好：快速决策、深入学习或混合模式。
+
+难度规则：
+
+- 掌握度低：减少术语，增加对比示例和二选一问题；
+- 掌握度中：要求说明理由、选择指标和识别边界；
+- 掌握度高：使用反例、冲突证据、迁移题和方案取舍；
+- 连续两关高分：允许跳过重复基础关；
+- 连续两关低分：回到薄弱知识卡，不惩罚用户、不降低最终目标；
+- 出现新的 Unknown Unknown：插入隐藏支线或 Boss 关。
+
+## 7. 每回合必须给出的正反馈
+
+结算必须具体展示：
+
+- 本关完成状态；
+- 总进度与预计剩余时间；
+- Q1 Known Knowns：Candidate / Confirmed / Verified 变化；
+- Q2 Known Unknowns：新增、关闭与剩余；
+- Q3 Unknown Knowns：本轮暴露了什么隐含知识或偏好；
+- Q4 Unknown Unknowns：新发现的隐藏风险或机会；
+- 认知分数变化；
+- 科研目标达成状态；
+- Goal vN 相比上一版的变化；
+- 解锁的知识卡、决策卡、实验卡或 Agent；
+- 下一关为什么会更简单或更困难。
+
+反馈必须指出真实进步，例如：“你已经区分 pLDDT 与外部正确性，因此下一关将直接进入局部指标设计。”不要只说“做得很好”。
+
+## 8. 默认双战役
+
+### 战役 A｜认知建立
+
+1. 真实需求定位；
+2. 任务与基本概念；
+3. 数据和公开材料；
+4. 指标与证据边界；
+5. 方法与 baseline；
+6. 失败、偏差与风险；
+7. 故事线或研究假设。
+
+### 战役 B｜科研决策
+
+1. 冻结可验收目标；
+2. 数据、split 和隐私边界；
+3. baseline 与公平比较；
+4. 指标、验收与失败信号；
+5. 实验或执行方案；
+6. 多 Agent 分工与通信；
+7. 3–5 轮失败退出与根因分析。
+
+可依据四象限合并、跳过或加深关卡，但最终状态仍需映射到七关 Schema。
+
+## 9. 计分与理解凭证
+
+默认认知分可配置为：
+
+- 新增 Verified Known Known：+10；
+- 正确纠正一个误解：+20；
+- 发现重要 Known Unknown：+5；
+- 暴露一个 Unknown Known：+10；
+- 发现一个 Unknown Unknown：+15；
+- 通过关卡小测：+20；
+- 完成迁移题：+20；
+- 最终考试按权重计分。
+
+分数只用于解释进度和激励，不等于真实科研能力、创造力或产品效果。
+
+## 10. 最终考试
+
+考试覆盖：
+
+- 决策应用 60%；
+- 核心概念理解 20%；
+- 新项目迁移 20%。
+
+题目必须来自当前真实任务，不能只考术语。例如：
+
+- 全局结构接近但局部位点误差较大时，如何调整结论？
+- 为什么高 pLDDT 不能替代实验结构的局部比较？
+- 将当前试点迁移到 docking 时需要增加哪些输入、baseline 和控制？
+
+未达到通过线时，定位薄弱关卡并补证据，不修改答案或阈值伪造通关。
+
+## 11. Goal Forge 与执行
+
+最终 Goal 必须包含：
+
+- 冻结 Context 与可追溯材料路径；
+- 真实研究目标、非目标和用户偏好；
+- 四象限认知地图摘要；
+- 输入、数据、baseline、指标、实验和产物；
+- 成功标准和覆盖率；
+- 多 Agent 分工、模型路由和交接；
+- 测试、独立审查、中文 Git/PR/合并；
+- 同一关键问题 3–5 轮实质不同尝试失败后的根因分析。
+
+考试通过后，默认继续进入执行阶段：
+
+```text
+Goal Forge
+→ Agent 分工
+→ 执行与工具调用
+→ 实际验证
+→ 结果回写四象限
+→ 修正 Goal 或完成交付
+```
+
+除非用户只要求目标提示词，否则不要在生成 Goal 后停止。
+
+## 12. 安装、运行与交付
+
+- 保持 `skills/research-quest/` 与 `shared/game-state.schema.json` 的相对位置；
+- 自动演示固定 seed、60–90 秒、非循环，不计正式理解分；
+- 公开案例可以是真实科研需求，但不能虚构尚未执行的实验结果；
+- 三个通用 fixture 必须继续通过；
+- game-state 与 Goal 导出必须通过 Schema 和公开安全检查；
+- 完成检查见 [`references/rules-and-templates.md`](references/rules-and-templates.md)。
