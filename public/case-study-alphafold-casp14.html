@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="从 AlphaFold2 与 CASP14 的公开背景出发，设计一个评估酶活性位点局部几何的可执行公开试点。" />
+    <meta name="description" content="从 AlphaFold2 与 CASP14 的公开背景出发，通过 Known–Unknown 四象限把酶活性位点几何需求编译成可执行科研 Goal。" />
     <title>从 CASP14 到真实科研需求：AlphaFold2 酶活性位点几何试点</title>
     <style>
       :root { color: #172554; background: #f8fafc; font-family: Inter, "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif; line-height: 1.7; }
@@ -31,8 +31,12 @@
       .steps li { position: relative; padding: 1rem 1rem 1rem 4rem; border: 1px solid #dbeafe; border-radius: .9rem; background: #fff; }
       .steps li::before { position: absolute; left: 1rem; top: 1.05rem; display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: #1d4ed8; color: #fff; font-weight: 800; counter-increment: step; content: counter(step); }
       .steps strong { display: block; }
-      .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      .grid section { padding: 1rem 1.1rem; border: 1px solid #dbeafe; border-radius: 1rem; background: #fff; }
+      .grid, .quadrants { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .grid section, .quadrants section { padding: 1rem 1.1rem; border: 1px solid #dbeafe; border-radius: 1rem; background: #fff; }
+      .quadrants section:nth-child(1) { background: #eff6ff; border-color: #93c5fd; }
+      .quadrants section:nth-child(2) { background: #fffbeb; border-color: #fde68a; }
+      .quadrants section:nth-child(3) { background: #f5f3ff; border-color: #c4b5fd; }
+      .quadrants section:nth-child(4) { background: #fef2f2; border-color: #fca5a5; }
       .contract { overflow-x: auto; padding: 1.25rem; border-radius: 1rem; color: #e2e8f0; background: #0f172a; }
       .contract pre { margin: 0; white-space: pre-wrap; font: .9rem/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; }
       .cta { margin-top: 2.5rem; padding: 1.5rem; border-radius: 1rem; color: #ecfeff; background: #0f172a; }
@@ -40,7 +44,7 @@
       .cta a { color: #67e8f9; }
       .sources { font-size: .94rem; color: #475569; }
       footer { padding: 0 0 2.5rem; color: #64748b; font-size: .88rem; }
-      @media (max-width: 680px) { .hero { padding-top: 3rem; } .grid { grid-template-columns: 1fr; } }
+      @media (max-width: 680px) { .hero { padding-top: 3rem; } .grid, .quadrants { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
@@ -48,8 +52,8 @@
       <div class="hero__inner">
         <p class="eyebrow">Research Quest · 真实科研需求 Demo</p>
         <h1>从 CASP14 到真实科研需求：AlphaFold2 能否支持酶活性位点几何初筛？</h1>
-        <p class="lede">这不是一篇“AlphaFold2 很厉害”的回顾，而是一项尚未预设结果的公开试点设计：用 10 个可追溯酶目标，比较 AlphaFold DB 预测与实验结构中的局部活性位点几何，并把整个需求通过游戏化选择编译成可执行 Codex Goal。</p>
-        <span class="badge">公开事实 + 真实需求 + 无预设实验结果</span>
+        <p class="lede">这不是一篇“AlphaFold2 很厉害”的回顾，而是一项尚未预设结果的公开试点设计：用 10 个可追溯酶目标，比较 AlphaFold DB 预测与实验结构中的局部活性位点几何，并让 AI 依据 Known–Unknown 四象限持续优化关卡、Goal 和执行方式。</p>
+        <span class="badge">公开事实 + 真实需求 + 四象限认知地图 + Goal 执行</span>
       </div>
     </header>
     <main>
@@ -59,7 +63,7 @@
           <p class="label">公开背景</p>
           <p>CASP14 提供了 AlphaFold2 结构预测能力的重要公开证据；AlphaFold DB 进一步提供了可下载的结构预测与逐残基 pLDDT。但真实科研使用不会止于“整体预测很准”：酶研究者还需要知道，局部催化残基和活性位点邻域是否足以支持下一步分析。</p>
         </div>
-        <p>只讲“预测不能直接当结论”能够解释证据边界，却不能展示 Research Quest 的核心价值。真正有传播力的 Demo 应让用户看到：一个现实需求如何被拆成关键问题，每一次选择如何改变数据、指标、验收和 Agent 分工，最后如何生成可以直接执行的科研任务合同。</p>
+        <p>只讲“预测不能直接当结论”能够解释证据边界，却不能展示 Research Quest 的核心价值。真正有传播力的 Demo 应让用户看到：一个现实需求如何被拆成关键问题，每一次选择如何改变数据、指标、验收和 Agent 分工，AI 又如何根据用户的认知地图调整下一轮。</p>
 
         <h2>本 Demo 采用的真实科研任务</h2>
         <div class="goal-box">
@@ -67,6 +71,15 @@
           <p><strong>在没有目标实验结构可直接用于下游分析的情境下，AlphaFold2 / AlphaFold DB 预测是否足以支持酶活性位点几何的初步筛选？</strong></p>
           <p>首轮公开试点规划 10 个酶目标，要求 AlphaFold DB 预测、匹配实验 PDB 结构和公开催化残基注释三类输入齐全，并以至少 8 个目标形成有效配对分析作为完成信号。</p>
         </div>
+
+        <h2>Known–Unknown 四象限如何驱动真实任务</h2>
+        <div class="quadrants">
+          <section><h3>Q1｜Known Knowns</h3><p>已经表达并能够使用的知识。Candidate 只是候选认识，Confirmed 是已确认陈述，只有通过小测、应用或迁移的 Verified 才计入认知分。</p></section>
+          <section><h3>Q2｜Known Unknowns</h3><p>用户明确知道还缺少的答案，例如局部区域如何冻结、pLDDT 能证明什么、哪些目标可以可靠映射。</p></section>
+          <section><h3>Q3｜Unknown Knowns</h3><p>用户可能已有但尚未表达的经验与偏好，例如过去如何判断结构质量、愿意接受多大风险、偏好快速试点还是深入分析。</p></section>
+          <section><h3>Q4｜Unknown Unknowns</h3><p>用户和 AI 起初都未预见的问题，例如链映射冲突、构象状态差异或失败样本暴露出的新偏差。发现它们意味着解锁隐藏地图，而不是通关失败。</p></section>
+        </div>
+        <p>四个象限不是总结页：它们决定下一关是解释基础概念、要求方案取舍、插入失败 Boss，还是直接进入 Agent 执行。</p>
 
         <h2>这项需求需要冻结什么</h2>
         <div class="grid">
@@ -76,15 +89,15 @@
           <section><h3>结论合同</h3><p>只讨论局部几何初筛的适用性和失败模式，不外推到催化、结合或药物发现。</p></section>
         </div>
 
-        <h2>游戏怎样把需求编译成 Goal</h2>
+        <h2>Game Loop 与 Goal Loop 同步推进</h2>
         <ol class="steps">
-          <li><strong>冻结下游决定。</strong>先回答“我们想用预测做什么”，而不是从一个著名模型的名字开始。</li>
-          <li><strong>建立公开证据三联表。</strong>每个目标都需要预测、实验参考和活性位点注释。</li>
-          <li><strong>区分置信度与外部正确性。</strong>pLDDT 进入结果表，但不能代替局部实验参考。</li>
-          <li><strong>冻结局部区域和指标。</strong>避免分析后再挑选表现最好的残基或阈值。</li>
-          <li><strong>记录覆盖与失败。</strong>无法映射、结构状态不同和缺失残基都必须留下失败码。</li>
-          <li><strong>分配多 Agent。</strong>数据来源、映射分析、指标实现和独立复审由不同角色负责。</li>
-          <li><strong>冻结验收与退出。</strong>至少 8/10 个目标有效；同一关键问题 3–5 轮不同尝试仍失败时输出根因分析。</li>
+          <li><strong>展示完整路线。</strong>先告诉用户预计几关、多久通关、最终会得到什么。</li>
+          <li><strong>每关只问一个关键问题。</strong>选择必须改变数据、指标、规模、边界、Agent、验收或退出方式。</li>
+          <li><strong>回答用户的额外问题。</strong>AI 先回答或运行，再判断该问题暴露了哪个象限，并更新下一关。</li>
+          <li><strong>给出正反馈。</strong>每轮展示四象限变化、认知分、Goal vN、科研进度和预计剩余时间。</li>
+          <li><strong>根据认知地图调难度。</strong>基础薄弱时减少术语；掌握较好时加入冲突证据、失败案例与迁移题。</li>
+          <li><strong>Goal Forge 后继续执行。</strong>Agent 根据目标合同运行数据、代码、实验、审查和交付，不在生成提示词后停止。</li>
+          <li><strong>真实结果回写地图。</strong>执行结果关闭 Known Unknown、升级 Verified，并暴露新的 Unknown Unknown。</li>
         </ol>
 
         <h2>通关后导出的目标提示词长什么样</h2>
@@ -94,18 +107,20 @@
 目标：对 10 个公开酶目标执行预测—实验结构配对分析，
 至少完成 8 个有效目标。
 
+认知 Context：保留 Known–Unknown 四象限和用户偏好。
 输入：AlphaFold DB + PDB + 催化残基公开注释。
 区域：催化残基及实验结构中的固定 6 Å 邻域。
 指标：TM-score、全局/局部 RMSD、pLDDT 分层、覆盖率、失败码。
 Agent：数据、映射、分析、可视化、独立复审与总控分离。
+执行：Goal Forge 后自动进入工具调用、验证和四象限回写。
 退出：同一关键问题 3–5 轮不同修复仍失败后输出根因分析。
 边界：不得把局部结构结果写成催化、结合或药物发现结论。</pre>
         </div>
 
-        <h2>最终考试也必须服务真实任务</h2>
+        <h2>最终考试必须服务真实任务</h2>
         <div class="lesson-box">
           <p class="label">应用题，而不是口号题</p>
-          <p>玩家需要处理“全局结构很接近，但催化残基邻域误差较大”的目标，解释为什么高 pLDDT 仍不等于催化几何正确，并说明若把试点迁移到分子对接，需要增加哪些配体、基线和控制。只有这些判断通过后，Goal 才能被冻结。</p>
+          <p>玩家需要处理“全局结构很接近，但催化残基邻域误差较大”的目标，解释为什么高 pLDDT 仍不等于催化几何正确，并说明若把试点迁移到分子对接，需要增加哪些配体、基线和控制。只有这些判断通过后，Goal 才能被冻结并进入执行。</p>
         </div>
 
         <h2>必须保留的结论边界</h2>
@@ -115,13 +130,13 @@ Agent：数据、映射、分析、可视化、独立复审与总控分离。
 
         <section class="cta" aria-labelledby="try-demo-title">
           <h2 id="try-demo-title">亲自把真实需求玩成一份 Goal</h2>
-          <p><a href="./">打开 Research Quest 互动 Demo</a>，逐关决定真实试点的数据、指标和执行方式；也可以观看 <a href="./research-quest-demo-75s.webm">约 75 秒演示视频</a>。</p>
+          <p><a href="./">打开 Research Quest 互动 Demo</a>，逐关查看四象限如何改变问题难度、科研合同和 Agent 执行；也可以观看 <a href="./research-quest-demo-75s.webm">约 75 秒演示视频</a>。</p>
         </section>
 
         <h2>公开来源与证据边界</h2>
-        <p class="sources">背景来源：<a href="https://www.nature.com/articles/s41586-021-03819-2">Jumper et al., “Highly accurate protein structure prediction with AlphaFold”, Nature (2021)</a>；<a href="https://alphafold.ebi.ac.uk/">AlphaFold Protein Structure Database</a>；<a href="https://www.ebi.ac.uk/pdbe/">PDBe</a>。CASP14 与数据库信息属于公开事实；10 个酶目标、6 Å 邻域、指标、验收和多 Agent 分工是本 Demo 为展示需求编译过程而设计的试点合同，尚不代表执行结果。</p>
+        <p class="sources">背景来源：<a href="https://www.nature.com/articles/s41586-021-03819-2">Jumper et al., “Highly accurate protein structure prediction with AlphaFold”, Nature (2021)</a>；<a href="https://alphafold.ebi.ac.uk/">AlphaFold Protein Structure Database</a>；<a href="https://www.ebi.ac.uk/pdbe/">PDBe</a>。CASP14 与数据库信息属于公开事实；10 个酶目标、6 Å 邻域、指标、验收和多 Agent 分工是本 Demo 为展示需求编译过程而设计的试点合同，尚未作为真实实验结果执行。</p>
       </article>
     </main>
-    <footer>Research Quest · 用公开真实需求生成可执行科研 Goal · 不上传用户输入，不构成科研或学习效果声明。</footer>
+    <footer>Research Quest · 真实科研需求、Known–Unknown 四象限与 Goal-driven Agent 执行 Demo · 不上传用户输入，不构成科研或学习效果声明。</footer>
   </body>
 </html>
