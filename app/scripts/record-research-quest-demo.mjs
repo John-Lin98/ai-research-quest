@@ -2,7 +2,9 @@ import { chromium } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const baseUrl = process.env.RESEARCH_QUEST_URL ?? "http://127.0.0.1:4174/";
+const requestedUrl = process.env.RESEARCH_QUEST_URL ?? "http://127.0.0.1:4174/";
+const dashboardUrl = new URL(requestedUrl);
+dashboardUrl.searchParams.set("view", "full");
 const output = resolve(
   process.cwd(),
   process.env.RESEARCH_QUEST_VIDEO ?? "public/research-quest-demo-75s.webm",
@@ -16,7 +18,7 @@ const context = await browser.newContext({
   recordVideo: { dir: videoDir, size: { width: 1440, height: 900 } },
 });
 const page = await context.newPage();
-await page.goto(baseUrl, { waitUntil: "networkidle" });
+await page.goto(dashboardUrl.toString(), { waitUntil: "networkidle" });
 
 await page.evaluate(() => {
   const overlay = document.createElement("aside");

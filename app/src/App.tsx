@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { QuestDashboard, QuestShell } from "./components/index.ts";
+import { ChatQuestDemo, QuestDashboard, QuestShell } from "./components/index.ts";
 import { scoreExamAnswer, selectQuestView } from "./core/index.ts";
 import { QuestStore } from "./state/index.ts";
 import type { CampaignId, GameState, LevelId } from "./types/index.ts";
@@ -17,7 +17,7 @@ function download(record: { content: string | null; filename: string | null; med
   return true;
 }
 
-export default function App() {
+function FullDashboardApp() {
   const [state, setState] = useState<GameState>(() => store.getState());
   const [notice, setNotice] = useState("准备把真实科研需求编译成执行 Goal。");
   const startedAt = useRef<number | null>(null);
@@ -83,6 +83,11 @@ export default function App() {
 
   return (
     <QuestShell>
+      <nav className="rq-product-nav" aria-label="完整 Dashboard 导航">
+        <a href="./">返回聊天式 Demo</a>
+        <a href="https://github.com/John-Lin98/ai-research-quest/releases/tag/v1.1.0">安装 Skill</a>
+        <a href="./case-study-alphafold-casp14.html">案例博文</a>
+      </nav>
       <p className="rq-live-status" role="status">{notice}</p>
       <QuestDashboard
         state={state}
@@ -170,4 +175,9 @@ export default function App() {
       />
     </QuestShell>
   );
+}
+
+export default function App() {
+  const view = new URLSearchParams(window.location.search).get("view");
+  return view === "full" ? <FullDashboardApp /> : <ChatQuestDemo />;
 }
