@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="从 AlphaFold2 与 CASP14 的公开背景出发，通过固定坐标的 Known–Unknown 四象限和每回合 1–3 个关键问题，把酶活性位点几何需求编译成可执行科研 Goal。" />
+    <meta name="description" content="Research Quest 先通过游戏关卡了解真实科研项目、建立 Known–Unknown 四象限并冻结 Context，再生成可交给 Codex 执行的目标提示词。" />
     <title>从 CASP14 到真实科研需求：AlphaFold2 酶活性位点几何试点</title>
     <style>
       :root { color: #172554; background: #f8fafc; font-family: Inter, "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif; line-height: 1.7; }
@@ -61,7 +61,7 @@
         <p class="eyebrow">Research Quest · 真实科研需求 Demo</p>
         <h1>从 CASP14 到真实科研需求：AlphaFold2 能否支持酶活性位点几何初筛？</h1>
         <p class="lede">这不是一篇“AlphaFold2 很厉害”的回顾，而是一项尚未预设结果的公开试点设计：用 10 个可追溯酶目标，比较 AlphaFold DB 预测与实验结构中的局部活性位点几何，并让 AI 依据固定坐标的 Known–Unknown 四象限持续优化关卡、Goal 和执行方式。</p>
-        <span class="badge">真实需求 + 固定四象限 + 每轮 1–3 个问题 + Goal 执行</span>
+        <span class="badge">先沟通建 Context + 再生成 Goal + Codex 精准执行</span>
       </div>
     </header>
     <main>
@@ -78,6 +78,15 @@
           <p class="label">研究问题</p>
           <p><strong>在没有目标实验结构可直接用于下游分析的情境下，AlphaFold2 / AlphaFold DB 预测是否足以支持酶活性位点几何的初步筛选？</strong></p>
           <p>首轮公开试点规划 10 个酶目标，要求 AlphaFold DB 预测、匹配实验 PDB 结构和公开催化残基注释三类输入齐全，并以至少 8 个目标形成有效配对分析作为完成信号。</p>
+        </div>
+
+        <h2>为什么要先沟通，再让 Codex 执行</h2>
+        <p>一句“帮我做 AlphaFold2 活性位点评测”并不足以支撑可靠执行：Codex 仍然不知道目标规模、公开输入、残基映射方式、局部区域、指标、结论边界和失败退出条件。Research Quest 先用游戏式小步对话把这些信息逐项讲清楚，再生成执行合同。</p>
+        <div class="grid">
+          <section><h3>阶段 1｜游戏化沟通</h3><p>AI 通过每轮 1–3 个关键问题了解项目事实、已有材料、用户偏好和 Known–Unknown 四象限，并根据回答动态调整后续关卡。</p></section>
+          <section><h3>阶段 1 产物｜Frozen Context</h3><p>只冻结已确认或已验证的信息，同时保留 Known Unknowns、证据边界、验收标准和失败规则，形成可追溯上下文。</p></section>
+          <section><h3>阶段 2｜Goal Forge</h3><p>AI 将 Frozen Context 编译成包含输入、步骤、指标、Agent 分工、测试、验收和退出条件的 Codex 目标提示词。</p></section>
+          <section><h3>阶段 2｜Codex 执行</h3><p>Codex 直接读取 Context + Goal 执行，不再重复猜测已经确认的需求，从而减少返工、目标漂移和上下文遗漏。</p></section>
         </div>
 
         <h2>Known–Unknown 四象限采用固定坐标</h2>
@@ -120,15 +129,15 @@
           <section><h3>结论合同</h3><p>只讨论局部几何初筛的适用性和失败模式，不外推到催化、结合或药物发现。</p></section>
         </div>
 
-        <h2>Game Loop 与 Goal Loop 同步推进</h2>
+        <h2>先沟通再执行的完整闭环</h2>
         <ol class="steps">
-          <li><strong>展示完整路线。</strong>先告诉用户预计几关、多久通关、最终会得到什么。</li>
-          <li><strong>每轮只问 1–3 个关键问题。</strong>主问题决定路线，补充问题只验证证据或边界。</li>
-          <li><strong>回答用户的额外问题。</strong>AI 先回答或运行，再判断该问题暴露了哪个象限，并更新下一关。</li>
-          <li><strong>防止错误传播。</strong>未验证内容保持 Candidate；错误回答不进入后续 Goal。</li>
-          <li><strong>给出正反馈。</strong>每轮展示四象限变化、认知分、Goal vN、科研进度和预计剩余时间。</li>
-          <li><strong>根据认知地图调难度。</strong>基础薄弱时减少术语；掌握较好时加入冲突证据、失败案例与迁移题。</li>
-          <li><strong>Goal Forge 后继续执行。</strong>Agent 根据目标合同运行数据、代码、实验、审查和交付，不在生成提示词后停止。</li>
+          <li><strong>读取真实项目。</strong>AI 先读取需求、材料和历史提示词，展示预计关卡、总时间和最终产物。</li>
+          <li><strong>游戏化小步对齐。</strong>每轮只问 1–3 个关键问题，逐步补齐目标、证据、偏好和执行边界。</li>
+          <li><strong>维护认知地图。</strong>每次回答都更新 Known–Unknown 四象限，并据此调整下一关难度。</li>
+          <li><strong>冻结任务 Context。</strong>确认项目输入、指标、风险、验收和失败规则；未验证内容不得成为执行前提。</li>
+          <li><strong>锻造 Codex Goal。</strong>AI 生成明确引用 Frozen Context 的完整目标提示词，而不是只输出一段宽泛建议。</li>
+          <li><strong>Codex 自动执行。</strong>Codex 按 Goal 完成数据、代码、实验、测试、审查和交付，避免重复询问已经冻结的决定。</li>
+          <li><strong>结果回写与修订。</strong>执行结果更新四象限和 Goal；发现新未知时进入下一轮小步迭代。</li>
         </ol>
 
         <h2>通关后导出的目标提示词长什么样</h2>
@@ -138,8 +147,9 @@
 目标：对 10 个公开酶目标执行预测—实验结构配对分析，
 至少完成 8 个有效目标。
 
-认知 Context：保留固定坐标的 Known–Unknown 四象限和用户偏好。
+Frozen Context：保留固定四象限、用户偏好、项目材料、开放未知和证据边界。
 提问规则：每轮 1–3 个关键问题，未验证回答不得进入执行合同。
+交接规则：Codex 必须先读取 Frozen Context，再按照本 Goal 执行，不重复询问已冻结决定。
 输入：AlphaFold DB + PDB + 催化残基公开注释。
 区域：催化残基及实验结构中的固定 6 Å 邻域。
 指标：TM-score、全局/局部 RMSD、pLDDT 分层、覆盖率、失败码。
@@ -169,6 +179,6 @@ Agent：数据、映射、分析、可视化、独立复审与总控分离。
         <p class="sources">背景来源：<a href="https://www.nature.com/articles/s41586-021-03819-2">Jumper et al., “Highly accurate protein structure prediction with AlphaFold”, Nature (2021)</a>；<a href="https://alphafold.ebi.ac.uk/">AlphaFold Protein Structure Database</a>；<a href="https://www.ebi.ac.uk/pdbe/">PDBe</a>。CASP14 与数据库信息属于公开事实；10 个酶目标、6 Å 邻域、指标、验收和多 Agent 分工是本 Demo 为展示需求编译过程而设计的试点合同，尚未作为真实实验结果执行。</p>
       </article>
     </main>
-    <footer>Research Quest · 真实科研需求、固定 Known–Unknown 四象限与小步 Goal-driven Agent 执行 Demo · 不上传用户输入，不构成科研或学习效果声明。</footer>
+    <footer>Research Quest · 先用游戏关卡建立认知地图与 Frozen Context，再生成 Goal 交给 Codex 执行 · 不上传用户输入，不构成科研或学习效果声明。</footer>
   </body>
 </html>

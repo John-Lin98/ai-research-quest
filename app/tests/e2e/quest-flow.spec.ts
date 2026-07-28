@@ -33,7 +33,7 @@ async function reachFrozenGoalWithCandidates(page: Page) {
 test("桌面端展示真实科研任务、四象限与可操作的 Candidate→Verified 流程", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "把一个真实科研需求玩成可执行 Goal" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "先把项目讲清楚，再让 Codex 执行" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "AlphaFold2 预测能否支持酶活性位点几何初筛？" })).toBeVisible();
   await expect(page.getByRole("region", { name: "双战役地图" })).toBeVisible();
   await expect(page.getByRole("complementary", { name: "公开演示数据说明" })).toContainText("真实公开科研需求");
@@ -105,14 +105,16 @@ test("真实需求面板与完整案例博文可访问", async ({ page }) => {
   await page.goto("/");
   const caseStudy = page.getByRole("region", { name: "AlphaFold2 预测能否支持酶活性位点几何初筛？" });
   await expect(caseStudy).toContainText("真实公开科研需求 · 无预设结果");
-  await expect(caseStudy).toContainText("固定坐标的 Known–Unknown 四象限");
-  await expect(caseStudy).toContainText("每回合通常只问 1 个、最多 3 个关键问题");
+  await expect(caseStudy).toContainText("阶段 1｜游戏化沟通");
+  await expect(caseStudy).toContainText("中间产物｜Frozen Context");
+  await expect(caseStudy).toContainText("阶段 2｜Codex 执行");
   await expect(caseStudy.getByRole("link", { name: "查看完整真实需求：从 CASP14 到活性位点公开试点" })).toHaveAttribute("href", "./case-study-alphafold-casp14.html");
 
   await page.goto("/case-study-alphafold-casp14.html");
   await expect(page.getByRole("heading", { name: "从 CASP14 到真实科研需求：AlphaFold2 能否支持酶活性位点几何初筛？" })).toBeVisible();
+  await expect(page.getByText("为什么要先沟通，再让 Codex 执行")).toBeVisible();
   await expect(page.getByText("Known–Unknown 四象限采用固定坐标")).toBeVisible();
-  await expect(page.getByText("每回合为什么只问 1–3 个问题")).toBeVisible();
+  await expect(page.getByText("先沟通再执行的完整闭环")).toBeVisible();
 });
 
 test("考试 rubric 拒绝无关回答，并接受真实任务判断", async ({ page }, testInfo) => {
@@ -146,7 +148,7 @@ test("考试未通过时只回到薄弱关卡并可重新参加", async ({ page 
 
 test("生成桌面与移动首屏发布截图", async ({ page }, testInfo) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "把一个真实科研需求玩成可执行 Goal" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "先把项目讲清楚，再让 Codex 执行" })).toBeVisible();
   await page.screenshot({
     path: testInfo.outputPath(`${testInfo.project.name}-home.png`),
     fullPage: true,
@@ -155,7 +157,7 @@ test("生成桌面与移动首屏发布截图", async ({ page }, testInfo) => {
 
 test("移动视口不产生横向页面溢出", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "把一个真实科研需求玩成可执行 Goal" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "先把项目讲清楚，再让 Codex 执行" })).toBeVisible();
   await expect(page.getByRole("region", { name: "Known–Unknown 四象限" })).toBeVisible();
 
   const dimensions = await page.evaluate(() => ({
