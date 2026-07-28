@@ -1,0 +1,52 @@
+name: 临时诊断聊天式 Demo E2E
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.event.pull_request.number == 6
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出 PR 分支
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+      - name: 配置 Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: 安装锁定依赖
+        run: npm ci --prefix app
+      - name: 安装 Chromium
+        run: npx --prefix app playwright install --with-deps chromium
+      - name: 运行并记录浏览器测试
+        id: e2e
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          npm run test:e2e --prefix app > /tmp/chat-demo-e2e.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          tail -n 350 /tmp/chat-demo-e2e.log
+          exit "$status"
+      - name: 上传完整诊断日志
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: chat-demo-e2e-log
+          path: /tmp/chat-demo-e2e.log
+          if-no-files-found: error
+          retention-days: 1
+      - name: 根据诊断结果结束
+        if: always()
+        shell: bash
+        run: test "${{ steps.e2e.outputs.status }}" = "0"
