@@ -73,6 +73,7 @@ textarea { font: inherit; }
 }
 @media (max-width: 480px) {
   .cq-mode-switch { grid-template-columns: 1fr; }
-  .cq-mini-map__grid { grid-template-columns: 1fr; }
   .cq-product-links a, .rq-product-nav a { flex: 1 1 45%; justify-content: center; text-align: center; }
+  .cq-quadrant { padding: .5rem; }
+  .cq-quadrant p { font-size: .72rem; }
 }
