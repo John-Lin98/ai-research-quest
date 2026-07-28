@@ -258,12 +258,12 @@ function ActualCasePanel() {
     <div className="rq-case-study__intro">
       <p className="rq-eyebrow">真实公开科研需求 · 无预设结果</p>
       <h2 id="actual-case-title">AlphaFold2 预测能否支持酶活性位点几何初筛？</h2>
-      <p>CASP14 证明了 AlphaFold2 在公开盲测中的结构预测能力，但真实科研使用还需要回答更具体的问题：整体折叠看起来合理时，局部活性位点是否也足够准确，能否支持下一步分析？本 Demo 不预设答案，而是通过固定坐标的 Known–Unknown 四象限把这个需求编译成可执行试点。</p>
+      <p>CASP14 证明了 AlphaFold2 在公开盲测中的结构预测能力，但真实科研使用还需要回答更具体的问题：整体折叠看起来合理时，局部活性位点是否也足够准确，能否支持下一步分析？本 Demo 不把一句模糊需求直接交给 Codex，而是先通过游戏关卡补齐项目信息和认知地图，再把冻结的 Context 与 Goal 交给 Codex 执行。</p>
     </div>
-    <div className="rq-case-study__grid">
-      <article><strong>真实输入</strong><p>AlphaFold DB 预测、匹配的实验 PDB 结构和公开催化残基注释；所有目标、排除和映射失败均需可追溯。</p></article>
-      <article><strong>快速小步与认知自适应</strong><p>每回合通常只问 1 个、最多 3 个关键问题；如果上一关 Verified Known Knowns 较少，下一关会自动补基础、减少术语。</p></article>
-      <article><strong>最终获得什么</strong><p>一份可直接交给 Codex 的科研任务合同，包含数据、步骤、指标、验收、用户偏好、根因分析和结论边界。</p></article>
+    <div className="rq-case-study__grid" aria-label="先沟通再执行流程">
+      <article><strong>阶段 1｜游戏化沟通</strong><p>AI 每轮只问 1–3 个关键问题，收集项目背景、已有材料、约束、用户偏好和 Known–Unknown 四象限。</p></article>
+      <article><strong>中间产物｜Frozen Context</strong><p>把已确认知识、开放未知、证据边界、数据、指标、验收与失败规则冻结为可追溯执行上下文。</p></article>
+      <article><strong>阶段 2｜Codex 执行</strong><p>AI 基于 Frozen Context 生成目标提示词；Codex 直接开发、测试、审查和交付，减少重复询问与目标误解。</p></article>
     </div>
     <p className="rq-case-study__sources">公开背景：<a href="https://www.nature.com/articles/s41586-021-03819-2" target="_blank" rel="noreferrer">AlphaFold2 Nature 论文</a> · <a href="https://alphafold.ebi.ac.uk/" target="_blank" rel="noreferrer">AlphaFold DB</a> · <a href="https://www.ebi.ac.uk/pdbe/" target="_blank" rel="noreferrer">PDBe</a></p>
     <a className="rq-case-study__link" href="./case-study-alphafold-casp14.html">查看完整真实需求：从 CASP14 到活性位点公开试点</a>
@@ -281,7 +281,7 @@ export function QuestDashboard(props: QuestDashboardProps) {
   const { state, view } = props;
   return <main className="rq-app" aria-labelledby="quest-title">
     <a className="rq-skip-link" href="#quest-main">跳至主要内容</a>
-    <header className="rq-hero"><p className="rq-eyebrow">Research Quest｜AI Research Game · 真实科研任务 Demo</p><h1 id="quest-title">把一个真实科研需求玩成可执行 Goal</h1><p>{view.projectGoal.summary}</p><p className="rq-muted">每回合只处理 1–3 个关键问题，并更新固定坐标的 Known–Unknown 四象限；通关后得到可直接交给 Agent 的科研任务合同。</p><ProgressBar value={view.overallProgress} label="总进度" /><p className="rq-muted">预计剩余 {view.estimatedRemainingTime.min}–{view.estimatedRemainingTime.max} 分钟 · 当前阶段：{view.phase}</p></header>
+    <header className="rq-hero"><p className="rq-eyebrow">Research Quest｜AI Research Game · 真实科研任务 Demo</p><h1 id="quest-title">先把项目讲清楚，再让 Codex 执行</h1><p>{view.projectGoal.summary}</p><p className="rq-muted">游戏关卡先收集项目背景、材料、约束、偏好与 Known–Unknown 四象限；确认后冻结 Context + Goal，再交给 Codex 或多 Agent 精准执行。</p><ProgressBar value={view.overallProgress} label="总进度" /><p className="rq-muted">预计剩余 {view.estimatedRemainingTime.min}–{view.estimatedRemainingTime.max} 分钟 · 当前阶段：{view.phase}</p></header>
     <ActualCasePanel />
     <DemoControls {...props} />
     <div id="quest-main" className="rq-layout" tabIndex={-1}>
