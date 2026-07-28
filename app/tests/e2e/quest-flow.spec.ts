@@ -1,7 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
+const FULL_DEMO = "/?view=full";
+
 async function reachFinalExam(page: Page) {
-  await page.goto("/");
+  await page.goto(FULL_DEMO);
   await page.getByRole("group", { name: "选择一个下一步" }).getByRole("button").first().click();
   const cognitionMap = page.getByRole("region", { name: "Known–Unknown 四象限" });
 
@@ -15,7 +17,7 @@ async function reachFinalExam(page: Page) {
 }
 
 async function reachFrozenGoalWithCandidates(page: Page) {
-  await page.goto("/");
+  await page.goto(FULL_DEMO);
   await page.getByRole("group", { name: "选择一个下一步" }).getByRole("button").first().click();
   for (let level = 0; level < 14; level += 1) {
     await page.getByRole("group", { name: "选择一个下一步" }).getByRole("button").first().click();
@@ -31,7 +33,7 @@ async function reachFrozenGoalWithCandidates(page: Page) {
 }
 
 test("桌面端展示真实科研任务、四象限与可操作的 Candidate→Verified 流程", async ({ page }) => {
-  await page.goto("/");
+  await page.goto(FULL_DEMO);
 
   await expect(page.getByRole("heading", { name: "先把项目讲清楚，再让 Codex 执行" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "AlphaFold2 预测能否支持酶活性位点几何初筛？" })).toBeVisible();
@@ -84,7 +86,7 @@ test("锻造 Goal 后可导出且 Goal 包含四象限与持续执行", async ({
 });
 
 test("键盘可使用跳转链接和自动演示控制", async ({ page }) => {
-  await page.goto("/");
+  await page.goto(FULL_DEMO);
 
   const skipLink = page.getByRole("link", { name: "跳至主要内容" });
   await skipLink.focus();
@@ -102,7 +104,7 @@ test("键盘可使用跳转链接和自动演示控制", async ({ page }) => {
 });
 
 test("真实需求面板与完整案例博文可访问", async ({ page }) => {
-  await page.goto("/");
+  await page.goto(FULL_DEMO);
   const caseStudy = page.getByRole("region", { name: "AlphaFold2 预测能否支持酶活性位点几何初筛？" });
   await expect(caseStudy).toContainText("真实公开科研需求 · 无预设结果");
   await expect(caseStudy).toContainText("阶段 1｜游戏化沟通");
@@ -146,17 +148,17 @@ test("考试未通过时只回到薄弱关卡并可重新参加", async ({ page 
   await expect(page.getByPlaceholder("输入你的研究判断")).toHaveCount(3);
 });
 
-test("生成桌面与移动首屏发布截图", async ({ page }, testInfo) => {
-  await page.goto("/");
+test("生成完整 Dashboard 的桌面与移动发布截图", async ({ page }, testInfo) => {
+  await page.goto(FULL_DEMO);
   await expect(page.getByRole("heading", { name: "先把项目讲清楚，再让 Codex 执行" })).toBeVisible();
   await page.screenshot({
-    path: testInfo.outputPath(`${testInfo.project.name}-home.png`),
+    path: testInfo.outputPath(`${testInfo.project.name}-full-dashboard.png`),
     fullPage: true,
   });
 });
 
-test("移动视口不产生横向页面溢出", async ({ page }) => {
-  await page.goto("/");
+test("完整 Dashboard 移动视口不产生横向页面溢出", async ({ page }) => {
+  await page.goto(FULL_DEMO);
   await expect(page.getByRole("heading", { name: "先把项目讲清楚，再让 Codex 执行" })).toBeVisible();
   await expect(page.getByRole("region", { name: "Known–Unknown 四象限" })).toBeVisible();
 
