@@ -55,7 +55,7 @@ test("每轮最后一个选项暂停闯关并生成固定关卡线索", async ({
     await expect(current.getByText(item.answer, { exact: false })).toBeVisible();
     await expect(current.getByText("主目标进度暂停", { exact: true })).toBeVisible();
     await expect(current.getByText(/已保存到：/)).toBeVisible();
-    await current.getByRole("button", { name: new RegExp(item.choice) }).click();
+    await current.locator(".cq-option-select").filter({ hasText: item.choice }).click();
   }
 
   await expect(page.getByLabel("Research Quest 第 5 回合")).toBeVisible();
@@ -72,7 +72,7 @@ test("普通选择直接成为带头像的用户回复并提供复制兼容", as
   await page.goto("/");
   const first = page.locator(".cq-turn-pair").first();
   await expect(first.getByRole("button", { name: /复制选项：先判断活性位点附近的结构是否可靠/ })).toBeVisible();
-  await first.getByRole("button", { name: /先判断活性位点附近的结构是否可靠/ }).click();
+  await first.locator(".cq-option-select").filter({ hasText: "先判断活性位点附近的结构是否可靠" }).click();
   await expect(first.getByText("先判断活性位点附近的结构是否可靠", { exact: true })).toBeVisible();
   await expect(first.locator(".cq-avatar--user")).toBeVisible();
 });
