@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
 
+async function chooseOption(page: Parameters<typeof test>[0] extends never ? never : any, text: string) {
+  await page.locator(".cq-option-select").filter({ hasText: text }).click();
+}
+
 test("默认首页突出认知地图与 grill-me-with-docs", async ({ page }) => {
   await page.goto("/");
 
@@ -28,14 +32,14 @@ test("固定案例每轮保存 Context、显示目标变化并生成用户气泡
   await expect(page.getByLabel("Research Quest 第 1 回合")).toContainText("当前目标变化 (Goal v0.1)");
   await expect(page.getByLabel("Research Quest 第 1 回合").getByRole("button", { name: /复制选项/ }).first()).toBeVisible();
 
-  await page.getByRole("button", { name: /先判断活性位点附近的结构是否可靠/ }).click();
+  await page.locator(".cq-option-select").filter({ hasText: "先判断活性位点附近的结构是否可靠" }).click();
   await expect(page.getByText("先判断活性位点附近的结构是否可靠", { exact: true }).last()).toBeVisible();
   await expect(page.getByLabel("Research Quest 第 2 回合")).toContainText("research-quest-context.md");
   await expect(page.getByLabel("Research Quest 第 2 回合")).toContainText("grill-me-with-docs");
 
-  await page.getByRole("button", { name: /已有 AlphaFold DB 预测、对应 PDB 和催化残基注释/ }).click();
-  await page.getByRole("button", { name: /只判断局部结构是否适合初步筛选/ }).click();
-  await page.getByRole("button", { name: /检查 10 个公开目标，至少 8 个得到可复核结果/ }).click();
+  await page.locator(".cq-option-select").filter({ hasText: "已有 AlphaFold DB 预测、对应 PDB 和催化残基注释" }).click();
+  await page.locator(".cq-option-select").filter({ hasText: "只判断局部结构是否适合初步筛选" }).click();
+  await page.locator(".cq-option-select").filter({ hasText: "检查 10 个公开目标，至少 8 个得到可复核结果" }).click();
 
   await expect(page.getByLabel("Research Quest 第 5 回合")).toBeVisible();
   const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
