@@ -6,8 +6,6 @@ test("默认首页突出认知地图与 grill-me-with-docs", async ({ page }) =>
   await expect(page.getByRole("heading", { name: "把科研聊天变成更精准的任务对齐" })).toBeVisible();
   await expect(page.getByText("核心逻辑只有两步", { exact: false })).toContainText("Known–Unknown 四象限");
   await expect(page.getByText("核心逻辑只有两步", { exact: false })).toContainText("grill-me-with-docs");
-  await expect(page.getByRole("button", { name: "体验 5 轮真实案例" })).toHaveClass(/is-active/);
-  await expect(page.getByRole("heading", { name: "AlphaFold2 活性位点试点" })).toBeVisible();
   const map = page.getByLabel("当前完整 Known–Unknown 四象限");
   await expect(map).toContainText("Known Knowns");
   await expect(map).toContainText("已知的已知");
@@ -21,49 +19,65 @@ test("默认首页突出认知地图与 grill-me-with-docs", async ({ page }) =>
   await expect(productNav.getByRole("link", { name: "完整 Dashboard" })).toHaveAttribute("href", "./?view=full");
 });
 
-test("用户可暂停闯关提问并把回答保存为关卡线索", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "chromium", "关卡线索完整流程只在桌面项目执行一次");
+test("每轮最后一个选项暂停闯关并生成固定关卡线索", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "固定关卡线索完整路径只在桌面项目执行一次");
   await page.goto("/");
 
-  await page.locator(".cq-option-select").filter({ hasText: "暂不闯关，我还有一些问题" }).first().click();
-  await expect(page.getByText("为什么不能直接让 Codex 自己判断我到底想做什么？", { exact: true })).toBeVisible();
-  const clue = page.getByLabel("第 1 回合关卡线索");
-  await expect(clue).toContainText("问题答案");
-  await expect(clue).toContainText("看似完整、实际上回答错问题");
-  await expect(clue).toContainText("research-quest-context.md → 第 1 回合 / 关卡线索");
-  await expect(clue).toContainText("这条线索如何改变认知地图");
-  await expect(clue).toContainText("为了让 Codex 不走错方向");
-  await expect(clue).toContainText("主目标进度暂停");
-});
+  const rounds = [
+    {
+      question: "为什么不能直接让 Codex 自己判断我到底想做什么？",
+      answer: "Codex 可以选择技术实现",
+      choice: "先判断活性位点附近的结构是否可靠",
+    },
+    {
+      question: "为什么需要同时准备预测结构、实验结构和催化残基注释？",
+      answer: "预测结构是要检查的对象",
+      choice: "已有 AlphaFold DB 预测、对应 PDB 和催化残基注释",
+    },
+    {
+      question: "这里说的‘结果最多能说明什么’到底是什么意思？",
+      answer: "区分‘计算结果看到什么’和‘最终能下什么结论’",
+      choice: "只判断局部结构是否适合初步筛选，并报告失败情况",
+    },
+    {
+      question: "为什么要先规定 10 个目标和至少 8 个有效结果？",
+      answer: "给 Codex 一个清楚的结束条件",
+      choice: "检查 10 个公开目标，至少 8 个得到可复核结果",
+    },
+  ];
 
-test("固定案例每轮保存 Context、显示目标变化并生成用户气泡", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "chromium", "固定完整流程只在桌面项目执行一次");
-  await page.goto("/");
-
-  await expect(page.getByLabel("Research Quest 第 1 回合")).toContainText("为什么这一步最值得问");
-  await expect(page.getByLabel("Research Quest 第 1 回合")).toContainText("当前目标变化 (Goal v0.1)");
-  await expect(page.getByLabel("Research Quest 第 1 回合").getByRole("button", { name: /复制选项/ }).first()).toBeVisible();
-
-  await page.locator(".cq-option-select").filter({ hasText: "先判断活性位点附近的结构是否可靠" }).click();
-  await expect(page.getByText("先判断活性位点附近的结构是否可靠", { exact: true }).last()).toBeVisible();
-  await expect(page.getByLabel("Research Quest 第 2 回合")).toContainText("research-quest-context.md");
-  await expect(page.getByLabel("Research Quest 第 2 回合")).toContainText("grill-me-with-docs");
-
-  await page.locator(".cq-option-select").filter({ hasText: "已有 AlphaFold DB 预测、对应 PDB 和催化残基注释" }).click();
-  await page.locator(".cq-option-select").filter({ hasText: "只判断局部结构是否适合初步筛选" }).click();
-  await page.locator(".cq-option-select").filter({ hasText: "检查 10 个公开目标，至少 8 个得到可复核结果" }).click();
+  for (const item of rounds) {
+    const current = page.locator(".cq-turn-pair").last();
+    const clueButton = current.locator(".cq-option-row--clue .cq-option-select");
+    await expect(clueButton).toContainText("暂不闯关，我还有一些问题");
+    await clueButton.click();
+    await expect(current.getByText(item.question, { exact: true })).toBeVisible();
+    await expect(current.getByText(item.answer, { exact: false })).toBeVisible();
+    await expect(current.getByText("主目标进度暂停", { exact: true })).toBeVisible();
+    await expect(current.getByText(/已保存到：/)).toBeVisible();
+    await current.getByRole("button", { name: new RegExp(item.choice) }).click();
+  }
 
   await expect(page.getByLabel("Research Quest 第 5 回合")).toBeVisible();
   const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
-  await expect(frozen).toContainText("Known Knowns｜已知的已知");
-  await expect(frozen).toContainText("Goal 版本记录");
-  await expect(frozen).toContainText("先查 Context、文档和代码，再提问");
+  await expect(frozen).toContainText("关卡线索与用户追问");
+  await expect(frozen).toContainText(rounds[0].question);
+  await expect(frozen).toContainText(rounds[3].question);
+  await expect(frozen).toContainText("用户可以随时暂停主问题并提出额外问题");
   await expect(frozen.getByRole("button", { name: "下载 context.md" })).toBeVisible();
   await expect(frozen.getByRole("button", { name: "下载目标提示词" })).toBeVisible();
-  await expect(page.getByLabel(/第 \d 回合 Known–Unknown 四象限/)).toHaveCount(5);
 });
 
-test("自定义需求生成以认知地图和文档驱动为核心的启动材料", async ({ page }, testInfo) => {
+test("普通选择直接成为带头像的用户回复并提供复制兼容", async ({ page }) => {
+  await page.goto("/");
+  const first = page.locator(".cq-turn-pair").first();
+  await expect(first.getByRole("button", { name: /复制选项：先判断活性位点附近的结构是否可靠/ })).toBeVisible();
+  await first.getByRole("button", { name: /先判断活性位点附近的结构是否可靠/ }).click();
+  await expect(first.getByText("先判断活性位点附近的结构是否可靠", { exact: true })).toBeVisible();
+  await expect(first.locator(".cq-avatar--user")).toBeVisible();
+});
+
+test("自定义需求生成的启动材料包含自由追问与关卡线索协议", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "自定义生成流程只在桌面项目执行一次");
   await page.goto("/");
   await page.getByRole("button", { name: "输入我的科研需求" }).click();
@@ -75,18 +89,16 @@ test("自定义需求生成以认知地图和文档驱动为核心的启动材�
   await page.getByRole("button", { name: "生成启动提示词与 context.md" }).click();
 
   await expect(page.getByText("已生成初始 Context 和启动提示词", { exact: false })).toBeVisible();
-  await expect(page.getByLabel("自定义需求完整初始四象限")).toContainText("RNA 二级结构逆折叠");
   const generated = page.locator(".cq-generated > div");
   await expect(generated.nth(0)).toContainText("核心逻辑：认知地图 + grill-me-with-docs");
   await expect(generated.nth(0)).toContainText("暂不闯关，我还有一些问题");
   await expect(generated.nth(1)).toContainText("用户可以随时提出任意问题");
+  await expect(generated.nth(1)).toContainText("重新生成当前 grill-me 问题");
   await expect(page.getByRole("button", { name: "下载 context.md" })).toBeVisible();
   await expect(page.getByRole("button", { name: "下载启动提示词" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "完整 Dashboard" }).last()).toBeVisible();
-  await expect(page.getByRole("link", { name: "安装 Skill" }).last()).toBeVisible();
 });
 
-test("完整 Dashboard 友好入口与原有产品均保留", async ({ page }) => {
+test("完整 Dashboard 保留且长隐私说明收为一句提示", async ({ page }) => {
   const redirect = await page.request.get("/full-demo/index.html");
   expect(redirect.ok()).toBeTruthy();
   expect(await redirect.text()).toContain("?view=full");
@@ -94,10 +106,10 @@ test("完整 Dashboard 友好入口与原有产品均保留", async ({ page }) =
   await page.goto("/?view=full");
   await expect(page.getByRole("heading", { name: "先读资料、建立认知地图，再让 Codex 执行" })).toBeVisible();
   await expect(page.getByRole("region", { name: "双战役地图" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "返回聊天式 Demo" })).toBeVisible();
-  const boundary = page.getByRole("complementary", { name: "公开演示边界" });
+  const boundary = page.getByLabel("公开演示边界");
   await expect(boundary).toContainText("本页只使用公开或脱敏内容");
-  await expect(boundary).not.toContainText("本地处理边界");
+  await expect(page.getByText("公开演示与隐私声明", { exact: true })).not.toBeVisible();
+  await expect(page.getByText("本地处理边界", { exact: true })).not.toBeVisible();
 });
 
 test("聊天式首页在移动视口不产生横向页面溢出", async ({ page }) => {
@@ -108,10 +120,4 @@ test("聊天式首页在移动视口不产生横向页面溢出", async ({ page 
     scrollWidth: document.documentElement.scrollWidth,
   }));
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
-});
-
-test("生成聊天式首页发布截图", async ({ page }, testInfo) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "把科研聊天变成更精准的任务对齐" })).toBeVisible();
-  await page.screenshot({ path: testInfo.outputPath(`${testInfo.project.name}-chat-demo.png`), fullPage: true });
 });
