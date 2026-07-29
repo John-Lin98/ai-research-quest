@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Research Quest 先读科研资料，再用 Known–Unknown 四象限和 grill-me-with-docs 每轮只问一个关键问题；用户可随时提问或主动补充任务线索。" />
-    <title>Research Quest：认知地图与 grill-me-with-docs</title>
+    <meta name="description" content="Research Quest 用 Known–Unknown 四象限认知地图和 grill-me-with-docs，通过游戏式小步交互对齐科研需求、积累 Context，再生成可交给 Codex 执行的 Goal。" />
+    <title>Research Quest：认知地图、grill-me-with-docs 与 Codex Goal</title>
     <style>
       :root { color: #172554; background: #f8fafc; font-family: Inter, "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif; line-height: 1.72; }
       * { box-sizing: border-box; }
@@ -14,22 +14,25 @@
       .hero { padding: 4rem 1.25rem 3rem; color: #fff; background: linear-gradient(135deg, #172554, #1d4ed8 58%, #0e7490); }
       .hero__inner, main, footer { width: min(900px, calc(100% - 2rem)); margin: 0 auto; }
       .eyebrow { margin: 0; color: #bfdbfe; font-size: .84rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
-      h1 { max-width: 22ch; margin: .45rem 0 1rem; font-size: clamp(2.1rem, 7vw, 4rem); line-height: 1.12; }
-      .lede { max-width: 70ch; font-size: 1.12rem; }
+      h1 { max-width: 23ch; margin: .45rem 0 1rem; font-size: clamp(2.1rem, 7vw, 4rem); line-height: 1.12; }
+      .lede { max-width: 72ch; font-size: 1.12rem; }
       .badge { display: inline-block; margin-top: .5rem; padding: .4rem .72rem; border: 1px solid #99f6e4; border-radius: 999px; color: #ccfbf1; font-size: .88rem; }
       main { padding: 2.4rem 0 3.5rem; }
       article > * + * { margin-top: 1.25rem; }
       h2 { margin: 2.6rem 0 .7rem; font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.25; }
       h3 { margin: 0 0 .35rem; }
-      .callout, .plain-box, .goal-box, .clue-box, .task-box { padding: 1.15rem 1.25rem; border-radius: 1rem; }
+      .callout, .plain-box, .goal-box, .clue-box, .task-box, .feedback-box { padding: 1.15rem 1.25rem; border-radius: 1rem; }
       .callout { border-left: 5px solid #2563eb; background: #eff6ff; }
       .plain-box { border: 1px solid #99f6e4; background: #f0fdfa; }
       .goal-box { border: 1px solid #c4b5fd; background: #f5f3ff; }
       .clue-box { border: 1px solid #fdba74; background: #fff7ed; }
       .task-box { border: 1px solid #86efac; background: #f0fdf4; }
+      .feedback-box { border: 1px solid #bfdbfe; background: #f8fbff; }
       .label { margin: 0 0 .3rem; color: #0f766e; font-size: .88rem; font-weight: 800; }
-      .two-loop { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-      .two-loop section { padding: 1rem 1.1rem; border: 1px solid #dbeafe; border-radius: 1rem; background: #fff; }
+      .two-loop, .three-grid { display: grid; gap: 1rem; }
+      .two-loop { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .three-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .two-loop section, .three-grid section { padding: 1rem 1.1rem; border: 1px solid #dbeafe; border-radius: 1rem; background: #fff; }
       .quadrants { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
       .quadrant { padding: 1rem; border-radius: .9rem; }
       .quadrant h3 { font-size: 1rem; }
@@ -51,21 +54,23 @@
       .bubble small { color: #64748b; }
       .flow { overflow-x: auto; padding: 1.1rem; border-radius: 1rem; color: #e2e8f0; background: #0f172a; }
       .flow pre { margin: 0; white-space: pre-wrap; font: .88rem/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; }
+      .feedback-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; padding: 0; list-style: none; }
+      .feedback-list li { padding: .9rem 1rem; border: 1px solid #dbeafe; border-radius: .8rem; background: #fff; }
       .cta { margin-top: 2.5rem; padding: 1.4rem; border-radius: 1rem; color: #ecfeff; background: #0f172a; }
       .cta h2 { margin-top: 0; color: #fff; }
       .cta a { color: #67e8f9; }
       .sources { font-size: .94rem; color: #475569; }
       footer { padding: 0 0 2.5rem; color: #64748b; font-size: .88rem; }
-      @media (max-width: 680px) { .hero { padding-top: 3rem; } .two-loop, .quadrants { grid-template-columns: 1fr; } .bubble { max-width: 100%; } }
+      @media (max-width: 680px) { .hero { padding-top: 3rem; } .two-loop, .three-grid, .quadrants, .feedback-list { grid-template-columns: 1fr; } .bubble { max-width: 100%; } }
     </style>
   </head>
   <body>
     <header class="hero">
       <div class="hero__inner">
         <p class="eyebrow">Research Quest · Cognition Map + grill-me-with-docs</p>
-        <h1>先读资料，再问一个真正重要的问题</h1>
-        <p class="lede">Research Quest 的核心不是把科研包装成网页游戏，而是让 AI 先读懂项目资料，再用 Known–Unknown 四象限找到最关键的认知空缺。用户既可以回答问题，也可以随时追问或主动补充新的上下文和任务线索。</p>
-        <span class="badge">认知地图决定问题 · 文档减少重复沟通 · Context 交给 Codex</span>
+        <h1>把科研任务聊清楚，再交给 Codex 执行</h1>
+        <p class="lede">Research Quest 不是把科研包装成一款独立游戏，而是用游戏式、回合式交互帮助用户持续表达目标、偏好、疑问和限制，让 AI 获得足够准确的 Context。随后，AI 再把完整 Context 和 Goal 交给 Codex 或 Agent 执行。</p>
+        <span class="badge">游戏式需求对齐 · 认知地图驱动提问 · Context + Goal 交给 Codex</span>
       </div>
     </header>
     <main>
@@ -73,7 +78,15 @@
         <h2>为什么一句命令通常不够</h2>
         <div class="callout"><p class="label">真实需求</p><p>“帮我判断 AlphaFold2 能不能用于酶活性位点分析。”</p></div>
         <p>这句话说明了研究对象，却没有说明最先要支持什么判断、手里有什么资料、结果最多能说明什么，以及做到什么才算完成。直接交给 Codex，它只能一边执行一边猜。</p>
-        <p>Research Quest 不会马上给出一份很长的方案。它先读取文档和已有讨论，把材料已经回答的内容放进认知地图，只追问材料无法回答、又最影响结果的问题。</p>
+        <p>Research Quest 不会马上输出一份很长的方案。它先读取文档和已有讨论，把材料已经回答的内容放进认知地图，只追问材料无法回答、又最影响最终结果的问题。</p>
+
+        <h2>游戏式对齐为什么能得到更完整的 Context</h2>
+        <div class="three-grid">
+          <section><h3>降低表达负担</h3><p>一次只处理一个最高价值问题，用户不必先组织一份完美需求文档，也不会被十几个问题同时压住。</p></section>
+          <section><h3>让变化看得见</h3><p>每轮都展示四象限、进度和当前目标变化，用户能看见自己的回答怎样改变任务，更容易及时补充或纠错。</p></section>
+          <section><h3>鼓励持续参与</h3><p>关卡、进度与正反馈让需求沟通不再只是枯燥命令。用户更愿意表达偏好、失败经验和隐藏限制，AI 因此获得更充分的 Context。</p></section>
+        </div>
+        <div class="plain-box"><p class="label">核心收益</p><p>游戏化不是表面装饰。它服务于需求对齐：让用户更轻松地持续提供信息，让 AI 更准确地理解任务，最终为 Codex 准备一份更完整、可追溯、可执行的 Context。</p></div>
 
         <h2>两个核心逻辑</h2>
         <div class="two-loop">
@@ -90,14 +103,41 @@
         </div>
         <p>聊天界面不反复展示横轴和纵轴文字，但四个位置和含义固定。问题、解释、进度和 Goal 变化都由这张地图产生。</p>
 
+        <h2>认知地图怎样调整下一轮</h2>
+        <div class="flow"><pre>上一轮 Verified Known Knowns 较少
+→ 下一轮自动减少术语
+→ 增加基础解释与具体对比
+→ 用户掌握后再进入方案取舍
+
+Known Unknowns 已基本关闭
+→ 停止重复问基础问题
+→ 转向完成标准、风险或执行验证
+
+发现新的 Unknown Unknown
+→ 暂停原路线
+→ 插入隐藏风险关
+→ 更新 Context 与 Goal 后再继续</pre></div>
+        <p>因此，认知地图不是一个展示面板，而是下一轮问题生成器。“为什么这一步最值得问”必须同时说明：文档已经告诉了什么、四象限最大的空缺是什么，以及这个空缺会怎样改变最终 Goal。</p>
+
         <h2>5 轮聊天怎样把需求说清楚</h2>
         <ol class="rounds">
           <li><strong>先说清楚要解决什么</strong>已有资料只说明研究对象，因此先问：你最想让这项工作帮助你判断什么？</li>
           <li><strong>看看手里有什么资料</strong>目标已经明确，再确认是否有 AlphaFold DB 预测、实验 PDB 和催化残基注释。</li>
           <li><strong>确认结果最多能说明什么</strong>资料够不等于结论可以无限扩大，因此先确定只做局部结构初筛，还是还要加入对接。</li>
           <li><strong>约定做到什么才算完成</strong>目标、资料和结果范围都明确后，只需要补一个可检查的完成标准。</li>
-          <li><strong>停止提问，交给 Codex</strong>关键 Known Unknowns 已经有答案，剩余问题必须通过执行解决，因此整理 Context 和 Goal。</li>
+          <li><strong>停止提问，交给 Codex</strong>关键 Known Unknowns 已有答案，剩余问题必须通过执行解决，因此整理 Context 和 Goal。</li>
         </ol>
+
+        <h2>正反馈为什么重要</h2>
+        <div class="feedback-box"><p class="label">每轮都让用户知道“刚才发生了什么”</p>
+          <ul class="feedback-list">
+            <li><strong>目标进度条与百分比</strong><br />告诉用户任务离可执行状态还有多远。</li>
+            <li><strong>认知分变化</strong><br />只奖励被确认或正确应用的知识，不把随意回答当成掌握。</li>
+            <li><strong>预计剩余时间</strong><br />减少“还要聊多久”的不确定感，避免无限访谈。</li>
+            <li><strong>当前目标变化 (Goal vN)</strong><br />直接显示本轮选择如何改变最终任务、步骤或验收。</li>
+          </ul>
+        </div>
+        <p>这些反馈不是为了制造虚拟分数，而是帮助用户理解自己的决定、保持参与感，并及时发现 AI 是否误解了任务。</p>
 
         <h2>用户可以随时暂停闯关提问</h2>
         <div class="clue-box"><p class="label">最后一个选项：暂不闯关，我还有一些问题</p><p>暂停不会推进关卡、不会扣分，也不会把原问题标记为已回答。</p></div>
@@ -129,8 +169,11 @@
           <section><h3>我想补充线索</h3><p>用户希望把新信息加入任务。系统生成“上下文与任务线索”，先分类和核验，再更新 Goal。</p></section>
         </div>
 
-        <h2>“为什么这一步最值得问”不是固定话术</h2>
-        <div class="plain-box"><p class="label">生成规则</p><p>AI 必须同时说明：文档已经告诉了我们什么、当前四象限最大的空缺是什么，以及这个空缺会怎样改变最终 Goal。</p></div>
+        <h2>点击选项怎样成为真实输入</h2>
+        <div class="two-loop">
+          <section><h3>支持按钮的宿主</h3><p>用户点击后，选项直接生成带头像的用户气泡，并写入 Context、认知地图和 Goal vN。</p></section>
+          <section><h3>不支持按钮的宿主</h3><p>每个选项提供完整可复制文本；用户复制并发送，也可以直接输入自己的答案、问题或任务线索。</p></section>
+        </div>
 
         <h2>Context 保存的不只是最终结论</h2>
         <div class="goal-box"><p class="label">research-quest-context.md</p><p>完整 Context 保存已读资料、主问题、用户选择、额外问题与答案、主动任务线索、四象限状态、Candidate / Confirmed / Verified 证据、Goal 版本变化、开放未知和关闭条件。</p></div>
@@ -153,7 +196,7 @@
         <p>AlphaFold2 在 CASP14 中展示了重要的结构预测能力，AlphaFold DB 提供公开预测结构。但本案例只是演示如何设计一个公开试点，尚未提供“10 个目标已完成”的科研结果，也不把 pLDDT 或结构相似性直接解释为催化活性或底物结合正确。</p>
         <p class="sources">公开背景：<a href="https://www.nature.com/articles/s41586-021-03819-2">AlphaFold2 Nature 论文</a> · <a href="https://alphafold.ebi.ac.uk/">AlphaFold DB</a> · <a href="https://www.ebi.ac.uk/pdbe/">PDBe</a></p>
 
-        <section class="cta"><h2>查看和使用</h2><p><a href="./">聊天式 Demo</a> · <a href="./?view=full">完整 Dashboard</a> · <a href="https://github.com/John-Lin98/ai-research-quest/releases/latest">安装 Research Quest Skill</a> · <a href="https://github.com/John-Lin98/ai-research-quest">GitHub 仓库</a></p></section>
+        <section class="cta"><h2>查看和使用</h2><p><a href="./">聊天式 Demo</a> · <a href="./?view=full">完整 Dashboard</a> · <a href="https://github.com/John-Lin98/ai-research-quest/releases/latest">安装 Research Quest Skill v1.2.0</a> · <a href="https://github.com/John-Lin98/ai-research-quest">GitHub 仓库</a></p></section>
       </article>
     </main>
     <footer>本页展示产品逻辑和公开试点设计，不构成具体酶目标的实验结论或科研能力评价。</footer>

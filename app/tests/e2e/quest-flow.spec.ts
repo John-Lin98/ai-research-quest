@@ -84,7 +84,7 @@ test("真实需求面板与认知地图案例博文可访问", async ({ page }) 
   await expect(caseStudy).toContainText("建立认知地图");
   await expect(caseStudy).toContainText("交给 Codex");
   await page.goto("/case-study-alphafold-casp14.html");
-  await expect(page.getByRole("heading", { name: "先读资料，再问一个真正重要的问题" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "把科研任务聊清楚，再交给 Codex 执行" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "两个核心逻辑" })).toBeVisible();
   await expect(page.getByText("grill-me-with-docs", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "用户可以随时暂停闯关提问" })).toBeVisible();
