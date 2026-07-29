@@ -1,77 +1,51 @@
 # Research Quest｜AI Research Game
 
-Research Quest 不是一款要求用户学习操作的独立游戏，而是一个**改造人与 AI 科研聊天方式的 Skill**：AI 先通过少量游戏化问题理解项目和用户认知，再冻结 Context 与 Goal 交给 Codex 或多 Agent 执行。
+Research Quest 是一个**改造人与 AI 科研聊天方式的 Skill**。它不要求用户学习一款独立游戏，而是让 AI 先读项目文档和已有 Context，再通过 Known–Unknown 四象限找到最关键的认知空缺，每轮默认只问一个真正影响最终结果的问题。
 
-> **核心流程：先沟通，再执行。** Research Quest 先通过聊天式关卡了解项目背景、已有材料、约束、用户偏好与 Known–Unknown 四象限；关键信息确认后，再冻结 `Context + Goal` 并交给 Codex 执行。Codex 不必从一句模糊命令猜测需求，而是依据更完整、精确、可追溯的上下文工作。
-
-当前默认聊天 Demo 围绕一个真实公开需求展开：
-
-> **设计一个 10 个公开酶目标的试点，评估 AlphaFold2 / AlphaFold DB 预测是否足以支持酶活性位点几何初筛。**
-
-访问者看到的是一段类似 ChatGPT 的科研对话，而不是大型游戏地图：每轮只处理 1–3 个关键问题，同时展示四象限、认知分、目标进度、预计时间和 Goal 变化。原完整 Dashboard、案例博文、视频和 Skill Release 全部保留。
-
-## 核心定位：先沟通，再执行
+> **核心逻辑：认知地图 + grill-me-with-docs。** 文档先回答能回答的问题，AI 不重复追问；四象限决定本轮为什么问、问多深、何时停止，以及 Goal 应怎样变化。
 
 ```text
-真实科研需求与项目材料
-→ 沟通阶段：聊天式关卡 + Known–Unknown 四象限 + 用户偏好
-→ Context Freeze：冻结目标、证据、边界、验收与失败规则
-→ Goal Forge：生成引用冻结 Context 的 Codex 目标提示词
-→ 执行阶段：Codex / 多 Agent 开发、测试、审查与交付
-→ 结果回写：更新四象限、修订 Goal 或完成任务
+真实科研需求 + 文档 + 历史讨论
+→ 先读材料
+→ 建立 Known–Unknown 四象限
+→ 每轮默认只问一个关键问题
+→ 保存选择、认知变化与 Goal vN
+→ Frozen Context
+→ Codex / Agent 执行、验证和交付
 ```
 
-Research Quest 将复杂科研协作分成三个清晰环节：
+## 在线入口
 
-- **Game Loop｜聊天与认知对齐**：AI 用每轮 1–3 个关键问题了解项目事实、用户理解、隐含经验和偏好；
-- **Context Freeze｜冻结执行依据**：只把已经确认或验证的信息写入任务 Context，同时保留开放未知和证据边界；
-- **Execution Loop｜Codex 执行**：Codex 读取冻结 Context 和 Goal 后直接开发、测试、审查与交付，不再重复猜测已经确认的需求。
-
-## 默认聊天 Demo 与完整 Dashboard
-
-### 默认入口：聊天式演示
-
-[GitHub Pages 首页](https://john-lin98.github.io/ai-research-quest/)默认展示使用 Skill 后的人机交互效果：
-
-- 固定 5 轮 AlphaFold2 真实需求案例；
-- 每条 AI 回复都包含完整但紧凑的四象限快照；
-- 根据上一轮认知状态解释为什么下一轮更基础或更深入；
-- 最终生成并下载 `context.md` 与 Codex Goal；
-- 页面顶部和底部始终提供 Skill 安装、完整 Dashboard、案例博文和视频入口。
-
-### 输入自己的科研需求
-
-网页提供两步聊天式输入：
-
-1. 描述真实科研需求；
-2. 补充最终产物、已有材料或约束。
-
-网页只在浏览器本地生成：
-
-- 初始任务摘要；
-- Known–Unknown 四象限初始草图；
-- Research Quest 启动提示词；
-- `context.md`。
-
-这些内容明确标记为**尚未经过 AI 访谈与认证的启动材料**。真正的动态提问、认知认证和 Goal Forge 由安装 Research Quest Skill 的 ChatGPT / Agent 完成。
-
-### 完整机制演示
-
-原双战役 Dashboard 继续保留：
-
+- [聊天式 Demo](https://john-lin98.github.io/ai-research-quest/)
 - [完整 Dashboard](https://john-lin98.github.io/ai-research-quest/?view=full)
-- [兼容入口 `/full-demo/`](https://john-lin98.github.io/ai-research-quest/full-demo/)
+- [认知地图与 grill-me-with-docs 案例博文](https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html)
+- [完整机制演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)
+- [安装最新 Research Quest Skill](https://github.com/John-Lin98/ai-research-quest/releases/latest)
 
-它适合项目复盘、教学、展示全部关卡和查看完整认知地图，不再承担首次解释产品的任务。
+## 为什么不是直接给 Codex 一句话
 
-## Known–Unknown 四象限
+例如：
 
-认知地图严格使用四象限。横轴表示用户是否已经意识到这个问题，纵轴表示用户实际上是否已经掌握相关知识。
+> 帮我判断 AlphaFold2 能不能用于酶活性位点分析。
+
+这句话没有说明：
+
+- 最先要支持什么判断；
+- 现在手里有什么资料；
+- 结果最多能说明什么；
+- 做到什么才算完成；
+- 哪些问题需要执行才能回答。
+
+Research Quest 先把这些信息整理成 Context，再生成 Codex Goal，减少重复询问、误解和目标漂移。
+
+## 核心 1：Known–Unknown 四象限
+
+四象限固定为：
 
 |  | 用户已经意识到 | 用户尚未意识到 |
 | --- | --- | --- |
-| **已经掌握** | **Known Knowns**：用户知道自己知道 | **Unknown Knowns**：用户实际上知道，但还没有明确表达或意识到 |
-| **尚未掌握** | **Known Unknowns**：用户知道自己不知道 | **Unknown Unknowns**：用户尚未意识到自己不知道 |
+| **已经掌握** | **Known Knowns｜已知的已知** | **Unknown Knowns｜未知的已知** |
+| **尚未掌握** | **Known Unknowns｜已知的未知** | **Unknown Unknowns｜未知的未知** |
 
 ### Known Knowns 内部认证
 
@@ -79,105 +53,133 @@ Research Quest 将复杂科研协作分成三个清晰环节：
 Candidate → Confirmed → Verified
 ```
 
-只有能够在小测、选择、纠错、实验设计或迁移题中正确应用的 `Verified` 项计入正式认知分。
+只有能在选择、小测、方案、迁移或真实执行中正确应用的 Verified 项计入正式认知分。
 
-四个象限共同决定下一轮的问题、难度、Agent 分工和 Goal 版本。
+四象限决定：
 
-## 三分钟看懂
+- 下一轮问什么；
+- 是否先补基础；
+- 是否需要反例或失败检查；
+- 当前目标如何变化；
+- 是否已经可以停止提问并交给 Codex。
 
-1. AI 先读取真实需求、项目材料和已有提示词，展示预计轮次、时间和最终产物；
-2. 每轮只用 1–3 个关键问题补齐项目信息、用户偏好和 Known–Unknown 四象限；
-3. 每条 AI 回复展示完整迷你四象限、本轮进度、认知分和 Goal vN 变化；
-4. 只有经过确认或验证的信息才进入 Frozen Context，开放未知和证据边界同时保留；
-5. AI 将 Frozen Context 编译成包含输入、步骤、验收、Agent 分工和退出规则的 Codex Goal；
-6. Codex 依据 Context + Goal 直接执行，减少重复询问、误解和目标漂移；
-7. 执行结果回写四象限和 Goal，直到形成可验证交付。
+## 核心 2：grill-me-with-docs
 
-## 每回合的正反馈
+AI 提问前必须：
 
-每一轮聊天都应展示：
+1. 读取用户提供的文档、会话、历史提示词和已有 Context；
+2. 提取材料已经明确的事实和用户使用过的术语；
+3. 不再询问文档中已经能够回答的问题；
+4. 从四象限中选择最影响最终结果的一个空缺；
+5. 每轮默认只问一个问题，确有必要时最多三个。
 
-- 当前回合和完成状态；
-- 总进度与预计剩余时间；
-- 完整 Known–Unknown 四象限快照；
-- Candidate / Confirmed / Verified 变化；
-- 认知分数变化；
-- 科研目标达成状态；
-- Goal vN 相比上一版的变化；
-- 下一轮为什么会更简单或更困难；
-- 1 个主问题，必要时最多 2 个补充问题。
+“为什么这一步最值得问”必须同时说明：
 
-## 真实需求怎样进入聊天
+- 文档已经告诉了我们什么；
+- 认知地图里最大的空缺是什么；
+- 这个空缺会怎样改变最终 Goal。
 
-固定案例用 5 轮展示：
+## 默认聊天结构
 
-1. 冻结真实下游判断；
-2. 确认可用输入与材料；
-3. 冻结证据边界；
-4. 定义可验收完成信号；
-5. Context Freeze 与 Goal Forge。
+每轮 AI 回复按以下顺序组织：
 
-原完整 Dashboard 仍保留两条七关战役，用于深入展示数据、指标、覆盖率、Agent 分工和根因分析。完整说明见[真实科研需求案例](public/case-study-alphafold-casp14.html)和[设计说明](docs/usage/real-research-task.md)。
+```text
+一句话回顾上一轮选择
+→ 说明选择保存到哪里
+→ 为什么这一步最值得问
+→ 完整但紧凑的四象限
+→ 目标进度条 + 百分比
+→ 认知分 + 预计剩余时间
+→ 当前目标变化 (Goal vN)
+→ 一个关键问题
+→ 可点击或可复制的选项
+```
 
-## 功能
+紧凑界面不重复显示横轴和纵轴文字，但四象限位置和含义保持固定。
 
-- 默认以聊天界面展示使用 Skill 后的人机科研交互；
-- 固定 5 轮真实案例和自定义两步需求入口；
-- 每轮通常 1 个主问题，必要时最多追加 2 个证据或边界问题；
-- 每条 AI 回复显示完整迷你四象限与本轮变化；
-- 错误或未验证回答不会进入后续 Goal；
-- 根据四象限、正确率和用户偏好自动调整下一轮难度，并显示调整原因；
-- 本地生成启动提示词和 `context.md`，不上传输入；
-- 原完整 Dashboard、考试、Goal 导出和自动演示继续保留；
-- 符合 [Canonical Schema 1.0.0](shared/game-state.schema.json) 的状态与 Goal 导出；
-- 桌面与移动端布局、键盘可访问交互；
-- 纯前端、无账户、无遥测、无应用后端。
+## 点击选项怎样成为输入
 
-## 公开事实与尚未执行的部分
+### 支持按钮的界面
 
-公开背景来自 AlphaFold2 论文、AlphaFold DB 和 PDB/PDBe。页面中“10 个酶目标”“6 Å 邻域”“至少 8 个有效结果”等是为展示需求编译过程而冻结的真实试点合同，**不是已经完成的实验结果**。
+用户点击选项后：
 
-页面允许回答“应该如何设计并执行这项研究”，但不声称：
+- 该选项立即成为用户本轮回答；
+- 页面生成用户聊天气泡；
+- 答案写入 Context、认知地图和 Goal vN；
+- AI 进入下一轮。
 
-- AlphaFold2 已证明任何目标酶具有正确催化活性；
-- 高 pLDDT 证明活性位点化学构型、配体或辅因子正确；
-- 预测结构能够替代湿实验；
-- Research Quest 已证明能够提高科研能力或创造力。
+### 不支持按钮的聊天宿主
 
-## Research Quest Skill
+每个选项都提供完整复制文本。用户复制并发送后，它会成为本轮输入，不需要重新组织同一答案。
 
-Skill 位于 `skills/research-quest/`，适用于论文投稿、实验规划、方向选择、数据集构建、方法改进和科研项目复盘。
+## Context 怎样保存
 
-Skill 会：
+每轮开场会说明保存状态。
 
-1. 读取用户真实目标、项目材料和历史提示词；
-2. 以聊天式回合展示完整路线与预计时间；
-3. 建立固定坐标的 Known–Unknown 四象限；
-4. 以每轮 1–3 个关键问题补齐项目信息、认知状态和用户偏好；
-5. 根据认知地图动态调整后续问题；
-6. 将确认结果、开放未知、证据边界和验收规则冻结为任务 Context；
-7. 基于 Frozen Context 生成可直接交给 Codex 的目标提示词；
-8. 由 Codex 或多 Agent 队伍执行、测试、审查和交付，并将结果回写认知地图。
+- 有文件或知识库能力时，写入明确项目路径；
+- 只有浏览器内存或会话状态时，如实说明“导出后保存为 `research-quest-context.md`”，不假装已经写入磁盘。
 
-Skill 读取仓库根目录唯一的 `shared/game-state.schema.json`。安装与 ZIP 步骤见 [Skill 安装指南](docs/usage/skill-installation.md)。
+完整 Context 包含：
 
-## 隐私模型
+- 原始需求和最终产物；
+- 已读取的文档和来源；
+- 每轮问题、选择和理由；
+- 四象限完整状态；
+- Candidate / Confirmed / Verified 证据；
+- 用户偏好和术语；
+- Goal vN 版本记录；
+- 开放未知和关闭条件；
+- 结论范围、完成标准和退出规则。
 
-- 页面加载静态文件后，不上传用户输入、不发送遥测，也没有账户或服务端 API；
-- 状态只保存在当前页面内存，刷新或关闭页面即丢失；
-- 自由文本只会在用户主动下载时通过浏览器本地 `Blob` 生成文件；
-- 生成前会阻止邮箱、常见密钥/令牌和私人绝对路径；
-- 不要输入邮箱、API Key、Token、密码、私人路径、未公开结果、私有代码、数据集或 checkpoint。
+## 默认 Demo
 
-更完整的边界见 [PRIVACY.md](PRIVACY.md)；漏洞报告方式见 [SECURITY.md](SECURITY.md)。
+聊天式 Demo 使用一个公开科研需求：
 
-## 在线入口
+> 设计一个小规模公开试点，判断 AlphaFold2 / AlphaFold DB 预测是否适合用于酶活性位点附近结构的初步筛选。
 
-- [聊天式 Research Quest Demo](https://john-lin98.github.io/ai-research-quest/)
-- [完整 Dashboard](https://john-lin98.github.io/ai-research-quest/?view=full)
-- [真实科研需求案例页](https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html)
-- [原完整机制演示视频](https://john-lin98.github.io/ai-research-quest/research-quest-demo-75s.webm)
-- [Research Quest Skill v1.1.0](https://github.com/John-Lin98/ai-research-quest/releases/tag/v1.1.0)
+5 轮聊天依次处理：
+
+1. 先说清楚要解决什么；
+2. 看看手里有什么资料；
+3. 确认结果最多能说明什么；
+4. 约定做到什么才算完成；
+5. 整理 Context，生成 Codex Goal。
+
+该案例不会预设实验结果，也不会把 pLDDT 或结构相似性直接写成催化活性、底物结合或药物发现结论。
+
+## 自定义科研需求
+
+网页提供两步本地整理：
+
+1. 描述科研需求；
+2. 补充最终产物和现有资料或限制。
+
+随后生成：
+
+- 初始四象限草图；
+- `research-quest-initial-context.md`；
+- Research Quest 启动提示词。
+
+网页不冒充大模型推理。真正的文档读取、动态认知建图和 grill-me-with-docs 由安装 Skill 的 ChatGPT / Agent 完成。
+
+## Goal Forge
+
+最终 Goal 至少包含：
+
+- Frozen Context 路径；
+- 真实目标和非目标；
+- 已读文档和用户偏好；
+- 四象限认知地图；
+- 输入、方法、指标、步骤和完成标准；
+- 多 Agent 分工与通信；
+- 测试、独立审查、中文 PR 和安全合并；
+- 同一关键问题 3–5 轮不同尝试失败后的根因分析。
+
+## 完整 Dashboard
+
+完整 Dashboard 保留两条七关战役、全局认知地图、计分、考试和 Goal 历史，适合项目复盘、教学和机制展示。默认用户入口仍是聊天式 Demo。
+
+Dashboard 仅用一句话提示公开与本地处理边界；详细规则见 [PRIVACY.md](PRIVACY.md) 和 [SECURITY.md](SECURITY.md)。
 
 ## 本地运行与验证
 
@@ -197,9 +199,8 @@ node skills/research-quest/scripts/public-safety-scan.mjs --include-dist
 
 - 默认状态：[public/demo-data/default-game-state.json](public/demo-data/default-game-state.json)
 - 唯一 Schema：[shared/game-state.schema.json](shared/game-state.schema.json)
-- 三个 Skill fixture：[skills/research-quest/references/test-sessions.md](skills/research-quest/references/test-sessions.md)
-- 数据分类与审批状态：[docs/usage/demo-data.md](docs/usage/demo-data.md)
-
-## 许可证
+- Skill 规则：[skills/research-quest/SKILL.md](skills/research-quest/SKILL.md)
+- 三个测试会话：[skills/research-quest/references/test-sessions.md](skills/research-quest/references/test-sessions.md)
+- 数据说明：[docs/usage/demo-data.md](docs/usage/demo-data.md)
 
 项目采用 [MIT License](LICENSE)。第三方软件及其许可证见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES)。
