@@ -3,8 +3,9 @@ import { expect, test } from "@playwright/test";
 test("默认首页突出认知地图与 grill-me-with-docs", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "先读资料、建立认知地图，再问一个真正重要的问题" })).toBeVisible();
-  await expect(page.getByText("Cognition Map + grill-me-with-docs", { exact: false }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "把科研聊天变成更精准的任务对齐" })).toBeVisible();
+  await expect(page.getByText("核心逻辑只有两步", { exact: false })).toContainText("Known–Unknown 四象限");
+  await expect(page.getByText("核心逻辑只有两步", { exact: false })).toContainText("grill-me-with-docs");
   await expect(page.getByRole("button", { name: "体验 5 轮真实案例" })).toHaveClass(/is-active/);
   await expect(page.getByRole("heading", { name: "AlphaFold2 活性位点试点" })).toBeVisible();
   const map = page.getByLabel("当前完整 Known–Unknown 四象限");
@@ -18,6 +19,21 @@ test("默认首页突出认知地图与 grill-me-with-docs", async ({ page }) =>
   const productNav = page.getByRole("navigation", { name: "Research Quest 产品入口" }).first();
   await expect(productNav.getByRole("link", { name: "安装 Skill" })).toHaveAttribute("href", /releases\/latest/);
   await expect(productNav.getByRole("link", { name: "完整 Dashboard" })).toHaveAttribute("href", "./?view=full");
+});
+
+test("用户可暂停闯关提问并把回答保存为关卡线索", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "关卡线索完整流程只在桌面项目执行一次");
+  await page.goto("/");
+
+  await page.locator(".cq-option-select").filter({ hasText: "暂不闯关，我还有一些问题" }).first().click();
+  await expect(page.getByText("为什么不能直接让 Codex 自己判断我到底想做什么？", { exact: true })).toBeVisible();
+  const clue = page.getByLabel("第 1 回合关卡线索");
+  await expect(clue).toContainText("问题答案");
+  await expect(clue).toContainText("看似完整、实际上回答错问题");
+  await expect(clue).toContainText("research-quest-context.md → 第 1 回合 / 关卡线索");
+  await expect(clue).toContainText("这条线索如何改变认知地图");
+  await expect(clue).toContainText("为了让 Codex 不走错方向");
+  await expect(clue).toContainText("主目标进度暂停");
 });
 
 test("固定案例每轮保存 Context、显示目标变化并生成用户气泡", async ({ page }, testInfo) => {
@@ -54,15 +70,16 @@ test("自定义需求生成以认知地图和文档驱动为核心的启动材�
 
   await page.getByLabel("我的科研需求").fill("我想设计一个 RNA 二级结构逆折叠实验方案，并复现近五年的公开 baseline。");
   await page.getByRole("button", { name: "继续补充 Context" }).click();
-  await page.getByLabel("最终希望获得什么？").fill("实验方案、baseline 清单和可执行 Codex Goal");
-  await page.getByLabel("现在有哪些资料或限制？").fill("已有公开数据集说明，每天可使用一张 GPU，首轮先完成 smoke test。");
+  await page.getByLabel("最终希望获得什么产物？").fill("实验方案、baseline 清单和可执行 Codex Goal");
+  await page.getByLabel("当前有哪些资料或限制？").fill("已有公开数据集说明，每天可使用一张 GPU，首轮先完成 smoke test。");
   await page.getByRole("button", { name: "生成启动提示词与 context.md" }).click();
 
   await expect(page.getByText("已生成初始 Context 和启动提示词", { exact: false })).toBeVisible();
   await expect(page.getByLabel("自定义需求完整初始四象限")).toContainText("RNA 二级结构逆折叠");
   const generated = page.locator(".cq-generated > div");
-  await expect(generated.nth(0)).toContainText("grill-me-with-docs 工作规则");
-  await expect(generated.nth(1)).toContainText("核心逻辑固定为 Known–Unknown 四象限认知地图 + grill-me-with-docs");
+  await expect(generated.nth(0)).toContainText("核心逻辑：认知地图 + grill-me-with-docs");
+  await expect(generated.nth(0)).toContainText("暂不闯关，我还有一些问题");
+  await expect(generated.nth(1)).toContainText("用户可以随时提出任意问题");
   await expect(page.getByRole("button", { name: "下载 context.md" })).toBeVisible();
   await expect(page.getByRole("button", { name: "下载启动提示词" })).toBeVisible();
   await expect(page.getByRole("link", { name: "完整 Dashboard" }).last()).toBeVisible();
@@ -95,6 +112,6 @@ test("聊天式首页在移动视口不产生横向页面溢出", async ({ page 
 
 test("生成聊天式首页发布截图", async ({ page }, testInfo) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "先读资料、建立认知地图，再问一个真正重要的问题" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "把科研聊天变成更精准的任务对齐" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath(`${testInfo.project.name}-chat-demo.png`), fullPage: true });
 });
