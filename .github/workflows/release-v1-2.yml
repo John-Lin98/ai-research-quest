@@ -1,0 +1,115 @@
+name: 发布 Research Quest Skill v1.2.0
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查 Release 是否已存在
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v1.2.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 检出最新主分支
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: 配置 Node.js
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+
+      - name: 创建 Skill 发行包
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          git archive --format=zip --output=research-quest-skill-v1.2.0.zip HEAD \
+            skills/research-quest \
+            shared/game-state.schema.json \
+            LICENSE \
+            THIRD_PARTY_NOTICES
+          sha256sum research-quest-skill-v1.2.0.zip | tee research-quest-skill-v1.2.0.sha256
+
+      - name: 解包并验证当前逻辑
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          mkdir /tmp/research-quest-skill-v1.2.0
+          unzip -q research-quest-skill-v1.2.0.zip -d /tmp/research-quest-skill-v1.2.0
+          cd /tmp/research-quest-skill-v1.2.0
+          node skills/research-quest/scripts/generate-test-sessions.mjs --check-only
+          grep -Fq "Known–Unknown 四象限认知地图" skills/research-quest/SKILL.md
+          grep -Fq "grill-me-with-docs" skills/research-quest/SKILL.md
+          grep -Fq "我想补充上下文或任务线索" skills/research-quest/SKILL.md
+          grep -Fq "暂不闯关，我还有一些问题" skills/research-quest/SKILL.md
+          grep -Fq "Candidate" skills/research-quest/SKILL.md
+          grep -Fq "Confirmed" skills/research-quest/SKILL.md
+          grep -Fq "Verified" skills/research-quest/SKILL.md
+
+      - name: 写入 Release 说明
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          cat > release-notes-v1.2.0.md <<'EOF'
+          ## Research Quest Skill v1.2.0
+
+          Research Quest 先用认知地图和 grill-me-with-docs 帮你把科研任务聊清楚，再把完整 Context 和 Goal 交给 Codex 执行。
+
+          ### 本版核心更新
+
+          - 通过游戏式、回合式交互持续对齐用户需求，并积累更充分、可追溯的 Context；
+          - 先读取文档、历史讨论和已有 Context，不重复询问材料已经回答的问题；
+          - 使用固定 Known–Unknown 四象限决定本轮问什么、问多深以及何时停止；
+          - 每轮默认只问一个最高价值问题，确有必要时最多三个；
+          - 支持三种用户输入：回答主问题、暂停并追问、主动追加上下文或任务线索；
+          - 新线索经过分类、来源记录、去重、冲突检查以及 Candidate / Confirmed / Verified 认证；
+          - 冲突不会静默覆盖旧 Context，明确纠错会回滚受影响的 Goal；
+          - 每轮展示目标进度、认知分、预计时间和当前目标变化 (Goal vN)；
+          - 生成 Frozen Context 和可交给 Codex / ChatGPT / 多 Agent 执行的完整 Goal；
+          - 与最新聊天式 Demo、GitHub 首页和案例博文保持一致。
+
+          ### 安装包
+
+          `research-quest-skill-v1.2.0.zip` 包含：
+
+          - `skills/research-quest/`；
+          - `shared/game-state.schema.json`；
+          - MIT License；
+          - 第三方软件说明。
+
+          ZIP SHA-256 见随附 `.sha256` 文件。
+
+          ### 边界
+
+          当前版本完成了产品逻辑、Demo、测试和真实任务规则压力测试，但尚未通过真实用户 A/B 对照证明能够提高科研能力、创造力或 Codex 性能。
+          EOF
+
+      - name: 创建 GitHub Release
+        if: steps.release.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create v1.2.0 \
+            research-quest-skill-v1.2.0.zip \
+            research-quest-skill-v1.2.0.sha256 \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Research Quest Skill v1.2.0" \
+            --notes-file release-notes-v1.2.0.md
