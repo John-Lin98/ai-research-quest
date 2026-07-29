@@ -502,9 +502,12 @@ function ProductLinks() {
 
 function UserMessage({ children, label = "你" }: { children: string; label?: string }) {
   return (
-    <article className="cq-message cq-message--user">
-      <header><div><strong>{label}</strong><small>用户回复</small></div><span className="cq-avatar cq-avatar--user">你</span></header>
-      <p>{children}</p>
+    <article className="cq-user-turn" aria-label={`${label}的消息`}>
+      <div className="cq-user-content">
+        <small className="cq-user-label">{label}</small>
+        <div className="cq-user-bubble"><p>{children}</p></div>
+      </div>
+      <span className="cq-avatar cq-avatar--user" aria-hidden="true">你</span>
     </article>
   );
 }
@@ -530,37 +533,53 @@ function ChoiceList({
   question,
   options,
   onChoose,
-  onCopy,
   onAddContext,
   onAskQuestion,
 }: {
   question: string;
   options: Choice[];
   onChoose?: (choice: Choice) => void;
-  onCopy?: (text: string) => void;
   onAddContext?: () => void;
   onAskQuestion?: () => void;
 }) {
+  const [copyFeedback, setCopyFeedback] = useState<{ label: string; text: string } | null>(null);
+
+  const activate = async (label: string, action?: () => void) => {
+    if (copyFeedback) return;
+    const copied = await copyText(label);
+    setCopyFeedback({ label, text: copied ? "已复制" : "已选择" });
+    window.setTimeout(() => {
+      setCopyFeedback(null);
+      action?.();
+    }, 650);
+  };
+
+  const optionButton = (label: string, detail: string, className: string, action?: () => void) => {
+    const active = copyFeedback?.label === label;
+    return (
+      <div className={`cq-option-row ${className}`} key={label}>
+        <button
+          className={`cq-option-select${active ? " is-copying" : ""}`}
+          type="button"
+          disabled={Boolean(copyFeedback)}
+          onClick={() => void activate(label, action)}
+          aria-label={`选择：${label}`}
+        >
+          <span aria-live="polite">{active ? copyFeedback.text : label}</span>
+          <small>{active ? "正在生成你的回复…" : detail}</small>
+        </button>
+      </div>
+    );
+  };
+
   return (
     <section className="cq-question" aria-label="关键提问">
       <strong>{question}</strong>
       <div className="cq-options">
-        {options.map((choice) => (
-          <div className="cq-option-row" key={choice.label}>
-            <button className="cq-option-select" type="button" onClick={() => onChoose?.(choice)}><span>{choice.label}</span><small>{choice.impact}</small></button>
-            <button className="cq-option-copy" type="button" onClick={() => onCopy?.(choice.label)} aria-label={`复制选项：${choice.label}`}>复制</button>
-          </div>
-        ))}
-        <div className="cq-option-row cq-option-row--task">
-          <button className="cq-option-select" type="button" onClick={onAddContext}><span>{ADD_CONTEXT_LABEL}</span><small>主动补充资料、约束、偏好、截止时间或纠错；AI 会分类并更新下一问。</small></button>
-          <button className="cq-option-copy" type="button" onClick={() => onCopy?.(ADD_CONTEXT_LABEL)} aria-label={`复制选项：${ADD_CONTEXT_LABEL}`}>复制</button>
-        </div>
-        <div className="cq-option-row cq-option-row--clue">
-          <button className="cq-option-select" type="button" onClick={onAskQuestion}><span>{ASK_CLUE_LABEL}</span><small>暂停主关卡，先让 AI 回答你的问题；进度不会丢失。</small></button>
-          <button className="cq-option-copy" type="button" onClick={() => onCopy?.(ASK_CLUE_LABEL)} aria-label={`复制选项：${ASK_CLUE_LABEL}`}>复制</button>
-        </div>
+        {options.map((choice) => optionButton(choice.label, choice.impact, "", () => onChoose?.(choice)))}
+        {optionButton(ADD_CONTEXT_LABEL, "主动补充资料、约束、偏好、截止时间或纠错；AI 会分类并更新下一问。", "cq-option-row--task", onAddContext)}
+        {optionButton(ASK_CLUE_LABEL, "暂停主关卡，先让 AI 回答你的问题；进度不会丢失。", "cq-option-row--clue", onAskQuestion)}
       </div>
-      <div className="cq-composer" aria-label="聊天回复提示"><span className="cq-avatar cq-avatar--user">你</span><p>点击选项会直接生成用户回复；真实 ChatGPT 中也可以直接输入自己的答案、问题或任务线索。</p><button type="button" disabled>发送</button></div>
     </section>
   );
 }
@@ -569,14 +588,12 @@ function AssistantTurn({
   turn,
   showQuestion,
   onChoose,
-  onCopy,
   onAddContext,
   onAskQuestion,
 }: {
   turn: Turn;
   showQuestion: boolean;
   onChoose?: (choice: Choice) => void;
-  onCopy?: (text: string) => void;
   onAddContext?: () => void;
   onAskQuestion?: () => void;
 }) {
@@ -587,7 +604,7 @@ function AssistantTurn({
       <aside className="cq-adaptive"><strong>为什么这一步最值得问</strong><p>{turn.adaptive}</p></aside>
       <MiniQuadrant snapshot={turn.snapshot} label={`第 ${turn.round} 回合 Known–Unknown 四象限`} />
       <ProgressFeedback turn={turn} />
-      {showQuestion && turn.question && turn.options ? <ChoiceList question={turn.question} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAddContext={onAddContext} onAskQuestion={onAskQuestion} /> : null}
+      {showQuestion && turn.question && turn.options ? <ChoiceList question={turn.question} options={turn.options} onChoose={onChoose} onAddContext={onAddContext} onAskQuestion={onAskQuestion} /> : null}
       {turn.finalContext && turn.finalGoal ? (
         <section className="cq-frozen" aria-label="Frozen Context 与 Codex Goal">
           <div><strong>完整 Context</strong><pre>{turn.finalContext}</pre><button type="button" onClick={() => downloadText(CONTEXT_FILENAME, turn.finalContext!)}>下载 context.md</button></div>
@@ -602,7 +619,6 @@ function AssistantTurn({
 function QuestionClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion }: {
   turn: Turn;
   onChoose?: (choice: Choice) => void;
-  onCopy?: (text: string) => void;
   onAddContext?: () => void;
   onAskQuestion?: () => void;
 }) {
@@ -616,7 +632,7 @@ function QuestionClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion 
       <aside className="cq-adaptive"><strong>这条线索如何改变认知地图</strong><p>{clue.rationale}</p></aside>
       <MiniQuadrant snapshot={clue.updatedSnapshot} label={`第 ${turn.round} 回合关卡线索后的四象限`} />
       <ProgressFeedback turn={turn} mode="question" />
-      <ChoiceList question={clue.revisedQuestion} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAddContext={onAddContext} onAskQuestion={onAskQuestion} />
+      <ChoiceList question={clue.revisedQuestion} options={turn.options} onChoose={onChoose} onAddContext={onAddContext} onAskQuestion={onAskQuestion} />
     </article>
   );
 }
@@ -624,7 +640,6 @@ function QuestionClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion 
 function TaskClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion }: {
   turn: Turn;
   onChoose?: (choice: Choice) => void;
-  onCopy?: (text: string) => void;
   onAddContext?: () => void;
   onAskQuestion?: () => void;
 }) {
@@ -638,7 +653,7 @@ function TaskClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion }: {
       <aside className="cq-adaptive"><strong>这条线索如何改变认知地图</strong><p>{clue.rationale}</p></aside>
       <MiniQuadrant snapshot={clue.updatedSnapshot} label={`第 ${turn.round} 回合任务线索后的四象限`} />
       <ProgressFeedback turn={turn} mode="task" />
-      <ChoiceList question={clue.revisedQuestion} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAddContext={onAddContext} onAskQuestion={onAskQuestion} />
+      <ChoiceList question={clue.revisedQuestion} options={turn.options} onChoose={onChoose} onAddContext={onAddContext} onAskQuestion={onAskQuestion} />
     </article>
   );
 }
@@ -659,7 +674,6 @@ function FixedCaseChat() {
   const choose = (index: number, choice: Choice) => {
     if (answers.length !== index) return;
     setAnswers((current) => [...current, choice.label]);
-    setCopyNotice(`已把“${choice.label}”作为你的回复，并写入当前会话 Context。`);
   };
 
   const openQuestionClue = (index: number, turn: Turn) => {
@@ -682,11 +696,6 @@ function FixedCaseChat() {
     setCopyNotice(`已接收主动补充；线索将保存到 ${turn.taskClue.savedPath}。`);
   };
 
-  const copy = async (text: string) => {
-    const copied = await copyText(text);
-    setCopyNotice(copied ? `已复制“${text}”，可粘贴到真实 ChatGPT 对话。` : "复制失败，请手动选择文字。");
-  };
-
   return (
     <section className="cq-chat-mode" aria-labelledby="fixed-case-title">
       <div className="cq-overview">
@@ -706,12 +715,12 @@ function FixedCaseChat() {
                 turn={turn}
                 showQuestion={!questionOpened && !taskOpened && !answered}
                 onChoose={(choice) => choose(index, choice)}
-                onCopy={copy}
+               
                 onAddContext={() => openTaskClue(index, turn)}
                 onAskQuestion={() => openQuestionClue(index, turn)}
               />
-              {taskOpened && turn.taskClue ? <><UserMessage label="你 · 主动补充">{turn.taskClue.userClue}</UserMessage><TaskClueTurn turn={turn} onChoose={(choice) => choose(index, choice)} onCopy={copy} onAddContext={() => openTaskClue(index, turn)} onAskQuestion={() => openQuestionClue(index, turn)} /></> : null}
-              {questionOpened && turn.questionClue ? <><UserMessage label="你 · 追问">{turn.questionClue.userQuestion}</UserMessage><QuestionClueTurn turn={turn} onChoose={(choice) => choose(index, choice)} onCopy={copy} onAddContext={() => openTaskClue(index, turn)} onAskQuestion={() => openQuestionClue(index, turn)} /></> : null}
+              {taskOpened && turn.taskClue ? <><UserMessage label="你 · 主动补充">{turn.taskClue.userClue}</UserMessage><TaskClueTurn turn={turn} onChoose={(choice) => choose(index, choice)} onAddContext={() => openTaskClue(index, turn)} onAskQuestion={() => openQuestionClue(index, turn)} /></> : null}
+              {questionOpened && turn.questionClue ? <><UserMessage label="你 · 追问">{turn.questionClue.userQuestion}</UserMessage><QuestionClueTurn turn={turn} onChoose={(choice) => choose(index, choice)} onAddContext={() => openTaskClue(index, turn)} onAskQuestion={() => openQuestionClue(index, turn)} /></> : null}
               {answers[index] ? <UserMessage>{answers[index]}</UserMessage> : null}
             </div>
           );
@@ -837,7 +846,10 @@ export function ChatQuestDemo() {
         <button type="button" className={mode === "custom" ? "is-active" : ""} onClick={() => setMode("custom")}>输入我的科研需求</button>
       </section>
       {mode === "case" ? <FixedCaseChat /> : <CustomRequirementChat />}
-      <footer className="cq-footer"><p>页面只在浏览器本地演示交互；请勿输入敏感或未公开资料。<a href={FULL_DEMO_URL}>完整 Dashboard</a>、<a href={CASE_URL}>案例博文</a>、<a href={VIDEO_URL}>原完整机制视频</a>与 <a href={SKILL_URL}>Skill 安装包</a>均继续保留。</p></footer>
+      <footer className="cq-footer">
+        <p className="cq-interaction-note">交互说明：点击选项会自动复制，并生成一条用户回复；在真实 ChatGPT 中也可以直接输入自己的答案、问题或任务线索。</p>
+        <p>页面只在浏览器本地演示交互；请勿输入敏感或未公开资料。<a href={FULL_DEMO_URL}>完整 Dashboard</a>、<a href={CASE_URL}>案例博文</a>、<a href={VIDEO_URL}>原完整机制视频</a>与 <a href={SKILL_URL}>Skill 安装包</a>均继续保留。</p>
+      </footer>
     </main>
   );
 }
