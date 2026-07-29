@@ -6,6 +6,7 @@ const VIDEO_URL = "./research-quest-demo-75s.webm";
 const FULL_DEMO_URL = "./?view=full";
 const CONTEXT_FILENAME = "research-quest-context.md";
 
+const ADD_CONTEXT_LABEL = "我想补充上下文或任务线索";
 const ASK_CLUE_LABEL = "暂不闯关，我还有一些问题";
 
 type Mode = "case" | "custom";
@@ -22,9 +23,20 @@ type Choice = {
   impact: string;
 };
 
-type Clue = {
+type QuestionClue = {
   userQuestion: string;
   answer: string;
+  rationale: string;
+  savedPath: string;
+  revisedQuestion: string;
+  updatedSnapshot: QuadrantSnapshot;
+};
+
+type TaskClue = {
+  userClue: string;
+  clueType: string;
+  evidenceStatus: "Candidate" | "Confirmed";
+  interpretation: string;
   rationale: string;
   savedPath: string;
   revisedQuestion: string;
@@ -44,7 +56,8 @@ type Turn = {
   snapshot: QuadrantSnapshot;
   question?: string;
   options?: Choice[];
-  clue?: Clue;
+  questionClue?: QuestionClue;
+  taskClue?: TaskClue;
   finalContext?: string;
   finalGoal?: string;
 };
@@ -65,7 +78,7 @@ async function copyText(content: string): Promise<boolean> {
       return true;
     }
   } catch {
-    // Fall through to the local textarea fallback.
+    // Fall through to a local textarea fallback.
   }
   const textarea = document.createElement("textarea");
   textarea.value = content;
@@ -88,15 +101,15 @@ function contextSaved(choice: string, next: string) {
   return `你刚才选择了“${choice}”。这项决定已写入当前会话 Context，导出时会保存为 ${CONTEXT_FILENAME}。${next}`;
 }
 
-function buildClues(
+function buildQuestionClues(
   purpose: string,
   materials: string,
   boundary: string,
-): Record<number, Clue> {
+): Record<number, QuestionClue> {
   return {
     1: {
       userQuestion: "为什么不能直接让 Codex 自己判断我到底想做什么？",
-      answer: "Codex 可以选择技术实现，但无法替你决定真正想支持的是局部结构初筛、分子对接，还是催化机制分析。这三种目标需要不同资料、指标和结论范围。先把目标说清楚，能避免 Codex 做出看似完整、实际上回答错问题的方案。",
+      answer: "Codex 可以选择技术实现，但无法替你决定真正想支持的是局部结构初筛、分子对接，还是催化机制分析。这三种目标需要不同资料、指标和结果范围。先把目标说清楚，能避免 Codex 做出看似完整、实际上回答错问题的方案。",
       rationale: "你的追问暴露了一个新的已知的未知：为什么执行前必须先对齐目标。主任务暂不推进，先回答这个问题，再把 grill-me 问题改得更贴近真实决策。",
       savedPath: `${CONTEXT_FILENAME} → 第 1 回合 / 关卡线索`,
       revisedQuestion: "为了让 Codex 不走错方向，你最希望它先帮助你作出哪一种实际判断？",
@@ -140,7 +153,7 @@ function buildClues(
       savedPath: `${CONTEXT_FILENAME} → 第 4 回合 / 关卡线索`,
       revisedQuestion: "为了让首轮任务既可完成又不会只挑成功案例，你更愿意采用哪一种完成标准？",
       updatedSnapshot: {
-        knownKnowns: `目标、资料和结果范围已确认；也理解样本数和有效结果数是任务结束与覆盖率规则。`,
+        knownKnowns: "目标、资料和结果范围已确认；也理解样本数和有效结果数是任务结束与覆盖率规则。",
         unknownKnowns: "你更偏好小规模快速验证，还是更大规模分层分析，仍可继续表达。",
         knownUnknowns: "还需要在小规模试点、较大分层分析和纯流程测试之间作出选择。",
         unknownUnknowns: "只报告成功样本会产生选择偏差，失败样本也必须被记录。",
@@ -149,23 +162,104 @@ function buildClues(
   };
 }
 
-function buildCaseTurns(answers: string[], openedClues: number[]): Turn[] {
+function buildTaskClues(
+  purpose: string,
+  materials: string,
+  boundary: string,
+): Record<number, TaskClue> {
+  return {
+    1: {
+      userClue: "补充一个任务线索：最终需要把任务交给 Codex 执行，我最担心它理解错目标。",
+      clueType: "目标与用户偏好",
+      evidenceStatus: "Confirmed",
+      interpretation: "这是用户对自己交付方式和风险偏好的直接说明，可以确认：最终产物必须包含清楚的 Context 与 Codex Goal，且目标对齐优先于立即执行。",
+      rationale: "这条线索补充了一个未知的已知：你更关心 Codex 是否准确理解目标。它强化了当前目标问题，但没有替你选择具体下游用途，因此主问题会缩小后重新出现。",
+      savedPath: `${CONTEXT_FILENAME} → 第 1 回合 / 上下文与任务线索`,
+      revisedQuestion: "已确认最终要交给 Codex 执行。为了让它不误解，你最希望先冻结哪一种具体判断？",
+      updatedSnapshot: {
+        knownKnowns: "已经知道研究对象，并确认最终要生成可交给 Codex 的 Context 与 Goal。",
+        unknownKnowns: "你把‘避免 Codex 误解目标’放在首位，这一偏好已被表达。",
+        knownUnknowns: "仍需确定 Codex 首轮到底要支持哪一种下游判断。",
+        unknownUnknowns: "不同下游目标会改变资料、指标和完成标准。",
+      },
+    },
+    2: {
+      userClue: "补充一份资料线索：我还有一份活性位点注释表，但字段和残基编号还没有核对。",
+      clueType: "资料与待核对事实",
+      evidenceStatus: "Candidate",
+      interpretation: "已记录存在一份注释表，但在读取文件、核对字段和编号之前，不能把它当成可直接使用的资料。Codex Goal 应加入注释表审查与编号核对步骤。",
+      rationale: "这条线索新增了一项 Candidate 资料，并暴露了编号对齐风险。原来的资料问题已被部分回答，下一问会直接确认其他两类资料是否齐全。",
+      savedPath: `${CONTEXT_FILENAME} → 第 2 回合 / 上下文与任务线索`,
+      revisedQuestion: "活性位点注释表已记为待核对资料。预测结构和对应实验 PDB 目前是什么情况？",
+      updatedSnapshot: {
+        knownKnowns: `已确定首轮目标：${purpose}。`,
+        unknownKnowns: "你已经主动整理过活性位点资料，可能熟悉注释来源和字段。",
+        knownUnknowns: "注释表字段与残基编号仍需核对；还需确认预测结构和实验 PDB 是否齐全。",
+        unknownUnknowns: "注释编号、PDB 编号和预测序列编号可能采用不同体系。",
+      },
+    },
+    3: {
+      userClue: "补充一个约束：首轮只能使用公开资料，不使用内部数据或未公开结果。",
+      clueType: "公开范围与硬约束",
+      evidenceStatus: "Confirmed",
+      interpretation: "这是用户对任务范围的明确约束，可以直接确认并写入 Goal：所有数据、来源和结果必须可公开追溯，内部资料不得进入首轮试点。",
+      rationale: "这条线索关闭了数据公开范围问题，并缩小了可能的结论。下一问只需确定公开计算结果最终可以写到什么程度。",
+      savedPath: `${CONTEXT_FILENAME} → 第 3 回合 / 上下文与任务线索`,
+      revisedQuestion: "已确认首轮只使用公开资料。在这个前提下，结果最多应该说明到哪一步？",
+      updatedSnapshot: {
+        knownKnowns: `目标：${purpose}；现有资料：${materials}；公开资料限定已确认。`,
+        unknownKnowns: "你优先考虑可公开复现和安全发布，这一偏好已明确。",
+        knownUnknowns: "仍需确认局部结构比较结果能支持和不能支持什么。",
+        unknownUnknowns: "公开资料之间仍可能存在注释版本和映射差异。",
+      },
+    },
+    4: {
+      userClue: "补充一个时间线索：首轮希望一天内完成，优先验证流程，不追求一次覆盖所有酶家族。",
+      clueType: "时间限制与执行偏好",
+      evidenceStatus: "Confirmed",
+      interpretation: "已确认首轮是一天内完成的小规模流程验证。Goal 应优先选择可追溯的小样本，并把扩展到更多家族留到后续版本。",
+      rationale: "这条线索暴露了你偏好快速小步验证。大规模分层方案不再是首轮最高价值选择，下一问会聚焦小规模完成标准。",
+      savedPath: `${CONTEXT_FILENAME} → 第 4 回合 / 上下文与任务线索`,
+      revisedQuestion: "已确认一天内优先验证流程。下面哪个小规模完成标准最合适？",
+      updatedSnapshot: {
+        knownKnowns: `目标、资料、结果范围和一天内完成的时间限制已确认；当前结果范围：${boundary}。`,
+        unknownKnowns: "你偏好先跑通流程、再逐步扩展，这一执行偏好已表达。",
+        knownUnknowns: "还需在 10 个目标的可复核试点和纯最小测试之间选择。",
+        unknownUnknowns: "时间限制可能让资料核对失败成为首轮主要风险。",
+      },
+    },
+  };
+}
+
+function buildCaseTurns(
+  answers: string[],
+  openedQuestionClues: number[],
+  openedTaskClues: number[],
+): Turn[] {
   const purpose = answers[0] ?? "还没有确定最先要支持的判断";
   const materials = answers[1] ?? "还没有说明手里有哪些资料";
   const boundary = answers[2] ?? "还没有确定结果最多能说明什么";
   const acceptance = answers[3] ?? "还没有约定做到什么才算完成";
-  const clues = buildClues(purpose, materials, boundary);
-  const clueLog = openedClues.length
-    ? openedClues
-        .map((round) => {
-          const clue = clues[round];
-          return clue
-            ? `### 第 ${round} 回合关卡线索\n- 用户问题：${clue.userQuestion}\n- AI 回答：${clue.answer}\n- 保存位置：${clue.savedPath}`
-            : "";
-        })
-        .filter(Boolean)
-        .join("\n\n")
+  const questionClues = buildQuestionClues(purpose, materials, boundary);
+  const taskClues = buildTaskClues(purpose, materials, boundary);
+
+  const questionClueLog = openedQuestionClues.length
+    ? openedQuestionClues.map((round) => {
+        const clue = questionClues[round];
+        return clue
+          ? `### 第 ${round} 回合关卡线索\n- 用户问题：${clue.userQuestion}\n- AI 回答：${clue.answer}\n- 保存位置：${clue.savedPath}`
+          : "";
+      }).filter(Boolean).join("\n\n")
     : "本次没有打开额外关卡线索。";
+
+  const taskClueLog = openedTaskClues.length
+    ? openedTaskClues.map((round) => {
+        const clue = taskClues[round];
+        return clue
+          ? `### 第 ${round} 回合上下文与任务线索\n- 用户补充：${clue.userClue}\n- 类型：${clue.clueType}\n- 证据状态：${clue.evidenceStatus}\n- AI 整理：${clue.interpretation}\n- 保存位置：${clue.savedPath}`
+          : "";
+      }).filter(Boolean).join("\n\n")
+    : "本次没有主动追加上下文或任务线索。";
 
   const finalContext = `# Research Quest Frozen Context｜AlphaFold2 活性位点试点
 
@@ -177,7 +271,7 @@ function buildCaseTurns(answers: string[], openedClues: number[]): Turn[] {
 - AlphaFold DB 预测结构；
 - 可匹配的实验 PDB 结构；
 - 可公开追溯的催化残基注释；
-- 本次聊天中的用户选择与关卡线索。
+- 本次聊天中的用户选择、问题与主动补充线索。
 
 ## 已确认决定
 - 最先支持的判断：${purpose}
@@ -188,11 +282,12 @@ function buildCaseTurns(answers: string[], openedClues: number[]): Turn[] {
 ## Known–Unknown 四象限认知地图
 ### Known Knowns｜已知的已知
 - 用户已经明确研究对象、目标用途、现有资料、结果范围和完成标准；
-- 上述决定来自本次聊天，状态为 Confirmed；只有在实际应用或执行中得到支持后才升级为 Verified。
+- 用户对自己的目标、偏好、约束与截止时间的明确陈述可以直接记为 Confirmed；
+- 外部事实、实验结果与文档内容在核验前只能记为 Candidate。
 
 ### Unknown Knowns｜未知的已知
 - 用户可能已有结构比较、数据库筛选、阈值选择或失败分析经验，但尚未完整表达；
-- Codex 遇到取舍时，应先从已有讨论和项目文档中提取偏好，再决定是否追问。
+- 用户主动补充的偏好和取舍规则应保留为后续执行依据。
 
 ### Known Unknowns｜已知的未知
 - 实际能成功匹配多少目标；
@@ -201,10 +296,13 @@ function buildCaseTurns(answers: string[], openedClues: number[]): Turn[] {
 
 ### Unknown Unknowns｜未知的未知
 - 真实执行中可能出现新的映射冲突、数据偏差或评价盲点；
-- 新风险出现时应写回 Context，并重新调整 Goal，而不是静默忽略。
+- 新风险出现时应写回 Context，并重新调整 Goal。
 
-## 关卡线索与用户追问
-${clueLog}
+## 用户问题与关卡线索
+${questionClueLog}
+
+## 用户主动补充的上下文与任务线索
+${taskClueLog}
 
 ## Goal 版本记录
 - Goal v0.1：确定研究对象，目标用途未定；
@@ -243,8 +341,9 @@ ${materials}
 ## 交互规则
 - 先查 Context、文档和代码，再提问；
 - 每轮默认只问一个最影响结果的问题，确有必要时最多三个；
-- 用户可以随时暂停主问题并提出额外问题；此时先回答、更新认知地图，再重写当前问题；
-- 每个新决定和关卡线索都写回认知地图与 Goal 版本记录；
+- 用户可以随时暂停并提出问题，也可以主动追加上下文、资料、约束、偏好或任务线索；
+- 新线索先分类、去重、检查冲突并判断 Candidate / Confirmed，再更新四象限和当前问题；
+- 每个新决定、关卡线索和任务线索都写回 Context 与 Goal 版本记录；
 - 同一关键问题经过 3–5 轮不同尝试仍失败时，输出根因分析。`;
 
   return [
@@ -270,7 +369,8 @@ ${materials}
         { label: "先筛选哪些结构值得继续做分子对接", impact: "还需要补充配体、口袋和对照设置。" },
         { label: "直接分析催化机制", impact: "需要更强的实验或化学证据，不能只看预测结构。" },
       ],
-      clue: clues[1],
+      questionClue: questionClues[1],
+      taskClue: taskClues[1],
     },
     {
       round: 2,
@@ -294,7 +394,8 @@ ${materials}
         { label: "只有预测结构，实验结构和注释还需要补齐", impact: "先增加资料收集和筛选步骤。" },
         { label: "资料还没有整理，希望 AI 先列出需要准备什么", impact: "先生成资料清单和缺口报告。" },
       ],
-      clue: clues[2],
+      questionClue: questionClues[2],
+      taskClue: taskClues[2],
     },
     {
       round: 3,
@@ -318,7 +419,8 @@ ${materials}
         { label: "结构比较和分子对接都报告，但分开解释", impact: "需要额外加入配体、基线和对接对照。" },
         { label: "先不下正式结论，完成小试点后再决定", impact: "当前 Goal 保留待确认项，不写成正式结果。" },
       ],
-      clue: clues[3],
+      questionClue: questionClues[3],
+      taskClue: taskClues[3],
     },
     {
       round: 4,
@@ -342,7 +444,8 @@ ${materials}
         { label: "检查 30 个以上目标，并按酶家族分别统计", impact: "结果更完整，但首轮时间和成本更高。" },
         { label: "先只跑一个最小测试，不设正式成功率", impact: "适合排查流程，但不能当成正式结果。" },
       ],
-      clue: clues[4],
+      questionClue: questionClues[4],
+      taskClue: taskClues[4],
     },
     {
       round: 5,
@@ -406,13 +509,19 @@ function UserMessage({ children, label = "你" }: { children: string; label?: st
   );
 }
 
-function ProgressFeedback({ turn, clueMode = false }: { turn: Turn; clueMode?: boolean }) {
+function ProgressFeedback({ turn, mode = "main" }: { turn: Turn; mode?: "main" | "question" | "task" }) {
+  const paused = mode !== "main";
+  const goalText = mode === "question"
+    ? "暂不冻结新决定；先记录并回答用户问题。"
+    : mode === "task"
+      ? "新线索已分类并写入 Context；主关卡尚未完成。"
+      : turn.goalChange;
   return (
-    <div className="cq-feedback" aria-label={clueMode ? "关卡线索反馈" : "本轮正反馈"}>
-      <section className="cq-feedback__progress"><span>{clueMode ? "主目标进度暂停" : "目标进度"}</span><strong>{turn.progress}%</strong><div className="cq-progress-track" aria-hidden="true"><i style={{ width: `${turn.progress}%` }} /></div></section>
-      <span>认知分 <strong>{clueMode ? `${turn.score}（主分不变）` : turn.score}</strong></span>
+    <div className="cq-feedback" aria-label={paused ? "中断反馈" : "本轮正反馈"}>
+      <section className="cq-feedback__progress"><span>{paused ? "主目标进度暂停" : "目标进度"}</span><strong>{turn.progress}%</strong><div className="cq-progress-track" aria-hidden="true"><i style={{ width: `${turn.progress}%` }} /></div></section>
+      <span>认知分 <strong>{paused ? `${turn.score}（主分不变）` : turn.score}</strong></span>
       <span>预计剩余 <strong>{turn.remaining}</strong></span>
-      <span className="cq-goal-change">当前目标变化 ({turn.goalVersion}) <strong>{clueMode ? "暂不冻结新决定；先记录并回答用户问题。" : turn.goalChange}</strong></span>
+      <span className="cq-goal-change">当前目标变化 ({turn.goalVersion}) <strong>{goalText}</strong></span>
     </div>
   );
 }
@@ -422,13 +531,15 @@ function ChoiceList({
   options,
   onChoose,
   onCopy,
-  onAskClue,
+  onAddContext,
+  onAskQuestion,
 }: {
   question: string;
   options: Choice[];
   onChoose?: (choice: Choice) => void;
   onCopy?: (text: string) => void;
-  onAskClue?: () => void;
+  onAddContext?: () => void;
+  onAskQuestion?: () => void;
 }) {
   return (
     <section className="cq-question" aria-label="关键提问">
@@ -440,12 +551,16 @@ function ChoiceList({
             <button className="cq-option-copy" type="button" onClick={() => onCopy?.(choice.label)} aria-label={`复制选项：${choice.label}`}>复制</button>
           </div>
         ))}
+        <div className="cq-option-row cq-option-row--task">
+          <button className="cq-option-select" type="button" onClick={onAddContext}><span>{ADD_CONTEXT_LABEL}</span><small>主动补充资料、约束、偏好、截止时间或纠错；AI 会分类并更新下一问。</small></button>
+          <button className="cq-option-copy" type="button" onClick={() => onCopy?.(ADD_CONTEXT_LABEL)} aria-label={`复制选项：${ADD_CONTEXT_LABEL}`}>复制</button>
+        </div>
         <div className="cq-option-row cq-option-row--clue">
-          <button className="cq-option-select" type="button" onClick={onAskClue}><span>{ASK_CLUE_LABEL}</span><small>暂停主关卡，先让 AI 回答你的问题；进度不会丢失。</small></button>
+          <button className="cq-option-select" type="button" onClick={onAskQuestion}><span>{ASK_CLUE_LABEL}</span><small>暂停主关卡，先让 AI 回答你的问题；进度不会丢失。</small></button>
           <button className="cq-option-copy" type="button" onClick={() => onCopy?.(ASK_CLUE_LABEL)} aria-label={`复制选项：${ASK_CLUE_LABEL}`}>复制</button>
         </div>
       </div>
-      <div className="cq-composer" aria-label="聊天回复提示"><span className="cq-avatar cq-avatar--user">你</span><p>点击选项会直接生成用户回复；真实 ChatGPT 不支持按钮时，可复制后发送，也可以直接输入任何问题。</p><button type="button" disabled>发送</button></div>
+      <div className="cq-composer" aria-label="聊天回复提示"><span className="cq-avatar cq-avatar--user">你</span><p>点击选项会直接生成用户回复；真实 ChatGPT 中也可以直接输入自己的答案、问题或任务线索。</p><button type="button" disabled>发送</button></div>
     </section>
   );
 }
@@ -455,13 +570,15 @@ function AssistantTurn({
   showQuestion,
   onChoose,
   onCopy,
-  onAskClue,
+  onAddContext,
+  onAskQuestion,
 }: {
   turn: Turn;
   showQuestion: boolean;
   onChoose?: (choice: Choice) => void;
   onCopy?: (text: string) => void;
-  onAskClue?: () => void;
+  onAddContext?: () => void;
+  onAskQuestion?: () => void;
 }) {
   return (
     <article className="cq-message cq-message--assistant" aria-label={`Research Quest 第 ${turn.round} 回合`}>
@@ -470,7 +587,7 @@ function AssistantTurn({
       <aside className="cq-adaptive"><strong>为什么这一步最值得问</strong><p>{turn.adaptive}</p></aside>
       <MiniQuadrant snapshot={turn.snapshot} label={`第 ${turn.round} 回合 Known–Unknown 四象限`} />
       <ProgressFeedback turn={turn} />
-      {showQuestion && turn.question && turn.options ? <ChoiceList question={turn.question} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAskClue={onAskClue} /> : null}
+      {showQuestion && turn.question && turn.options ? <ChoiceList question={turn.question} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAddContext={onAddContext} onAskQuestion={onAskQuestion} /> : null}
       {turn.finalContext && turn.finalGoal ? (
         <section className="cq-frozen" aria-label="Frozen Context 与 Codex Goal">
           <div><strong>完整 Context</strong><pre>{turn.finalContext}</pre><button type="button" onClick={() => downloadText(CONTEXT_FILENAME, turn.finalContext!)}>下载 context.md</button></div>
@@ -482,18 +599,14 @@ function AssistantTurn({
   );
 }
 
-function ClueTurn({
-  turn,
-  onChoose,
-  onCopy,
-  onAskClue,
-}: {
+function QuestionClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion }: {
   turn: Turn;
   onChoose?: (choice: Choice) => void;
   onCopy?: (text: string) => void;
-  onAskClue?: () => void;
+  onAddContext?: () => void;
+  onAskQuestion?: () => void;
 }) {
-  const clue = turn.clue;
+  const clue = turn.questionClue;
   if (!clue || !turn.options) return null;
   return (
     <article className="cq-message cq-message--assistant cq-message--clue" aria-label={`第 ${turn.round} 回合关卡线索`}>
@@ -502,17 +615,43 @@ function ClueTurn({
       <p className="cq-context-save">已保存到：<strong>{clue.savedPath}</strong></p>
       <aside className="cq-adaptive"><strong>这条线索如何改变认知地图</strong><p>{clue.rationale}</p></aside>
       <MiniQuadrant snapshot={clue.updatedSnapshot} label={`第 ${turn.round} 回合关卡线索后的四象限`} />
-      <ProgressFeedback turn={turn} clueMode />
-      <ChoiceList question={clue.revisedQuestion} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAskClue={onAskClue} />
+      <ProgressFeedback turn={turn} mode="question" />
+      <ChoiceList question={clue.revisedQuestion} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAddContext={onAddContext} onAskQuestion={onAskQuestion} />
+    </article>
+  );
+}
+
+function TaskClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion }: {
+  turn: Turn;
+  onChoose?: (choice: Choice) => void;
+  onCopy?: (text: string) => void;
+  onAddContext?: () => void;
+  onAskQuestion?: () => void;
+}) {
+  const clue = turn.taskClue;
+  if (!clue || !turn.options) return null;
+  return (
+    <article className="cq-message cq-message--assistant cq-message--task" aria-label={`第 ${turn.round} 回合上下文与任务线索`}>
+      <header><span className="cq-avatar cq-avatar--task">+</span><div><strong>Research Quest · 上下文与任务线索</strong><small>已暂停主问题，先整理你主动补充的信息</small></div></header>
+      <aside className="cq-task-summary"><strong>线索分类</strong><p>{clue.clueType} · <b>{clue.evidenceStatus}</b></p><p>{clue.interpretation}</p></aside>
+      <p className="cq-context-save">已保存到：<strong>{clue.savedPath}</strong></p>
+      <aside className="cq-adaptive"><strong>这条线索如何改变认知地图</strong><p>{clue.rationale}</p></aside>
+      <MiniQuadrant snapshot={clue.updatedSnapshot} label={`第 ${turn.round} 回合任务线索后的四象限`} />
+      <ProgressFeedback turn={turn} mode="task" />
+      <ChoiceList question={clue.revisedQuestion} options={turn.options} onChoose={onChoose} onCopy={onCopy} onAddContext={onAddContext} onAskQuestion={onAskQuestion} />
     </article>
   );
 }
 
 function FixedCaseChat() {
   const [answers, setAnswers] = useState<string[]>([]);
-  const [openedClues, setOpenedClues] = useState<number[]>([]);
+  const [openedQuestionClues, setOpenedQuestionClues] = useState<number[]>([]);
+  const [openedTaskClues, setOpenedTaskClues] = useState<number[]>([]);
   const [copyNotice, setCopyNotice] = useState("");
-  const turns = useMemo(() => buildCaseTurns(answers, openedClues), [answers, openedClues]);
+  const turns = useMemo(
+    () => buildCaseTurns(answers, openedQuestionClues, openedTaskClues),
+    [answers, openedQuestionClues, openedTaskClues],
+  );
   const visibleCount = Math.min(answers.length + 1, turns.length);
   const visibleTurns = turns.slice(0, visibleCount);
   const latest = visibleTurns.at(-1) ?? turns[0];
@@ -523,14 +662,24 @@ function FixedCaseChat() {
     setCopyNotice(`已把“${choice.label}”作为你的回复，并写入当前会话 Context。`);
   };
 
-  const askClue = (index: number, turn: Turn) => {
-    if (answers.length !== index || !turn.clue) return;
-    if (openedClues.includes(turn.round)) {
-      setCopyNotice("本轮关卡线索已经展开。你可以继续选择主答案，或在真实聊天中继续输入自己的问题。");
+  const openQuestionClue = (index: number, turn: Turn) => {
+    if (answers.length !== index || !turn.questionClue) return;
+    if (openedQuestionClues.includes(turn.round)) {
+      setCopyNotice("本轮关卡线索已经展开。你可以继续选择主答案，或继续输入自己的问题。");
       return;
     }
-    setOpenedClues((current) => [...current, turn.round]);
-    setCopyNotice(`主关卡已暂停；问题与回答将保存到 ${turn.clue.savedPath}。`);
+    setOpenedQuestionClues((current) => [...current, turn.round]);
+    setCopyNotice(`主关卡已暂停；问题与回答将保存到 ${turn.questionClue.savedPath}。`);
+  };
+
+  const openTaskClue = (index: number, turn: Turn) => {
+    if (answers.length !== index || !turn.taskClue) return;
+    if (openedTaskClues.includes(turn.round)) {
+      setCopyNotice("本轮上下文与任务线索已经加入。你可以继续补充真实线索，或返回主问题。");
+      return;
+    }
+    setOpenedTaskClues((current) => [...current, turn.round]);
+    setCopyNotice(`已接收主动补充；线索将保存到 ${turn.taskClue.savedPath}。`);
   };
 
   const copy = async (text: string) => {
@@ -541,25 +690,34 @@ function FixedCaseChat() {
   return (
     <section className="cq-chat-mode" aria-labelledby="fixed-case-title">
       <div className="cq-overview">
-        <div><p className="cq-eyebrow">认知地图 + grill-me-with-docs</p><h2 id="fixed-case-title">AlphaFold2 活性位点试点</h2><p>AI 先读已有资料，再根据四象限每轮只问一个最关键问题。用户可以随时暂停闯关提问，答案会成为关卡线索并改变下一问。</p></div>
+        <div><p className="cq-eyebrow">认知地图 + grill-me-with-docs</p><h2 id="fixed-case-title">AlphaFold2 活性位点试点</h2><p>AI 先读已有资料，再根据四象限每轮只问一个最关键问题。用户可以随时提问，也可以主动补充资料、约束、偏好和任务线索。</p></div>
         <MiniQuadrant snapshot={latest.snapshot} label="当前完整 Known–Unknown 四象限" />
       </div>
       <p className="cq-live-note" aria-live="polite">{copyNotice || `当前决定保存在页面内存；导出时写入 ${CONTEXT_FILENAME}。`}</p>
       <div className="cq-thread" aria-label="固定案例聊天记录">
         <UserMessage>我想评估 AlphaFold2 预测能不能用于酶活性位点分析。</UserMessage>
         {visibleTurns.map((turn, index) => {
-          const clueOpened = openedClues.includes(turn.round);
+          const questionOpened = openedQuestionClues.includes(turn.round);
+          const taskOpened = openedTaskClues.includes(turn.round);
           const answered = Boolean(answers[index]);
           return (
             <div key={turn.round} className="cq-turn-pair">
-              <AssistantTurn turn={turn} showQuestion={!clueOpened && !answered} onChoose={(choice) => choose(index, choice)} onCopy={copy} onAskClue={() => askClue(index, turn)} />
-              {clueOpened && turn.clue ? <><UserMessage label="你 · 追问">{turn.clue.userQuestion}</UserMessage><ClueTurn turn={turn} onChoose={(choice) => choose(index, choice)} onCopy={copy} onAskClue={() => askClue(index, turn)} /></> : null}
+              <AssistantTurn
+                turn={turn}
+                showQuestion={!questionOpened && !taskOpened && !answered}
+                onChoose={(choice) => choose(index, choice)}
+                onCopy={copy}
+                onAddContext={() => openTaskClue(index, turn)}
+                onAskQuestion={() => openQuestionClue(index, turn)}
+              />
+              {taskOpened && turn.taskClue ? <><UserMessage label="你 · 主动补充">{turn.taskClue.userClue}</UserMessage><TaskClueTurn turn={turn} onChoose={(choice) => choose(index, choice)} onCopy={copy} onAddContext={() => openTaskClue(index, turn)} onAskQuestion={() => openQuestionClue(index, turn)} /></> : null}
+              {questionOpened && turn.questionClue ? <><UserMessage label="你 · 追问">{turn.questionClue.userQuestion}</UserMessage><QuestionClueTurn turn={turn} onChoose={(choice) => choose(index, choice)} onCopy={copy} onAddContext={() => openTaskClue(index, turn)} onAskQuestion={() => openQuestionClue(index, turn)} /></> : null}
               {answers[index] ? <UserMessage>{answers[index]}</UserMessage> : null}
             </div>
           );
         })}
       </div>
-      {answers.length || openedClues.length ? <button className="cq-secondary-button" type="button" onClick={() => { setAnswers([]); setOpenedClues([]); setCopyNotice(""); }}>重新体验 5 轮案例</button> : null}
+      {answers.length || openedQuestionClues.length || openedTaskClues.length ? <button className="cq-secondary-button" type="button" onClick={() => { setAnswers([]); setOpenedQuestionClues([]); setOpenedTaskClues([]); setCopyNotice(""); }}>重新体验 5 轮案例</button> : null}
     </section>
   );
 }
@@ -602,10 +760,11 @@ ${available}
 2. 不询问文档中已经能够回答的问题；
 3. 从四象限中选出最影响最终结果的一个空缺；
 4. 每轮默认只问一个关键问题，确有必要时最多三个；
-5. 每个关键问题最后提供“${ASK_CLUE_LABEL}”；
-6. 用户提问时暂停主关卡，先回答、更新四象限，再重写当前 grill-me 问题；
-7. 使用用户和文档中已经出现的术语，必须引入新词时先用通俗语言解释；
-8. 每次回答后更新四象限、保存位置和当前目标变化 (Goal vN)。
+5. 每个关键问题最后提供“${ADD_CONTEXT_LABEL}”和“${ASK_CLUE_LABEL}”；
+6. 用户提问时暂停主关卡，先回答、更新四象限，再重写当前问题；
+7. 用户主动补充上下文时，分类、去重、检查冲突、判断 Candidate / Confirmed，再更新 Goal 与问题；
+8. 使用用户和文档中已经出现的术语；
+9. 每次回答后更新四象限、保存位置和当前目标变化 (Goal vN)。
 
 ## 初始 Known–Unknown 四象限
 ### Known Knowns｜已知的已知
@@ -615,7 +774,7 @@ ${available}
 用户可能已有但尚未表达的经验、偏好和失败教训。
 
 ### Known Unknowns｜已知的未知
-数据、指标、完成标准、结论范围和执行方式仍需确认。
+数据、指标、完成标准、结果范围和执行方式仍需确认。
 
 ### Unknown Unknowns｜未知的未知
 隐藏依赖、反例和执行风险需由真实对话与工具调用发现。
@@ -624,7 +783,7 @@ ${available}
 这是网页本地生成的初始草图，尚未经过 AI 访谈、确认或验证。`;
   }, [requirement, deliverable, materials]);
 
-  const prompt = useMemo(() => `请启用 Research Quest Skill，并基于下面的 Initial Context 启动聊天式科研对齐。\n\n${context}\n\n执行要求：\n1. 先读取文档和已有 Context，再展示预计轮次、总时间和最终产物；\n2. 每轮默认只问 1 个最影响目标的问题，确有必要时最多 3 个；\n3. 每个关键问题最后加入“${ASK_CLUE_LABEL}”；\n4. 用户可以随时提出任意问题；此时暂停主关卡，生成关卡线索，先回答并更新四象限；\n5. 根据更新后的认知地图重新生成当前 grill-me 问题，再恢复主线；\n6. 每轮展示完整四象限、认知分、目标进度、预计剩余时间、保存位置和当前目标变化 (Goal vN)；\n7. 只有经过确认或验证的信息才能进入 Frozen Context；\n8. 完成认知对齐后，生成引用 Frozen Context 的完整 Codex Goal。`, [context]);
+  const prompt = useMemo(() => `请启用 Research Quest Skill，并基于下面的 Initial Context 启动聊天式科研对齐。\n\n${context}\n\n执行要求：\n1. 先读取文档和已有 Context，再展示预计轮次、总时间和最终产物；\n2. 每轮默认只问 1 个最影响目标的问题，确有必要时最多 3 个；\n3. 每个关键问题倒数第二项加入“${ADD_CONTEXT_LABEL}”，最后一项加入“${ASK_CLUE_LABEL}”；\n4. 用户可随时输入任意问题，或主动追加资料、约束、偏好、截止时间、结果和纠错；\n5. 对新增线索先分类、去重、检查冲突并判断 Candidate / Confirmed；\n6. 更新四象限和 Context 后，重新生成当前 grill-me 问题；\n7. 每轮展示完整四象限、认知分、目标进度、预计剩余时间、保存位置和当前目标变化 (Goal vN)；\n8. 只有经过确认或验证的信息才能进入 Frozen Context；\n9. 完成认知对齐后，生成引用 Frozen Context 的完整 Codex Goal。`, [context]);
 
   const generate = () => {
     const combined = `${requirement}\n${deliverable}\n${materials}`;
@@ -646,7 +805,7 @@ ${available}
   return (
     <section className="cq-custom" aria-labelledby="custom-title">
       <div className="cq-overview">
-        <div><p className="cq-eyebrow">输入自己的科研需求</p><h2 id="custom-title">两步生成启动材料</h2><p>网页只做本地整理；真正的文档阅读、自由追问、认知地图更新和自适应 grill-me 由安装 Skill 的 ChatGPT / Agent 完成。</p></div>
+        <div><p className="cq-eyebrow">输入自己的科研需求</p><h2 id="custom-title">两步生成启动材料</h2><p>网页只做本地整理；真正的文档阅读、自由追问、主动补充上下文、认知地图更新和自适应 grill-me 由安装 Skill 的 ChatGPT / Agent 完成。</p></div>
         <MiniQuadrant snapshot={snapshot} label="自定义需求初始 Known–Unknown 四象限草图" />
       </div>
       <div className="cq-thread">
@@ -670,7 +829,7 @@ export function ChatQuestDemo() {
   return (
     <main className="cq-app">
       <header className="cq-header">
-        <div><p className="cq-eyebrow">Research Quest｜AI Research Game</p><h1>把科研聊天变成更精准的任务对齐</h1><p>核心逻辑只有两步：用 Known–Unknown 四象限建立认知地图；用 grill-me-with-docs 每轮只问一个最关键问题。用户可随时暂停提问，AI 回答后会更新地图和下一问，再把完整 Context 与 Goal 交给 Codex。</p></div>
+        <div><p className="cq-eyebrow">Research Quest｜AI Research Game</p><h1>把科研聊天变成更精准的任务对齐</h1><p>核心逻辑是 Known–Unknown 四象限 + grill-me-with-docs。用户既可以回答问题，也可以随时追问或主动补充上下文；AI 会把新信息写入 Context、更新认知地图并重新生成下一问。</p></div>
         <ProductLinks />
       </header>
       <section className="cq-mode-switch" aria-label="选择演示模式">
