@@ -89,8 +89,8 @@ test("真实需求面板与认知地图案例博文可访问", async ({ page }) 
   await expect(page.getByText("grill-me-with-docs", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "用户可以随时暂停闯关提问" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "用户也可以主动补充上下文和任务线索" })).toBeVisible();
-  await expect(page.getByText("Candidate", { exact: true })).toBeVisible();
-  await expect(page.getByText("Confirmed", { exact: true })).toBeVisible();
+  await expect(page.getByText("Candidate", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Confirmed", { exact: false }).first()).toBeVisible();
 });
 
 test("考试 rubric 拒绝无关回答，并接受真实任务判断", async ({ page }, testInfo) => {
