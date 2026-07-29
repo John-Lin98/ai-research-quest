@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Research Quest 先读科研资料，再用 Known–Unknown 四象限和 grill-me-with-docs 每轮只问一个关键问题；用户可随时追问，AI 回答后更新认知地图和下一问。" />
+    <meta name="description" content="Research Quest 先读科研资料，再用 Known–Unknown 四象限和 grill-me-with-docs 每轮只问一个关键问题；用户可随时提问或主动补充任务线索。" />
     <title>Research Quest：认知地图与 grill-me-with-docs</title>
     <style>
       :root { color: #172554; background: #f8fafc; font-family: Inter, "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif; line-height: 1.72; }
@@ -21,11 +21,12 @@
       article > * + * { margin-top: 1.25rem; }
       h2 { margin: 2.6rem 0 .7rem; font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.25; }
       h3 { margin: 0 0 .35rem; }
-      .callout, .plain-box, .goal-box, .clue-box { padding: 1.15rem 1.25rem; border-radius: 1rem; }
+      .callout, .plain-box, .goal-box, .clue-box, .task-box { padding: 1.15rem 1.25rem; border-radius: 1rem; }
       .callout { border-left: 5px solid #2563eb; background: #eff6ff; }
       .plain-box { border: 1px solid #99f6e4; background: #f0fdfa; }
       .goal-box { border: 1px solid #c4b5fd; background: #f5f3ff; }
       .clue-box { border: 1px solid #fdba74; background: #fff7ed; }
+      .task-box { border: 1px solid #86efac; background: #f0fdf4; }
       .label { margin: 0 0 .3rem; color: #0f766e; font-size: .88rem; font-weight: 800; }
       .two-loop { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
       .two-loop section { padding: 1rem 1.1rem; border: 1px solid #dbeafe; border-radius: 1rem; background: #fff; }
@@ -46,6 +47,7 @@
       .bubble.user { justify-self: end; background: #e8f0ff; }
       .bubble.ai { justify-self: start; }
       .bubble.clue { justify-self: start; border-color: #fdba74; background: #fff7ed; }
+      .bubble.task { justify-self: start; border-color: #86efac; background: #f0fdf4; }
       .bubble small { color: #64748b; }
       .flow { overflow-x: auto; padding: 1.1rem; border-radius: 1rem; color: #e2e8f0; background: #0f172a; }
       .flow pre { margin: 0; white-space: pre-wrap; font: .88rem/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; }
@@ -62,7 +64,7 @@
       <div class="hero__inner">
         <p class="eyebrow">Research Quest · Cognition Map + grill-me-with-docs</p>
         <h1>先读资料，再问一个真正重要的问题</h1>
-        <p class="lede">Research Quest 的核心不是把科研包装成网页游戏，而是让 AI 先读懂项目资料，再用 Known–Unknown 四象限找到最关键的认知空缺，每轮只问一个会改变最终方案的问题。用户还可以随时暂停闯关提问，AI 回答后会更新认知地图和下一问。</p>
+        <p class="lede">Research Quest 的核心不是把科研包装成网页游戏，而是让 AI 先读懂项目资料，再用 Known–Unknown 四象限找到最关键的认知空缺。用户既可以回答问题，也可以随时追问或主动补充新的上下文和任务线索。</p>
         <span class="badge">认知地图决定问题 · 文档减少重复沟通 · Context 交给 Codex</span>
       </div>
     </header>
@@ -98,37 +100,40 @@
         </ol>
 
         <h2>用户可以随时暂停闯关提问</h2>
-        <div class="clue-box">
-          <p class="label">固定选项：暂不闯关，我还有一些问题</p>
-          <p>每个关键问题的最后一个选项都允许用户暂停主线。暂停不会推进关卡、不会扣分，也不会把原问题标记为已回答。</p>
-        </div>
+        <div class="clue-box"><p class="label">最后一个选项：暂不闯关，我还有一些问题</p><p>暂停不会推进关卡、不会扣分，也不会把原问题标记为已回答。</p></div>
         <div class="chat-example">
           <div class="bubble ai"><strong>Research Quest</strong><p>下面哪一项最接近你现在手里的资料？</p></div>
-          <div class="bubble user"><strong>你</strong><p>暂不闯关，我还有一些问题：为什么需要同时准备预测结构、实验结构和催化残基注释？</p></div>
-          <div class="bubble clue"><strong>Research Quest · 关卡线索</strong><p>预测结构是要检查的对象，实验结构是比较参考，催化残基注释告诉我们应该重点看哪个局部区域。缺少其中任何一项，任务都会改变。</p><small>问题与答案已写入本轮 QA / Context；主目标进度保持不变。</small></div>
+          <div class="bubble user"><strong>你</strong><p>为什么需要同时准备预测结构、实验结构和催化残基注释？</p></div>
+          <div class="bubble clue"><strong>Research Quest · 关卡线索</strong><p>预测结构是要检查的对象，实验结构是比较参考，催化残基注释告诉我们应该重点看哪个局部区域。</p><small>问题与答案已写入本轮 QA / Context；主目标进度保持不变。</small></div>
         </div>
-        <p>用户问题本身会进入 Known Unknowns；答案可能暴露 Unknown Knowns 或新的 Unknown Unknowns。AI 随后必须依据更新后的四象限重写当前 grill-me 问题，而不是机械重复原问题。</p>
-        <div class="flow"><pre>暂停主问题
-→ 读取文档与 Context
-→ 回答用户问题
-→ 更新四象限
-→ 只把确认内容写入 Goal
-→ 重写当前 grill-me 问题
-→ 用户继续闯关或再次提问</pre></div>
-        <p>公开 Demo 使用固定问题和固定答案，保证测试可复验；真实 Skill 中，用户可以输入任何问题，AI 必须根据当前材料实时回答。如果材料不支持结论，应明确说明无法确认。</p>
+        <p>用户问题进入 Known Unknowns；答案可能暴露 Unknown Knowns 或新的 Unknown Unknowns。AI 随后必须依据更新后的四象限重写当前问题，而不是机械重复。</p>
+
+        <h2>用户也可以主动补充上下文和任务线索</h2>
+        <div class="task-box"><p class="label">倒数第二个选项：我想补充上下文或任务线索</p><p>用户可以主动添加资料、约束、偏好、截止时间、目标修正、实验结果、文件说明或纠错。AI 不要求用户等到被问到才提供信息。</p></div>
+        <div class="chat-example">
+          <div class="bubble user"><strong>你</strong><p>补充一份资料线索：我还有一份活性位点注释表，但字段和残基编号还没有核对。</p></div>
+          <div class="bubble task"><strong>Research Quest · 上下文与任务线索</strong><p><strong>类型：</strong>资料与待核对事实。<strong>状态：</strong>Candidate。</p><p>已记录存在一份注释表，但读取和核对前不能把它当成可直接使用的资料。当前 Goal 将加入字段与编号审查步骤。</p><small>主进度暂停；认知地图新增资料 Candidate 和编号对齐风险。</small></div>
+        </div>
+        <p>用户对自己目标、偏好、约束和截止时间的明确陈述可以记为 Confirmed；文件内容、数据、实验结果和外部事实在核验前只能记为 Candidate。与已有 Context 冲突时，AI 必须展示冲突，不能静默覆盖。</p>
+        <div class="flow"><pre>用户主动补充
+→ 线索分类
+→ Candidate / Confirmed
+→ 去重与冲突检查
+→ 更新四象限与 Context
+→ Goal 保持、修改或回滚
+→ 缩小、跳过或重写当前 grill-me 问题</pre></div>
+
+        <h2>两种中断的区别</h2>
+        <div class="two-loop">
+          <section><h3>我还有问题</h3><p>用户希望 AI 提供答案。系统生成“关卡线索”，先回答，再更新认知地图。</p></section>
+          <section><h3>我想补充线索</h3><p>用户希望把新信息加入任务。系统生成“上下文与任务线索”，先分类和核验，再更新 Goal。</p></section>
+        </div>
 
         <h2>“为什么这一步最值得问”不是固定话术</h2>
         <div class="plain-box"><p class="label">生成规则</p><p>AI 必须同时说明：文档已经告诉了我们什么、当前四象限最大的空缺是什么，以及这个空缺会怎样改变最终 Goal。</p></div>
-        <div class="chat-example">
-          <div class="bubble user"><strong>你</strong><p>我已经有 AlphaFold DB 预测、对应 PDB 和催化残基注释。</p></div>
-          <div class="bubble ai"><strong>Research Quest</strong><p>这项选择已写入当前会话 Context，导出时保存为 <code>research-quest-context.md</code>。资料已经说明“手里有什么”，当前最大的 Known Unknown 变成“这些结果最多能说明什么”，所以本轮只确认结论范围。</p><small>当前目标变化 (Goal v0.3)：现有资料和仍需补齐的部分已进入 Context。</small></div>
-        </div>
-
-        <h2>每次选择都会成为真实输入</h2>
-        <p>在支持按钮的界面中，用户点击选项后，该选项会直接显示为用户聊天气泡，并写入 Context 和 Goal。若宿主不能接收按钮事件，每个选项都提供复制文本；用户也可以直接输入自己的回答或问题。</p>
 
         <h2>Context 保存的不只是最终结论</h2>
-        <div class="goal-box"><p class="label">research-quest-context.md</p><p>完整 Context 保存已读资料、主问题、用户选择、额外问题与答案、四象限状态、Candidate / Confirmed / Verified 证据、Goal 版本变化、开放未知和关闭条件。</p></div>
+        <div class="goal-box"><p class="label">research-quest-context.md</p><p>完整 Context 保存已读资料、主问题、用户选择、额外问题与答案、主动任务线索、四象限状态、Candidate / Confirmed / Verified 证据、Goal 版本变化、开放未知和关闭条件。</p></div>
         <p>有文件或知识库写入能力时，AI 应明确写入路径；只有浏览器内存或会话状态时，必须如实说明“导出后保存为某文件”，不能假装已经写入磁盘。</p>
 
         <h2>最终交给 Codex 的内容</h2>
@@ -137,12 +142,12 @@
 + 已读材料和用户偏好
 + Known–Unknown 四象限
 + 关卡线索与问答记录
++ 用户主动追加的任务线索
 + 当前目标变化历史
 + 输入、步骤、指标和完成标准
 + Agent 分工、测试和审查
 + 3–5 轮失败后的根因分析
 → Codex 执行</pre></div>
-        <p>Codex 开始前先读取 Context，不重复询问已经确认的决定。真实执行发现新的 Unknown Unknown 时，再把它写回认知地图并调整 Goal。</p>
 
         <h2>案例的事实边界</h2>
         <p>AlphaFold2 在 CASP14 中展示了重要的结构预测能力，AlphaFold DB 提供公开预测结构。但本案例只是演示如何设计一个公开试点，尚未提供“10 个目标已完成”的科研结果，也不把 pLDDT 或结构相似性直接解释为催化活性或底物结合正确。</p>
