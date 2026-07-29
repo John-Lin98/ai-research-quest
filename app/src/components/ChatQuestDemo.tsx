@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 
-const SKILL_URL = "https://github.com/John-Lin98/ai-research-quest/releases/tag/v1.1.0";
+const SKILL_URL = "https://github.com/John-Lin98/ai-research-quest/releases/latest";
 const CASE_URL = "./case-study-alphafold-casp14.html";
 const VIDEO_URL = "./research-quest-demo-75s.webm";
 const FULL_DEMO_URL = "./?view=full";
+const CONTEXT_FILENAME = "research-quest-context.md";
 
 type Mode = "case" | "custom";
 
@@ -45,165 +46,227 @@ function downloadText(filename: string, content: string) {
   URL.revokeObjectURL(url);
 }
 
+async function copyText(content: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(content);
+      return true;
+    }
+  } catch {
+    // Fall through to the local textarea fallback.
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = content;
+  textarea.setAttribute("readonly", "true");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.append(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  return copied;
+}
+
 function compact(value: string, fallback: string) {
   const cleaned = value.trim().replace(/\s+/g, " ");
   return cleaned || fallback;
 }
 
+function contextSaved(choice: string, next: string) {
+  return `你刚才选择了“${choice}”。这项决定已写入当前会话 Context，导出时会保存为 ${CONTEXT_FILENAME}。${next}`;
+}
+
 function buildCaseTurns(answers: string[]): Turn[] {
-  const purpose = answers[0] ?? "尚未冻结下游用途";
-  const materials = answers[1] ?? "尚未确认已有材料";
-  const boundary = answers[2] ?? "尚未冻结证据边界";
-  const acceptance = answers[3] ?? "尚未冻结完成信号";
+  const purpose = answers[0] ?? "还没有确定最先要支持的判断";
+  const materials = answers[1] ?? "还没有说明手里有哪些资料";
+  const boundary = answers[2] ?? "还没有确定结果最多能说明什么";
+  const acceptance = answers[3] ?? "还没有约定做到什么才算完成";
 
-  const finalContext = `# Frozen Context｜AlphaFold2 酶活性位点几何试点
+  const finalContext = `# Research Quest Frozen Context｜AlphaFold2 活性位点试点
+
+## 原始需求
+用户希望判断 AlphaFold2 / AlphaFold DB 预测能否用于酶活性位点分析。
+
+## 本轮读取和使用的资料
+- AlphaFold2 与 CASP14 的公开背景；
+- AlphaFold DB 预测结构；
+- 可匹配的实验 PDB 结构；
+- 可公开追溯的催化残基注释；
+- 本次 5 轮聊天中的用户选择。
+
+## 已确认决定
+- 最先支持的判断：${purpose}
+- 手里已有的资料：${materials}
+- 结果最多能说明：${boundary}
+- 做到什么算完成：${acceptance}
+
+## Known–Unknown 四象限认知地图
+### Known Knowns｜已知的已知
+- 用户已经明确研究对象和目标用途；
+- 用户已经说明现有资料、结论范围和完成标准；
+- 上述决定均来自本次聊天选择，状态为 Confirmed；只有在执行或应用中得到支持后才升级为 Verified。
+
+### Unknown Knowns｜未知的已知
+- 用户可能已有结构比较、数据库筛选、阈值选择或失败分析经验，但尚未完整表达；
+- Codex 执行中遇到取舍时，应优先从已有讨论和项目文档中提取偏好，再决定是否追问。
+
+### Known Unknowns｜已知的未知
+- 实际能成功匹配多少目标；
+- 局部活性位点误差如何分布；
+- 哪些失败来自链、编号、缺失残基或结构状态差异。
+
+### Unknown Unknowns｜未知的未知
+- 真实执行中可能出现新的映射冲突、数据偏差或评价盲点；
+- 新风险出现时应写回 Context，并重新调整 Goal，而不是静默忽略。
+
+## Goal 版本记录
+- Goal v0.1：确定研究对象，目标用途未定；
+- Goal v0.2：确定最先支持的判断；
+- Goal v0.3：记录手里已有的资料；
+- Goal v0.4：确定结果最多能说明什么；
+- Goal v1.0：补齐完成标准并形成执行合同。
+
+## 保存与交接
+- 当前网页仅保存在页面内存中；
+- 用户主动导出后保存为 ${CONTEXT_FILENAME}；
+- Codex 开始前必须读取该 Context，不重复询问已经确认的决定。
+
+## 结论范围
+不把 pLDDT、结构相似性或局部几何结果直接写成催化活性、底物结合或药物发现结论。`;
+
+  const finalGoal = `# Codex Goal｜AlphaFold2 活性位点公开试点
+
+开始前读取 ${CONTEXT_FILENAME}，并把它作为本任务的需求依据。先使用其中已经确认的决定，不重复询问；只有真实执行暴露新的关键缺口时，才提出一个最高价值问题。
 
 ## 目标
-评估 AlphaFold2 / AlphaFold DB 预测是否足以支持酶活性位点几何初筛。
+围绕“${purpose}”完成一个公开、可追溯的小规模试点。
 
-## 已冻结决定
-- 下游用途：${purpose}
-- 已有材料：${materials}
-- 证据边界：${boundary}
-- 完成信号：${acceptance}
-
-## Known–Unknown 四象限
-- Known Knowns：研究对象、下游用途、输入范围、证据边界和验收已确认。
-- Unknown Knowns：用户可能已有结构比较、数据库或阈值经验，执行前继续显式化。
-- Known Unknowns：实际映射成功率、局部误差分布和失败样本类型仍待执行回答。
-- Unknown Unknowns：链、残基编号、缺失区域和构象状态冲突由执行阶段暴露并回写。
-
-## 公开边界
-不把 pLDDT、结构相似性或局部几何结果外推为催化、结合或药物发现结论。`;
-
-  const finalGoal = `# Codex Goal｜AlphaFold2 酶活性位点几何公开试点
-
-开始前读取 Frozen Context，并将其作为唯一需求依据。不要重复询问已经冻结的决定。
-
-## 目标
-围绕“${purpose}”完成一个可追溯公开试点。
-
-## 输入
+## 你可以使用的资料
 ${materials}
 
-## 执行
-1. 冻结公开目标清单、来源、纳入与排除规则；
-2. 建立 AlphaFold DB、PDB 链和催化残基注释的可追溯映射；
-3. 计算全局与局部结构指标、覆盖率和失败码；
-4. 按“${boundary}”控制结论；
-5. 以“${acceptance}”作为验收依据；
-6. 完成测试、独立审查、中文 PR 和安全合并。
+## 执行步骤
+1. 建立公开目标清单，并记录每个目标为什么被纳入或排除；
+2. 匹配 AlphaFold DB 预测、实验 PDB 链和催化残基注释；
+3. 分别报告整体结构和活性位点附近的局部误差；
+4. 记录成功率、失败原因和无法判断的样本；
+5. 只在“${boundary}”范围内写结论；
+6. 以“${acceptance}”作为完成标准；
+7. 完成测试、独立审查、中文 PR 和安全合并。
 
-同一关键问题经过 3–5 轮实质不同的尝试仍失败时，输出根因分析。`;
+## 交互规则
+- 先查 Context、文档和代码，再提问；
+- 每轮默认只问一个最影响结果的问题，确有必要时最多三个；
+- 每个新决定都写回认知地图和 Goal 版本记录；
+- 同一关键问题经过 3–5 轮不同尝试仍失败时，输出根因分析。`;
 
   return [
     {
       round: 1,
-      title: "先冻结真实下游判断",
-      message: "我先不把这句需求直接交给 Codex。‘用于活性位点分析’仍然太宽，不同下游任务需要不同的数据、指标和结论边界。",
-      adaptive: "初始认知地图显示 Known Knowns 较少，本轮只确定一个最关键目标，不引入实现细节。",
+      title: "先说清楚要解决什么",
+      message: "我先不把这句需求直接交给 Codex。‘用于活性位点分析’范围太大，先确认你最想支持的判断，后面的资料、指标和结论才不会选错。",
+      adaptive: "现有需求只说明了研究对象，还没有说明最先要解决什么。认知地图里最大的空缺是 Known Unknowns，因此本轮只问一个目标问题。",
       progress: 12,
       score: 0,
       remaining: "约 6–9 分钟",
       goalVersion: "Goal v0.1",
-      goalChange: "研究对象已出现，但下游用途尚未冻结。",
+      goalChange: "研究对象已明确，但最先要支持的判断还没有定下来。",
       snapshot: {
-        knownKnowns: "已明确研究对象：AlphaFold2 与酶活性位点。",
-        unknownKnowns: "可能已有结构分析经验，但尚未表达。",
-        knownUnknowns: "还不知道需要支持哪种下游判断。",
-        unknownUnknowns: "尚未检查残基映射和构象差异风险。",
+        knownKnowns: "已经知道研究对象是 AlphaFold2 和酶活性位点。",
+        unknownKnowns: "你可能已有结构分析经验，但还没有说出来。",
+        knownUnknowns: "还不知道这项工作最先要帮助你作出什么判断。",
+        unknownUnknowns: "还没有检查结构编号和构象差异可能带来的问题。",
       },
-      question: "你最希望这项工作首先支持哪一种判断？",
+      question: "你最希望这项工作先帮助你判断什么？",
       options: [
-        { label: "酶活性位点几何初筛", impact: "聚焦局部结构准确性与失败模式。" },
-        { label: "为后续分子对接筛选结构", impact: "需要额外考虑配体、口袋和对接控制。" },
-        { label: "分析催化机制", impact: "需要更强证据，不能只依赖预测结构。" },
+        { label: "先判断活性位点附近的结构是否可靠", impact: "重点比较局部结构和失败样本。" },
+        { label: "先筛选哪些结构值得继续做分子对接", impact: "还需要补充配体、口袋和对照设置。" },
+        { label: "直接分析催化机制", impact: "需要更强的实验或化学证据，不能只看预测结构。" },
       ],
     },
     {
       round: 2,
-      title: "确认可用输入与材料",
-      message: `下游用途已暂定为“${purpose}”。为了避免 Codex 在执行时临时猜测数据来源，本轮只确认输入资产。`,
-      adaptive: "上一轮 Verified Known Knowns 仍较少，本轮增加基础认知提升：区分预测结构、实验结构和催化残基注释各自的作用。",
+      title: "看看你手里有什么资料",
+      message: contextSaved(purpose, "当前目标已经更清楚了；现在只需要确认你手里有哪些资料，避免 Codex 开始后再临时猜数据来源。"),
+      adaptive: "上一轮已经确定目标，但 Known Knowns 里还没有可用资料。根据 grill-me-with-docs 的规则，本轮先用已有术语确认材料，不引入新的方法名。",
       progress: 34,
       score: 10,
       remaining: "约 5–7 分钟",
       goalVersion: "Goal v0.2",
-      goalChange: `已冻结下游用途：${purpose}。`,
+      goalChange: `当前先支持：${purpose}。`,
       snapshot: {
-        knownKnowns: `已确认下游用途：${purpose}。`,
-        unknownKnowns: "可能已有 AlphaFold DB、PDB 或结构比较经验。",
-        knownUnknowns: "还不知道输入是否足以形成公开配对分析。",
-        unknownUnknowns: "链和残基编号可能无法直接对应。",
+        knownKnowns: `已经确认最先要支持：${purpose}。`,
+        unknownKnowns: "你可能已经用过 AlphaFold DB、PDB 或结构比较工具。",
+        knownUnknowns: "还不知道现有资料是否足够完成公开配对分析。",
+        unknownUnknowns: "预测结构与实验结构的链和残基编号可能对不上。",
       },
-      question: "当前最接近真实情况的是哪一项？",
+      question: "下面哪一项最接近你现在手里的资料？",
       options: [
-        { label: "已有 AlphaFold DB、匹配 PDB 和催化残基公开注释", impact: "可以设计公开配对试点。" },
-        { label: "只有预测结构，实验结构和注释需要补齐", impact: "先增加数据准备与筛选关。" },
-        { label: "材料尚未整理，需要 AI 先建立资产清单", impact: "先输出数据资产和缺口报告。" },
+        { label: "已有 AlphaFold DB 预测、对应 PDB 和催化残基注释", impact: "可以直接设计一个小规模公开试点。" },
+        { label: "只有预测结构，实验结构和注释还需要补齐", impact: "先增加资料收集和筛选步骤。" },
+        { label: "资料还没有整理，希望 AI 先列出需要准备什么", impact: "先生成资料清单和缺口报告。" },
       ],
     },
     {
       round: 3,
-      title: "冻结证据边界",
-      message: `已记录材料状态：“${materials}”。现在需要确保最终结果不会被写成超出计算证据的结论。`,
-      adaptive: "Known Unknowns 从‘有什么材料’转向‘材料能支持什么’；本轮进入证据边界判断。",
+      title: "确认结果最多能说明什么",
+      message: contextSaved(materials, "资料够不够和结论能写多强是两回事；接下来只确认这一步最多能说明什么。"),
+      adaptive: "认知地图中的 Known Unknowns 已从‘手里有什么’变成‘这些资料最多能说明什么’。因此本轮不继续问技术细节，只关闭结论范围这个关键空缺。",
       progress: 56,
       score: 20,
       remaining: "约 3–5 分钟",
       goalVersion: "Goal v0.3",
-      goalChange: "输入资产及缺口已进入 Context。",
+      goalChange: "你手里已有的资料和仍需补齐的部分已进入 Context。",
       snapshot: {
-        knownKnowns: `用途：${purpose}；材料：${materials}。`,
-        unknownKnowns: "用户可能已有局部区域、阈值或失败分析偏好。",
-        knownUnknowns: "还需明确结构指标能够支持和不能支持什么。",
-        unknownUnknowns: "高置信度可能被误读为外部结构或功能正确。",
+        knownKnowns: `目标：${purpose}；现有资料：${materials}。`,
+        unknownKnowns: "你可能已有局部区域、阈值或失败分析偏好。",
+        knownUnknowns: "还需要明确结构比较结果能支持什么、不能支持什么。",
+        unknownUnknowns: "高置信度可能被误读成功能或催化正确。",
       },
-      question: "首轮试点的结论应限制在哪个范围？",
+      question: "首轮结果最多应该说明到哪一步？",
       options: [
-        { label: "只评价局部几何初筛适用性与失败模式", impact: "不外推到催化、结合或药物发现。" },
-        { label: "同时报告对接结果，但与结构评测分开", impact: "增加配体、基线和对接控制。" },
-        { label: "先保留开放，完成 pilot 后再冻结", impact: "Goal 中标记为待验证，不形成正式结论。" },
+        { label: "只判断局部结构是否适合初步筛选，并报告失败情况", impact: "不把结果扩大解释成催化或结合结论。" },
+        { label: "结构比较和分子对接都报告，但分开解释", impact: "需要额外加入配体、基线和对接对照。" },
+        { label: "先不下正式结论，完成小试点后再决定", impact: "把结论范围保留为待确认项。" },
       ],
     },
     {
       round: 4,
-      title: "定义可验收完成信号",
-      message: `证据边界已记录为“${boundary}”。最后还需要一个能让 Codex 判断任务是否真正完成的量化信号。`,
-      adaptive: "基础概念已经对齐，本轮不再补知识，直接进入执行合同与验收设计。",
+      title: "约定做到什么才算完成",
+      message: contextSaved(boundary, "目标、资料和结果范围已经说清楚了；最后只差一个简单的完成标准，让 Codex 知道什么时候可以结束任务。"),
+      adaptive: "四象限中的基础问题已经基本关闭。当前唯一会直接影响执行范围的 Known Unknown 是完成标准，所以本轮只问验收，不再增加知识负担。",
       progress: 78,
       score: 30,
       remaining: "约 1–3 分钟",
       goalVersion: "Goal v0.4",
-      goalChange: `结论边界已冻结：${boundary}。`,
+      goalChange: `结果范围已确定：${boundary}。`,
       snapshot: {
-        knownKnowns: `用途、材料和边界均已确认。`,
-        unknownKnowns: "可能偏好先做小规模可追溯 pilot。",
-        knownUnknowns: "还缺少样本规模、覆盖率和失败退出条件。",
-        unknownUnknowns: "低覆盖率可能造成只报告成功样本的选择偏差。",
+        knownKnowns: "目标、资料和结果范围已经确认。",
+        unknownKnowns: "你可能更偏好先做小规模、能快速复核的试点。",
+        knownUnknowns: "还缺少样本数量、成功率和失败退出标准。",
+        unknownUnknowns: "只报告成功样本可能造成选择偏差。",
       },
-      question: "哪个完成信号最适合作为首轮执行合同？",
+      question: "哪个标准最适合用来判断首轮任务已经完成？",
       options: [
-        { label: "10 个公开目标，至少 8 个形成有效配对分析", impact: "规模小、可追溯，适合验证流程。" },
-        { label: "30 个以上目标，并按家族分层", impact: "证据更完整，但首轮成本更高。" },
-        { label: "先跑 smoke，不预设正式覆盖率", impact: "只用于诊断，不能作为正式完成结论。" },
+        { label: "检查 10 个公开目标，至少 8 个得到可复核结果", impact: "规模小、结果可追溯，适合首轮验证。" },
+        { label: "检查 30 个以上目标，并按酶家族分别统计", impact: "结果更完整，但首轮时间和成本更高。" },
+        { label: "先只跑一个最小测试，不设正式成功率", impact: "适合排查流程，但不能当成正式结果。" },
       ],
     },
     {
       round: 5,
-      title: "Context Freeze 与 Goal Forge",
-      message: "关键信息已经从模糊需求变成可追溯执行合同。现在 Codex 可以直接读取 Frozen Context 和 Goal，而不是重新猜测你的目标。",
-      adaptive: "四象限中影响首轮执行的 Known Unknowns 已有关闭条件；剩余未知将由 Codex 的真实执行暴露并回写。",
+      title: "整理 Context，生成 Codex 目标",
+      message: contextSaved(acceptance, "影响首轮执行的关键问题已经有答案，现在可以停止继续追问，把已确认内容整理成 Context 和 Codex Goal。"),
+      adaptive: "认知地图中的核心 Known Unknowns 已经有关闭条件。剩余问题必须由真实执行回答，因此 grill-me-with-docs 在这里停止提问，转入 Codex 执行。",
       progress: 100,
       score: 50,
       remaining: "已完成",
       goalVersion: "Goal v1.0",
-      goalChange: `已冻结：${purpose}；${materials}；${boundary}；${acceptance}。`,
+      goalChange: `已确定：${purpose}；${materials}；${boundary}；${acceptance}。`,
       snapshot: {
-        knownKnowns: "目标、输入、证据边界和验收均已冻结。",
-        unknownKnowns: "执行时继续显式化用户的结构分析经验与偏好。",
-        knownUnknowns: "实际映射成功率、误差分布和失败样本仍待执行回答。",
-        unknownUnknowns: "新出现的链、编号和构象冲突将回写下一轮。",
+        knownKnowns: "目标、现有资料、结果范围和完成标准已经确认。",
+        unknownKnowns: "执行中仍可从已有讨论提取你的分析经验和偏好。",
+        knownUnknowns: "实际匹配成功率、误差分布和失败类型需要通过执行回答。",
+        unknownUnknowns: "新出现的编号、缺失残基和构象冲突将写回下一轮。",
       },
       finalContext,
       finalGoal,
@@ -212,14 +275,20 @@ ${materials}
 }
 
 function MiniQuadrant({ snapshot, label }: { snapshot: QuadrantSnapshot; label: string }) {
+  const items = [
+    ["Known Knowns", "已知的已知", "kk", snapshot.knownKnowns],
+    ["Unknown Knowns", "未知的已知", "uk", snapshot.unknownKnowns],
+    ["Known Unknowns", "已知的未知", "ku", snapshot.knownUnknowns],
+    ["Unknown Unknowns", "未知的未知", "uu", snapshot.unknownUnknowns],
+  ] as const;
   return (
     <section className="cq-mini-map" aria-label={label}>
-      <div className="cq-mini-map__axis">横轴：是否意识到 · 纵轴：是否掌握</div>
       <div className="cq-mini-map__grid">
-        <article className="cq-quadrant cq-quadrant--kk"><strong>Known Knowns</strong><p>{snapshot.knownKnowns}</p></article>
-        <article className="cq-quadrant cq-quadrant--uk"><strong>Unknown Knowns</strong><p>{snapshot.unknownKnowns}</p></article>
-        <article className="cq-quadrant cq-quadrant--ku"><strong>Known Unknowns</strong><p>{snapshot.knownUnknowns}</p></article>
-        <article className="cq-quadrant cq-quadrant--uu"><strong>Unknown Unknowns</strong><p>{snapshot.unknownUnknowns}</p></article>
+        {items.map(([english, chinese, key, content]) => (
+          <article className={`cq-quadrant cq-quadrant--${key}`} key={english}>
+            <strong>{english}</strong><small>{chinese}</small><p>{content}</p>
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -236,34 +305,55 @@ function ProductLinks() {
   );
 }
 
-function AssistantTurn({ turn, onChoose }: { turn: Turn; onChoose?: (choice: Choice) => void }) {
+function UserMessage({ children, label = "你" }: { children: string; label?: string }) {
+  return (
+    <article className="cq-message cq-message--user">
+      <header><div><strong>{label}</strong><small>用户回复</small></div><span className="cq-avatar cq-avatar--user">你</span></header>
+      <p>{children}</p>
+    </article>
+  );
+}
+
+function AssistantTurn({
+  turn,
+  onChoose,
+  onCopy,
+}: {
+  turn: Turn;
+  onChoose?: (choice: Choice) => void;
+  onCopy?: (choice: Choice) => void;
+}) {
   return (
     <article className="cq-message cq-message--assistant" aria-label={`Research Quest 第 ${turn.round} 回合`}>
       <header><span className="cq-avatar">RQ</span><div><strong>Research Quest</strong><small>第 {turn.round}/5 回合 · {turn.title}</small></div></header>
       <p>{turn.message}</p>
-      <aside className="cq-adaptive"><strong>为什么本轮这样问</strong><p>{turn.adaptive}</p></aside>
+      <aside className="cq-adaptive"><strong>为什么这一步最值得问</strong><p>{turn.adaptive}</p></aside>
       <MiniQuadrant snapshot={turn.snapshot} label={`第 ${turn.round} 回合 Known–Unknown 四象限`} />
       <div className="cq-feedback" aria-label="本轮正反馈">
-        <span>目标进度 <strong>{turn.progress}%</strong></span>
+        <section className="cq-feedback__progress"><span>目标进度</span><strong>{turn.progress}%</strong><div className="cq-progress-track" aria-hidden="true"><i style={{ width: `${turn.progress}%` }} /></div></section>
         <span>认知分 <strong>{turn.score}</strong></span>
         <span>预计剩余 <strong>{turn.remaining}</strong></span>
-        <span>{turn.goalVersion} <strong>{turn.goalChange}</strong></span>
+        <span className="cq-goal-change">当前目标变化 ({turn.goalVersion}) <strong>{turn.goalChange}</strong></span>
       </div>
       {turn.question && turn.options ? (
         <section className="cq-question" aria-label={`第 ${turn.round} 回合关键问题`}>
           <strong>{turn.question}</strong>
           <div className="cq-options">
             {turn.options.map((choice) => (
-              <button key={choice.label} type="button" onClick={() => onChoose?.(choice)}>
-                <span>{choice.label}</span><small>{choice.impact}</small>
-              </button>
+              <div className="cq-option-row" key={choice.label}>
+                <button className="cq-option-select" type="button" onClick={() => onChoose?.(choice)}>
+                  <span>{choice.label}</span><small>{choice.impact}</small>
+                </button>
+                <button className="cq-option-copy" type="button" onClick={() => onCopy?.(choice)} aria-label={`复制选项：${choice.label}`}>复制</button>
+              </div>
             ))}
           </div>
+          <div className="cq-composer" aria-label="聊天回复提示"><span className="cq-avatar cq-avatar--user">你</span><p>点击一个选项后，它会自动成为你的回复；在真实 ChatGPT 中也可以先复制，再粘贴发送。</p><button type="button" disabled>发送</button></div>
         </section>
       ) : null}
       {turn.finalContext && turn.finalGoal ? (
         <section className="cq-frozen" aria-label="Frozen Context 与 Codex Goal">
-          <div><strong>Frozen Context</strong><pre>{turn.finalContext}</pre><button type="button" onClick={() => downloadText("research-quest-context.md", turn.finalContext!)}>下载 context.md</button></div>
+          <div><strong>完整 Context</strong><pre>{turn.finalContext}</pre><button type="button" onClick={() => downloadText(CONTEXT_FILENAME, turn.finalContext!)}>下载 context.md</button></div>
           <div><strong>Codex Goal</strong><pre>{turn.finalGoal}</pre><button type="button" onClick={() => downloadText("research-quest-codex-goal.md", turn.finalGoal!)}>下载目标提示词</button></div>
           <ProductLinks />
         </section>
@@ -274,6 +364,7 @@ function AssistantTurn({ turn, onChoose }: { turn: Turn; onChoose?: (choice: Cho
 
 function FixedCaseChat() {
   const [answers, setAnswers] = useState<string[]>([]);
+  const [copyNotice, setCopyNotice] = useState("");
   const turns = useMemo(() => buildCaseTurns(answers), [answers]);
   const visibleCount = Math.min(answers.length + 1, turns.length);
   const visibleTurns = turns.slice(0, visibleCount);
@@ -282,34 +373,41 @@ function FixedCaseChat() {
   const choose = (index: number, choice: Choice) => {
     if (answers.length !== index) return;
     setAnswers((current) => [...current, choice.label]);
+    setCopyNotice(`已把“${choice.label}”作为你的本轮回复，并写入当前会话 Context。`);
+  };
+
+  const copy = async (choice: Choice) => {
+    const copied = await copyText(choice.label);
+    setCopyNotice(copied ? `已复制“${choice.label}”，可粘贴到真实 ChatGPT 对话。` : "复制失败，请手动选择文字。");
   };
 
   return (
     <section className="cq-chat-mode" aria-labelledby="fixed-case-title">
       <div className="cq-overview">
-        <div><p className="cq-eyebrow">当前认知地图总览</p><h2 id="fixed-case-title">AlphaFold2 活性位点试点</h2><p>固定 5 轮真实案例，展示 Research Quest 如何把模糊需求变成 Context 和 Codex Goal。</p></div>
+        <div><p className="cq-eyebrow">认知地图 + grill-me-with-docs</p><h2 id="fixed-case-title">AlphaFold2 活性位点试点</h2><p>AI 先读已有资料，再根据四象限每轮只问一个最关键问题；每次选择都写入 Context，并逐步形成 Codex Goal。</p></div>
         <MiniQuadrant snapshot={latest.snapshot} label="当前完整 Known–Unknown 四象限" />
       </div>
+      <p className="cq-live-note" aria-live="polite">{copyNotice || `当前决定保存在页面内存；导出时写入 ${CONTEXT_FILENAME}。`}</p>
       <div className="cq-thread" aria-label="固定案例聊天记录">
-        <article className="cq-message cq-message--user"><strong>你</strong><p>我想评估 AlphaFold2 预测能不能用于酶活性位点分析。</p></article>
+        <UserMessage>我想评估 AlphaFold2 预测能不能用于酶活性位点分析。</UserMessage>
         {visibleTurns.map((turn, index) => (
           <div key={turn.round} className="cq-turn-pair">
-            <AssistantTurn turn={turn} onChoose={(choice) => choose(index, choice)} />
-            {answers[index] ? <article className="cq-message cq-message--user"><strong>你</strong><p>{answers[index]}</p></article> : null}
+            <AssistantTurn turn={turn} onChoose={(choice) => choose(index, choice)} onCopy={copy} />
+            {answers[index] ? <UserMessage>{answers[index]}</UserMessage> : null}
           </div>
         ))}
       </div>
-      {answers.length ? <button className="cq-secondary-button" type="button" onClick={() => setAnswers([])}>重新体验 5 轮案例</button> : null}
+      {answers.length ? <button className="cq-secondary-button" type="button" onClick={() => { setAnswers([]); setCopyNotice(""); }}>重新体验 5 轮案例</button> : null}
     </section>
   );
 }
 
 function initialCustomQuadrant(requirement: string, deliverable: string): QuadrantSnapshot {
   return {
-    knownKnowns: `用户明确提出：${compact(requirement, "尚未填写需求")}；期望产物：${compact(deliverable, "待确认")}。`,
-    unknownKnowns: "用户可能已有领域经验、偏好或失败教训，但尚未表达。",
-    knownUnknowns: "数据、指标、验收和执行边界需要通过 Skill 继续对齐。",
-    unknownUnknowns: "隐藏依赖、反例和执行风险需要由真实对话与工具调用暴露。",
+    knownKnowns: `你已明确提出：${compact(requirement, "还没有填写需求")}；希望得到：${compact(deliverable, "待确认")}。`,
+    unknownKnowns: "你可能已有相关经验、偏好或失败教训，但还没有说出来。",
+    knownUnknowns: "数据、评价标准、完成条件和不能做什么仍需继续确认。",
+    unknownUnknowns: "隐藏依赖、反例和执行风险需要通过真实对话与工具调用发现。",
   };
 }
 
@@ -325,11 +423,55 @@ function CustomRequirementChat() {
   const context = useMemo(() => {
     const req = compact(requirement, "待补充");
     const output = compact(deliverable, "待通过 Research Quest 对话确认");
-    const assets = compact(materials, "尚未提供；需要 AI 在首轮建立材料与约束清单");
-    return `# Research Quest Initial Context\n\n## 原始科研需求\n${req}\n\n## 期望产物\n${output}\n\n## 已有材料与约束\n${assets}\n\n## 初始 Known–Unknown 四象限草图\n- Known Knowns：用户明确表达的需求与期望产物。\n- Unknown Knowns：可能已有但尚未表达的经验、偏好和失败教训。\n- Known Unknowns：数据、指标、验收、边界和执行方式仍需确认。\n- Unknown Unknowns：隐藏依赖、反例和执行风险需由真实对话与工具调用暴露。\n\n## 状态\n这是网页本地生成的初始草图，尚未经过 AI 访谈、确认或验证。`;
+    const available = compact(materials, "尚未提供；AI 应先从现有文档和会话中整理，再询问缺口");
+    return `# Research Quest Initial Context
+
+## 原始科研需求
+${req}
+
+## 最终希望得到
+${output}
+
+## 现在手里有什么资料或限制
+${available}
+
+## grill-me-with-docs 工作规则
+1. 先读取用户提供的文档、历史讨论和已有 Context；
+2. 不询问文档中已经能够回答的问题；
+3. 从四象限中选出最影响最终结果的一个空缺；
+4. 每轮默认只问一个关键问题，确有必要时最多三个；
+5. 使用用户和文档中已经出现的术语，必须引入新词时先用通俗语言解释；
+6. 每次回答后更新四象限、保存位置和当前目标变化 (Goal vN)。
+
+## 初始 Known–Unknown 四象限
+### Known Knowns｜已知的已知
+用户已经明确表达需求与期望产物。
+
+### Unknown Knowns｜未知的已知
+用户可能已有但尚未表达的经验、偏好和失败教训。
+
+### Known Unknowns｜已知的未知
+数据、评价标准、完成条件、边界和执行方式仍需确认。
+
+### Unknown Unknowns｜未知的未知
+隐藏依赖、反例和执行风险需要由真实对话与工具调用暴露。
+
+## 保存状态
+这是网页本地生成的启动草图，尚未经过 AI 访谈、确认或验证；导出后保存为 research-quest-initial-context.md。`;
   }, [requirement, deliverable, materials]);
 
-  const prompt = useMemo(() => `请启用 Research Quest Skill，并基于下面的 Initial Context 启动聊天式科研闯关。\n\n${context}\n\n执行要求：\n1. 先展示预计关卡、总时间和最终产物；\n2. 每轮通常只问 1 个、最多 3 个最影响目标的问题；\n3. 每轮以聊天回复展示完整但紧凑的 Known–Unknown 四象限、认知分、目标进度、预计剩余时间和 Goal vN 变化；\n4. 根据上一轮认知地图动态调整下一轮难度，并明确解释调整原因；\n5. 只有经过确认或验证的信息才能进入 Frozen Context；\n6. 完成认知对齐后，生成引用 Frozen Context 的完整 Codex Goal；\n7. 用户要求仅制定目标时，在 Goal 交接处结束；否则由 Codex / Agent 执行。`, [context]);
+  const prompt = useMemo(() => `请启用 Research Quest Skill，并基于下面的 Initial Context 启动聊天式科研对齐。
+
+${context}
+
+执行要求：
+1. 先读文档和已有 Context，再决定是否需要提问；
+2. 核心逻辑固定为 Known–Unknown 四象限认知地图 + grill-me-with-docs；
+3. 每轮默认只问一个最影响最终结果的问题，必要时最多三个；
+4. 每轮回复采用：一句话回顾与保存提示 → 为什么这一步最值得问 → 完整四象限 → 目标进度/认知分/剩余时间/当前目标变化 (Goal vN) → 关键问题；
+5. 用户选择后，自动将选项作为输入；宿主不支持按钮时，提供可复制的完整选项文字；
+6. 只有经过确认或验证的信息才能进入 Frozen Context；
+7. 完成认知对齐后，生成引用 Frozen Context 的完整 Codex Goal。`, [context]);
 
   const generate = () => {
     const combined = `${requirement}\n${deliverable}\n${materials}`;
@@ -351,22 +493,23 @@ function CustomRequirementChat() {
   return (
     <section className="cq-custom" aria-labelledby="custom-title">
       <div className="cq-overview">
-        <div><p className="cq-eyebrow">输入自己的科研需求</p><h2 id="custom-title">两步生成启动材料</h2><p>网页只做本地整理，不假装运行大模型；真正的自适应关卡由 ChatGPT / Agent 使用 Skill 生成。</p></div>
+        <div><p className="cq-eyebrow">输入自己的科研需求</p><h2 id="custom-title">两步生成启动材料</h2><p>网页只在本地整理需求；真正的认知建图和 grill-me-with-docs 提问由安装 Skill 的 ChatGPT / Agent 完成。</p></div>
         <MiniQuadrant snapshot={snapshot} label="自定义需求初始 Known–Unknown 四象限草图" />
       </div>
       <div className="cq-thread">
-        <article className="cq-message cq-message--assistant"><header><span className="cq-avatar">RQ</span><div><strong>Research Quest</strong><small>自定义启动 · 第 {stage === 1 ? 1 : 2}/2 步</small></div></header><p>{stage === 1 ? "先用一段话告诉我你真正想完成的科研任务。" : "再补充两个最影响 Context 精度的信息。"}</p></article>
+        <article className="cq-message cq-message--assistant"><header><span className="cq-avatar">RQ</span><div><strong>Research Quest</strong><small>自定义启动 · 第 {stage === 1 ? 1 : 2}/2 步</small></div></header><p>{stage === 1 ? "先用一段话告诉我你真正想完成的科研任务。" : "再补充最终产物，以及现有资料或不能改变的限制。"}</p></article>
         <article className="cq-message cq-message--user cq-form-message">
+          <header><div><strong>你</strong><small>用户输入</small></div><span className="cq-avatar cq-avatar--user">你</span></header>
           {stage === 1 ? <label><span>我的科研需求</span><textarea maxLength={1500} value={requirement} onChange={(event) => setRequirement(event.target.value)} placeholder="例如：我想设计一个 RNA 二级结构逆折叠实验方案，并找到可复现的近五年 baseline。" /></label> : null}
           {stage >= 2 ? <>
-            <label><span>最终希望获得什么产物？</span><input maxLength={300} value={deliverable} onChange={(event) => setDeliverable(event.target.value)} placeholder="例如：实验方案、Codex Goal 和验收标准" /></label>
-            <label><span>当前有哪些材料或约束？</span><textarea maxLength={1200} value={materials} onChange={(event) => setMaterials(event.target.value)} placeholder="例如：已有数据、代码仓库、算力、截止时间或不能改变的边界" /></label>
+            <label><span>最终希望获得什么？</span><input maxLength={300} value={deliverable} onChange={(event) => setDeliverable(event.target.value)} placeholder="例如：实验方案、Codex Goal 和验收标准" /></label>
+            <label><span>现在有哪些资料或限制？</span><textarea maxLength={1200} value={materials} onChange={(event) => setMaterials(event.target.value)} placeholder="例如：已有数据、代码仓库、算力、截止时间或不能改变的边界" /></label>
           </> : null}
           {error ? <p className="cq-error" role="alert">{error}</p> : null}
           {stage === 1 ? <button type="button" onClick={() => requirement.trim().length >= 10 ? (setError(""), setStage(2)) : setError("请用至少 10 个字描述真实科研需求。")}>继续补充 Context</button> : null}
           {stage === 2 ? <button type="button" onClick={generate}>生成启动提示词与 context.md</button> : null}
         </article>
-        {stage === 3 ? <article className="cq-message cq-message--assistant"><header><span className="cq-avatar">RQ</span><div><strong>Research Quest</strong><small>本地准备完成</small></div></header><p>已生成初始 Context 和启动提示词。它们只是进入真实 AI 对话的起点，不是已验证的科研方案。</p><MiniQuadrant snapshot={snapshot} label="自定义需求完整初始四象限" /><section className="cq-generated"><div><strong>context.md</strong><pre>{context}</pre><button type="button" onClick={() => downloadText("research-quest-initial-context.md", context)}>下载 context.md</button></div><div><strong>Research Quest 启动提示词</strong><pre>{prompt}</pre><button type="button" onClick={() => downloadText("research-quest-start-prompt.md", prompt)}>下载启动提示词</button></div></section><ProductLinks /></article> : null}
+        {stage === 3 ? <article className="cq-message cq-message--assistant"><header><span className="cq-avatar">RQ</span><div><strong>Research Quest</strong><small>本地准备完成</small></div></header><p>已生成初始 Context 和启动提示词，并标明保存文件名。它们是进入真实 AI 对话的起点，不是已经验证的科研方案。</p><MiniQuadrant snapshot={snapshot} label="自定义需求完整初始四象限" /><section className="cq-generated"><div><strong>context.md</strong><pre>{context}</pre><button type="button" onClick={() => downloadText("research-quest-initial-context.md", context)}>下载 context.md</button></div><div><strong>Research Quest 启动提示词</strong><pre>{prompt}</pre><button type="button" onClick={() => downloadText("research-quest-start-prompt.md", prompt)}>下载启动提示词</button></div></section><ProductLinks /></article> : null}
       </div>
       {stage > 1 ? <button className="cq-secondary-button" type="button" onClick={() => { setStage(1); setError(""); }}>重新填写</button> : null}
     </section>
@@ -378,7 +521,7 @@ export function ChatQuestDemo() {
   return (
     <main className="cq-app">
       <header className="cq-header">
-        <div><p className="cq-eyebrow">Research Quest｜AI Research Game</p><h1>把科研聊天变成更精准的任务对齐</h1><p>这不是一款独立游戏。Research Quest 改造的是人与 AI 的聊天方式：先用 1–3 个关键问题建立四象限认知地图，再冻结 Context 和 Goal 交给 Codex 执行。</p></div>
+        <div><p className="cq-eyebrow">Research Quest｜Cognition Map + grill-me-with-docs</p><h1>先读资料、建立认知地图，再问一个真正重要的问题</h1><p>Research Quest 改造的是人与 AI 的科研聊天：AI 先理解文档和已有 Context，用四象限找到最关键的认知空缺，再以小步提问形成可交给 Codex 的精确目标。</p></div>
         <ProductLinks />
       </header>
       <section className="cq-mode-switch" aria-label="选择演示模式">
@@ -386,7 +529,7 @@ export function ChatQuestDemo() {
         <button type="button" className={mode === "custom" ? "is-active" : ""} onClick={() => setMode("custom")}>输入我的科研需求</button>
       </section>
       {mode === "case" ? <FixedCaseChat /> : <CustomRequirementChat />}
-      <footer className="cq-footer"><p>聊天式 Demo 展示 Skill 使用后的交互效果；<a href={FULL_DEMO_URL}>完整 Dashboard</a>、<a href={CASE_URL}>案例博文</a>、<a href={VIDEO_URL}>原完整机制视频</a>与 <a href={SKILL_URL}>Skill 安装包</a>均继续保留。</p></footer>
+      <footer className="cq-footer"><p>核心逻辑：先读文档，再用 Known–Unknown 四象限决定每轮唯一的关键问题。<a href={FULL_DEMO_URL}>完整 Dashboard</a>、<a href={CASE_URL}>案例博文</a>、<a href={VIDEO_URL}>完整机制视频</a>和 <a href={SKILL_URL}>Skill 安装包</a>均继续保留。</p></footer>
     </main>
   );
 }
