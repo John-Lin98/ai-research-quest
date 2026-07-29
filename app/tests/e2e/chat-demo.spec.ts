@@ -1,9 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-async function chooseOption(page: Parameters<typeof test>[0] extends never ? never : any, text: string) {
-  await page.locator(".cq-option-select").filter({ hasText: text }).click();
-}
-
 test("默认首页突出认知地图与 grill-me-with-docs", async ({ page }) => {
   await page.goto("/");
 
