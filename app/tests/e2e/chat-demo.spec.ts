@@ -14,6 +14,10 @@ test("默认首页突出认知地图与 grill-me-with-docs", async ({ page }) =>
   await expect(map).not.toContainText("横轴：");
   await expect(page.getByRole("region", { name: "双战役地图" })).toHaveCount(0);
 
+  const firstTurn = page.locator(".cq-turn-pair").first();
+  await expect(firstTurn.locator(".cq-option-row--task .cq-option-select")).toContainText("我想补充上下文或任务线索");
+  await expect(firstTurn.locator(".cq-option-row--clue .cq-option-select")).toContainText("暂不闯关，我还有一些问题");
+
   const productNav = page.getByRole("navigation", { name: "Research Quest 产品入口" }).first();
   await expect(productNav.getByRole("link", { name: "安装 Skill" })).toHaveAttribute("href", /releases\/latest/);
   await expect(productNav.getByRole("link", { name: "完整 Dashboard" })).toHaveAttribute("href", "./?view=full");
@@ -60,12 +64,75 @@ test("每轮最后一个选项暂停闯关并生成固定关卡线索", async ({
 
   await expect(page.getByLabel("Research Quest 第 5 回合")).toBeVisible();
   const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
-  await expect(frozen).toContainText("关卡线索与用户追问");
+  await expect(frozen).toContainText("用户问题与关卡线索");
   await expect(frozen).toContainText(rounds[0].question);
   await expect(frozen).toContainText(rounds[3].question);
-  await expect(frozen).toContainText("用户可以随时暂停主问题并提出额外问题");
+  await expect(frozen).toContainText("用户可以随时暂停并提出问题");
   await expect(frozen.getByRole("button", { name: "下载 context.md" })).toBeVisible();
   await expect(frozen.getByRole("button", { name: "下载目标提示词" })).toBeVisible();
+});
+
+test("用户主动追加的上下文与任务线索会分类、暂停主线并进入最终 Context", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "主动任务线索完整路径只在桌面项目执行一次");
+  await page.goto("/");
+
+  const rounds = [
+    {
+      clue: "补充一个任务线索：最终需要把任务交给 Codex 执行，我最担心它理解错目标。",
+      type: "目标与用户偏好",
+      status: "Confirmed",
+      revised: "为了让它不误解",
+      choice: "先判断活性位点附近的结构是否可靠",
+    },
+    {
+      clue: "补充一份资料线索：我还有一份活性位点注释表，但字段和残基编号还没有核对。",
+      type: "资料与待核对事实",
+      status: "Candidate",
+      revised: "预测结构和对应实验 PDB",
+      choice: "已有 AlphaFold DB 预测、对应 PDB 和催化残基注释",
+    },
+    {
+      clue: "补充一个约束：首轮只能使用公开资料，不使用内部数据或未公开结果。",
+      type: "公开范围与硬约束",
+      status: "Confirmed",
+      revised: "首轮只使用公开资料",
+      choice: "只判断局部结构是否适合初步筛选，并报告失败情况",
+    },
+    {
+      clue: "补充一个时间线索：首轮希望一天内完成，优先验证流程，不追求一次覆盖所有酶家族。",
+      type: "时间限制与执行偏好",
+      status: "Confirmed",
+      revised: "一天内优先验证流程",
+      choice: "检查 10 个公开目标，至少 8 个得到可复核结果",
+    },
+  ];
+
+  for (let index = 0; index < rounds.length; index += 1) {
+    const item = rounds[index];
+    const current = page.locator(".cq-turn-pair").last();
+    const addButton = current.locator(".cq-option-row--task .cq-option-select");
+    await expect(addButton).toContainText("我想补充上下文或任务线索");
+    await addButton.click();
+
+    await expect(current.getByText(item.clue, { exact: true })).toBeVisible();
+    const taskCard = current.getByRole("article", { name: `第 ${index + 1} 回合上下文与任务线索` });
+    await expect(taskCard).toContainText(item.type);
+    await expect(taskCard).toContainText(item.status);
+    await expect(taskCard).toContainText("主目标进度暂停");
+    await expect(taskCard).toContainText("已保存到：");
+    await expect(taskCard).toContainText(item.revised);
+    await expect(taskCard).toContainText("这条线索如何改变认知地图");
+
+    await current.locator(".cq-option-select").filter({ hasText: item.choice }).click();
+  }
+
+  await expect(page.getByLabel("Research Quest 第 5 回合")).toBeVisible();
+  const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
+  await expect(frozen).toContainText("用户主动补充的上下文与任务线索");
+  await expect(frozen).toContainText(rounds[0].clue);
+  await expect(frozen).toContainText(rounds[1].status);
+  await expect(frozen).toContainText(rounds[3].clue);
+  await expect(frozen).toContainText("新线索先分类、去重、检查冲突并判断 Candidate / Confirmed");
 });
 
 test("普通选择直接成为带头像的用户回复并提供复制兼容", async ({ page }) => {
@@ -77,7 +144,7 @@ test("普通选择直接成为带头像的用户回复并提供复制兼容", as
   await expect(first.locator(".cq-avatar--user")).toBeVisible();
 });
 
-test("自定义需求生成的启动材料包含自由追问与关卡线索协议", async ({ page }, testInfo) => {
+test("自定义需求生成的启动材料包含自由追问与主动任务线索协议", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "自定义生成流程只在桌面项目执行一次");
   await page.goto("/");
   await page.getByRole("button", { name: "输入我的科研需求" }).click();
@@ -91,9 +158,10 @@ test("自定义需求生成的启动材料包含自由追问与关卡线索协�
   await expect(page.getByText("已生成初始 Context 和启动提示词", { exact: false })).toBeVisible();
   const generated = page.locator(".cq-generated > div");
   await expect(generated.nth(0)).toContainText("核心逻辑：认知地图 + grill-me-with-docs");
-  await expect(generated.nth(0)).toContainText("暂不闯关，我还有一些问题");
+  await expect(generated.nth(0)).toContainText("我想补充上下文或任务线索");
+  await expect(generated.nth(0)).toContainText("分类、去重、检查冲突");
   await expect(generated.nth(1)).toContainText("用户可以随时提出任意问题");
-  await expect(generated.nth(1)).toContainText("重新生成当前 grill-me 问题");
+  await expect(generated.nth(1)).toContainText("用户可以随时主动追加上下文、资料、约束、偏好或任务线索");
   await expect(page.getByRole("button", { name: "下载 context.md" })).toBeVisible();
   await expect(page.getByRole("button", { name: "下载启动提示词" })).toBeVisible();
 });
