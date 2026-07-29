@@ -92,13 +92,26 @@ test("用户主动追加的上下文与任务线索会分类、暂停主线并�
   await expect(frozen).toContainText("新线索先分类、去重、检查冲突并判断 Candidate / Confirmed");
 });
 
-test("普通选择直接成为带头像的用户回复并提供复制兼容", async ({ page }) => {
+test("点击单一选项会显示复制反馈并生成自然用户气泡", async ({ page }) => {
   await page.goto("/");
   const first = page.locator(".cq-turn-pair").first();
-  await expect(first.getByRole("button", { name: /复制选项：先判断活性位点附近的结构是否可靠/ })).toBeVisible();
-  await first.locator(".cq-option-select").filter({ hasText: "先判断活性位点附近的结构是否可靠" }).click();
+  await expect(first.locator(".cq-option-copy")).toHaveCount(0);
+  const option = first.getByRole("button", { name: "选择：先判断活性位点附近的结构是否可靠" });
+  await option.click();
+  await expect(option).toContainText("已复制");
   await expect(first.getByText("先判断活性位点附近的结构是否可靠", { exact: true })).toBeVisible();
-  await expect(first.locator(".cq-avatar--user")).toBeVisible();
+  const userTurn = first.getByLabel("你的消息");
+  await expect(userTurn).toBeVisible();
+  await expect(userTurn.locator(".cq-user-bubble")).toContainText("先判断活性位点附近的结构是否可靠");
+  await expect(userTurn.locator(".cq-avatar--user")).toBeVisible();
+});
+
+test("聊天交互说明只在页面底部出现一次", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".cq-composer")).toHaveCount(0);
+  const note = page.getByText("点击选项会自动复制，并生成一条用户回复", { exact: false });
+  await expect(note).toHaveCount(1);
+  await expect(page.locator(".cq-footer").getByText("点击选项会自动复制", { exact: false })).toBeVisible();
 });
 
 test("自定义需求生成的启动材料包含自由追问与主动任务线索协议", async ({ page }, testInfo) => {

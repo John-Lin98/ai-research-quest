@@ -550,7 +550,7 @@ function ChoiceList({
     setCopyFeedback({ label, text: copied ? "已复制" : "已选择" });
     window.setTimeout(() => {
       setCopyFeedback(null);
-      action?.();
+      window.setTimeout(() => action?.(), 180);
     }, 650);
   };
 
