@@ -87,11 +87,11 @@ test("真实需求面板与认知地图案例博文可访问", async ({ page }) 
   await expect(page.getByRole("heading", { name: "把科研任务聊清楚，再交给 Codex 执行" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "两个核心逻辑" })).toBeVisible();
   await expect(page.getByText("grill-me-with-docs", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "用户可以随时暂停闯关提问" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "用户可以随时提问，也可以主动补充任务线索" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Research Quest 怎样帮助用户澄清科研需求" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Research Quest 如何提供正反馈" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "最终同时交给 Codex：Context 与 Goal" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "用户也可以主动补充上下文和任务线索" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "让 AI 帮你设计属于自己的游戏 Skill" })).toBeVisible();
   await expect(page.getByText("Candidate", { exact: false }).first()).toBeVisible();
   await expect(page.getByText("Confirmed", { exact: false }).first()).toBeVisible();
 });
