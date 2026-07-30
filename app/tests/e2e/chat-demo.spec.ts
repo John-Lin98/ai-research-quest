@@ -39,8 +39,9 @@ test("每轮最后一个选项暂停闯关并生成固定关卡线索", async ({
     { question: "为什么要先规定 10 个目标和至少 8 个有效结果？", answer: "给 Codex 一个清楚的结束条件", choice: "检查 10 个公开目标，至少 8 个得到可复核结果" },
   ];
 
-  for (const item of rounds) {
-    const current = page.locator(".cq-turn-pair").last();
+  for (let index = 0; index < rounds.length; index += 1) {
+    const item = rounds[index];
+    const current = page.locator(".cq-turn-pair").nth(index);
     const clueButton = current.locator(".cq-option-row--clue .cq-option-select");
     await expect(clueButton).toContainText("暂不闯关，我还有一些问题");
     await clueButton.click();
@@ -72,7 +73,7 @@ test("用户主动追加的上下文与任务线索会分类、暂停主线并�
 
   for (let index = 0; index < rounds.length; index += 1) {
     const item = rounds[index];
-    const current = page.locator(".cq-turn-pair").last();
+    const current = page.locator(".cq-turn-pair").nth(index);
     await current.locator(".cq-option-row--task .cq-option-select").click();
     await expect(current.getByText(item.clue, { exact: true })).toBeVisible();
     const taskCard = current.getByLabel(`第 ${index + 1} 回合上下文与任务线索`);
