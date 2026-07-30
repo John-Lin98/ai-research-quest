@@ -23,19 +23,14 @@ Research Quest 的认知地图与任务逻辑可以和不同游戏风格组合�
 
 ## X 单条推荐版
 
-我做了一个开源科研游戏 Skill：Research Quest。
+开源科研游戏 Skill：Research Quest。
 
-它先读文档，用 Known–Unknown 认知地图 + grill-me-with-docs，每轮只问 1 个最关键问题，把模糊需求逐步整理成完整 Context 与 Goal，再交给 Codex / Agent 执行。
-
-克制提问和回答，既减少用户阅读长文的负担，也减少 AI 在噪声上下文中沿错误前提继续推演。
-
-你还可以让 Sol / Fable / Kimi 担任 Game Designer，或按自己喜欢的 RPG、侦探、卡牌、Boss 战风格制作新的游戏 Skill。
+AI 先读文档，用认知地图 + grill-me-with-docs 每轮只问 1 个关键问题，把模糊需求变成 Context 与 Codex Goal，再交给 Codex / Agent。也可让 Sol / Fable / Kimi 设计你喜欢的游戏风格。
 
 Demo：https://john-lin98.github.io/ai-research-quest/
-博文：https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html
-GitHub / Skill：https://github.com/John-Lin98/ai-research-quest
+Skill：https://github.com/John-Lin98/ai-research-quest
 
-欢迎 Star 与 Follow，也欢迎分享你做的游戏 Skill。
+欢迎 Star / Follow。
 
 ## X Thread 推荐版
 
