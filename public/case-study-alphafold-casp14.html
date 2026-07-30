@@ -21,13 +21,14 @@
       article > * + * { margin-top: 1.25rem; }
       h2 { margin: 2.6rem 0 .7rem; font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.25; }
       h3 { margin: 0 0 .35rem; }
-      .callout, .plain-box, .goal-box, .clue-box, .task-box, .feedback-box { padding: 1.15rem 1.25rem; border-radius: 1rem; }
+      .callout, .plain-box, .goal-box, .clue-box, .task-box, .feedback-box, .detail-note { padding: 1.15rem 1.25rem; border-radius: 1rem; }
       .callout { border-left: 5px solid #2563eb; background: #eff6ff; }
       .plain-box { border: 1px solid #99f6e4; background: #f0fdfa; }
       .goal-box { border: 1px solid #c4b5fd; background: #f5f3ff; }
       .clue-box { border: 1px solid #fdba74; background: #fff7ed; }
       .task-box { border: 1px solid #86efac; background: #f0fdf4; }
       .feedback-box { border: 1px solid #bfdbfe; background: #f8fbff; }
+      .detail-note { border: 1px dashed #94a3b8; color: #475569; background: #fff; }
       .label { margin: 0 0 .3rem; color: #0f766e; font-size: 1rem; font-weight: 800; }
       .two-loop, .three-grid { display: grid; gap: 1rem; }
       .two-loop { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -35,8 +36,7 @@
       .two-loop section, .three-grid section { padding: 1rem 1.1rem; border: 1px solid #dbeafe; border-radius: 1rem; background: #fff; }
       .quadrants { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
       .quadrant { padding: 1rem; border-radius: .9rem; }
-      .quadrant h3 { font-size: 1rem; }
-      .quadrant small { display: block; color: #64748b; }
+      .quadrant h3 { font-size: 1.08rem; line-height: 1.35; }
       .kk { border: 1px solid #93c5fd; background: #eff6ff; }
       .uk { border: 1px solid #c4b5fd; background: #f5f3ff; }
       .ku { border: 1px solid #fde68a; background: #fffbeb; }
@@ -56,10 +56,10 @@
       .flow pre { margin: 0; white-space: pre-wrap; font: 1rem/1.72 ui-monospace, SFMono-Regular, Consolas, monospace; }
       .feedback-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; padding: 0; list-style: none; }
       .feedback-list li { padding: .9rem 1rem; border: 1px solid #dbeafe; border-radius: .8rem; background: #fff; }
-       .handoff-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-       .handoff-box { min-width: 0; padding: 1.1rem; border-radius: 1rem; color: #e2e8f0; background: #0f172a; }
-       .handoff-box h3 { margin: 0 0 .7rem; color: #fff; font-size: 1.2rem; }
-       .handoff-box pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 1rem/1.72 ui-monospace, SFMono-Regular, Consolas, monospace; }
+      .handoff-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+      .handoff-box { min-width: 0; padding: 1.1rem; border-radius: 1rem; color: #e2e8f0; background: #0f172a; }
+      .handoff-box h3 { margin: 0 0 .7rem; color: #fff; font-size: 1.2rem; }
+      .handoff-box pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 1rem/1.72 ui-monospace, SFMono-Regular, Consolas, monospace; }
       .cta { margin-top: 2.5rem; padding: 1.4rem; border-radius: 1rem; color: #ecfeff; background: #0f172a; }
       .cta h2 { margin-top: 0; color: #fff; }
       .cta a { color: #67e8f9; }
@@ -91,6 +91,14 @@
           <section><h3>鼓励持续参与</h3><p>关卡、进度与正反馈让需求沟通不再只是枯燥命令。用户更愿意表达偏好、失败经验和隐藏限制，AI 因此获得更充分的 Context。</p></section>
         </div>
         <div class="plain-box"><p class="label">核心收益</p><p>游戏化不是表面装饰。它服务于需求对齐：让用户更轻松地持续提供信息，让 AI 更准确地理解任务，最终为 Codex 准备一份更完整、可追溯、可执行的 Context。</p></div>
+
+        <h2>为什么要有针对性地提问，也要克制地回答</h2>
+        <div class="three-grid">
+          <section><h3>让用户少读一点</h3><p>AI 默认只回答当前最需要理解的部分，避免用户必须从长篇回答里寻找真正影响决策的两三句话。</p></section>
+          <section><h3>让上下文更干净</h3><p>每轮只关闭一个关键未知，减少无关信息、错误前提和过早方案不断累积到长上下文中。</p></section>
+          <section><h3>让纠错更容易</h3><p>目标、问题和回答都足够小，用户能快速指出 AI 在哪一步理解错了，而不必推翻整段复杂推理。</p></section>
+        </div>
+        <p>这种克制不是减少能力，而是把能力集中在当前最值得解决的认知空缺上：用户从理解长篇回答中解脱出来，AI 也更少沿着噪声上下文和错误前提继续推演，从而更容易对齐真实需求。</p>
 
         <h2>两个核心逻辑</h2>
         <div class="two-loop">
@@ -134,6 +142,17 @@ Known Unknowns 已基本关闭
           <li><strong>满足交接条件后停止提问</strong>当影响执行的核心 Known Unknowns 已有答案或关闭条件，就生成完整 Context 与 Goal，交给 Codex 或 Agent 执行。</li>
         </ol>
 
+        <h2>用户可以随时提问，也可以主动补充任务线索</h2>
+        <div class="two-loop">
+          <section><h3>我还有问题</h3><p>用户希望 AI 先解释一个概念。系统暂停主关卡，回答问题、更新认知地图，再重写当前问题；主进度不会丢失。</p></section>
+          <section><h3>我想补充线索</h3><p>用户希望加入资料、约束、偏好、截止时间、结果或纠错。系统先分类和核验，再决定 Goal 保持、修改或回滚。</p></section>
+        </div>
+        <div class="chat-example">
+          <div class="bubble user"><strong>你</strong><p>我还有一份活性位点注释表，但字段和残基编号还没有核对。</p></div>
+          <div class="bubble task"><strong>Research Quest · 上下文与任务线索</strong><p><strong>类型：</strong>资料与待核对事实。<strong>状态：</strong>Candidate。</p><p>读取和核对前不能把它当成可直接使用的资料；当前 Goal 加入字段与编号审查步骤。</p><small>主进度暂停；认知地图新增资料 Candidate 和编号对齐风险。</small></div>
+        </div>
+        <p>用户对自己目标、偏好、约束和截止时间的明确陈述可以记为 Confirmed；文件内容、数据、实验结果和外部事实在核验前只能记为 Candidate。与已有 Context 冲突时，AI 必须展示冲突，不能静默覆盖。</p>
+
         <h2>Research Quest 如何提供正反馈</h2>
         <div class="feedback-box"><p class="label">每轮都让用户知道“刚才发生了什么”</p>
           <ul class="feedback-list">
@@ -145,41 +164,13 @@ Known Unknowns 已基本关闭
         </div>
         <p>每次用户作出选择、提出问题或补充线索后，界面都会立即更新这四类反馈。用户由此看到“刚才输入了什么、它改变了什么、还剩多少、下一步为什么这样问”，并能及时纠正 AI 对任务的理解。</p>
 
-        <h2>用户可以随时暂停闯关提问</h2>
-        <div class="clue-box"><p class="label">最后一个选项：暂不闯关，我还有一些问题</p><p>暂停不会推进关卡、不会扣分，也不会把原问题标记为已回答。</p></div>
-        <div class="chat-example">
-          <div class="bubble ai"><strong>Research Quest</strong><p>下面哪一项最接近你现在手里的资料？</p></div>
-          <div class="bubble user"><strong>你</strong><p>为什么需要同时准备预测结构、实验结构和催化残基注释？</p></div>
-          <div class="bubble clue"><strong>Research Quest · 关卡线索</strong><p>预测结构是要检查的对象，实验结构是比较参考，催化残基注释告诉我们应该重点看哪个局部区域。</p><small>问题与答案已写入本轮 QA / Context；主目标进度保持不变。</small></div>
-        </div>
-        <p>用户问题进入 Known Unknowns；答案可能暴露 Unknown Knowns 或新的 Unknown Unknowns。AI 随后必须依据更新后的四象限重写当前问题，而不是机械重复。</p>
-
-        <h2>用户也可以主动补充上下文和任务线索</h2>
-        <div class="task-box"><p class="label">倒数第二个选项：我想补充上下文或任务线索</p><p>用户可以主动添加资料、约束、偏好、截止时间、目标修正、实验结果、文件说明或纠错。AI 不要求用户等到被问到才提供信息。</p></div>
-        <div class="chat-example">
-          <div class="bubble user"><strong>你</strong><p>补充一份资料线索：我还有一份活性位点注释表，但字段和残基编号还没有核对。</p></div>
-          <div class="bubble task"><strong>Research Quest · 上下文与任务线索</strong><p><strong>类型：</strong>资料与待核对事实。<strong>状态：</strong>Candidate。</p><p>已记录存在一份注释表，但读取和核对前不能把它当成可直接使用的资料。当前 Goal 将加入字段与编号审查步骤。</p><small>主进度暂停；认知地图新增资料 Candidate 和编号对齐风险。</small></div>
-        </div>
-        <p>用户对自己目标、偏好、约束和截止时间的明确陈述可以记为 Confirmed；文件内容、数据、实验结果和外部事实在核验前只能记为 Candidate。与已有 Context 冲突时，AI 必须展示冲突，不能静默覆盖。</p>
-        <div class="flow"><pre>用户主动补充
-→ 线索分类
-→ Candidate / Confirmed
-→ 去重与冲突检查
-→ 更新四象限与 Context
-→ Goal 保持、修改或回滚
-→ 缩小、跳过或重写当前 grill-me 问题</pre></div>
-
-        <h2>两种中断的区别</h2>
+        <h2>让 AI 帮你设计属于自己的游戏 Skill</h2>
+        <p>Research Quest 把“认知地图和任务对齐逻辑”与“游戏外观和叙事风格”分开。你可以保留同一套严谨的 Context / Goal 机制，再换成自己喜欢的游戏形式。</p>
         <div class="two-loop">
-          <section><h3>我还有问题</h3><p>用户希望 AI 提供答案。系统生成“关卡线索”，先回答，再更新认知地图。</p></section>
-          <section><h3>我想补充线索</h3><p>用户希望把新信息加入任务。系统生成“上下文与任务线索”，先分类和核验，再更新 Goal。</p></section>
+          <section><h3>让模型担任 Game Designer</h3><p>可以让 Sol、Fable、Kimi 或其他擅长创意、叙事与交互设计的模型参与关卡、角色、奖励、Boss 和措辞设计，并依据用户反馈持续优化下一轮交互。</p></section>
+          <section><h3>制作你自己的游戏 Skill</h3><p>可以改成 RPG、侦探推理、卡牌、模拟经营、Boss 战或你喜欢的视觉风格；关键是让游戏机制继续服务于提问、认知建图、Context 积累和目标执行。</p></section>
         </div>
-
-        <h2>点击选项怎样成为真实输入</h2>
-        <div class="two-loop">
-          <section><h3>支持按钮的宿主</h3><p>用户点击后，选项直接生成带头像的用户气泡，并写入 Context、认知地图和 Goal vN。</p></section>
-          <section><h3>不支持按钮的宿主</h3><p>每个选项提供完整可复制文本；用户复制并发送，也可以直接输入自己的答案、问题或任务线索。</p></section>
-        </div>
+        <p>这里的“自我优化”是交互层的迭代：AI 查看上一轮四象限、用户反应和 Goal 变化，再调整下一轮问题的难度、术语、长度与奖励，而不是声称模型已经自动完成参数训练或能力验证。</p>
 
         <h2>Context 保存的不只是最终结论</h2>
         <div class="goal-box"><p class="label">research-quest-context.md</p><p>完整 Context 保存已读资料、主问题、用户选择、额外问题与答案、主动任务线索、四象限状态、Candidate / Confirmed / Verified 证据、Goal 版本变化、开放未知和关闭条件。</p></div>
@@ -206,13 +197,15 @@ Agent 分工、测试与独立审查
 执行结果如何写回 Context</pre></section>
         </div>
 
+        <p class="detail-note"><strong>交互小细节：</strong>支持按钮的界面可以把选项直接转成用户输入；在普通 ChatGPT 对话中，用户也可以直接输入自己的回答、问题或任务线索。它只是操作方式，不是 Research Quest 的核心价值。</p>
+
         <h2>案例的事实边界</h2>
         <p>AlphaFold2 在 CASP14 中展示了重要的结构预测能力，AlphaFold DB 提供公开预测结构。但本案例只是演示如何设计一个公开试点，尚未提供“10 个目标已完成”的科研结果，也不把 pLDDT 或结构相似性直接解释为催化活性或底物结合正确。</p>
         <p class="sources">公开背景：<a href="https://www.nature.com/articles/s41586-021-03819-2">AlphaFold2 Nature 论文</a> · <a href="https://alphafold.ebi.ac.uk/">AlphaFold DB</a> · <a href="https://www.ebi.ac.uk/pdbe/">PDBe</a></p>
 
-        <section class="cta"><h2>查看和使用</h2><p><a href="./">聊天式 Demo</a> · <a href="./?view=full">完整 Dashboard</a> · <a href="https://github.com/John-Lin98/ai-research-quest/releases/latest">安装 Research Quest Skill v1.2.0</a> · <a href="https://github.com/John-Lin98/ai-research-quest">GitHub 仓库</a></p></section>
+        <section class="cta"><h2>查看、使用与共同改进</h2><p><a href="./">聊天式 Demo</a> · <a href="./?view=full">完整 Dashboard</a> · <a href="https://github.com/John-Lin98/ai-research-quest/releases/latest">安装 Research Quest Skill v1.2.0</a> · <a href="https://github.com/John-Lin98/ai-research-quest">GitHub 仓库</a></p><p>如果这个方向对你有帮助，欢迎在 GitHub 上 <a href="https://github.com/John-Lin98/ai-research-quest">Star 项目</a>、<a href="https://github.com/John-Lin98">Follow 作者</a>，也欢迎分享你基于这套思路制作的游戏 Skill。</p></section>
       </article>
     </main>
-    <footer>本页展示产品逻辑和公开试点设计，不构成具体酶目标的实验结论或科研能力评价。</footer>
+    <footer>本页展示产品逻辑和公开试点设计，不构成具体的实验结论或科研能力评价。</footer>
   </body>
 </html>
