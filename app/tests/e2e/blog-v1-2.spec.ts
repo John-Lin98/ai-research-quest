@@ -10,6 +10,10 @@ test("v1.2 博文说明游戏式 Context、自适应和正反馈", async ({ page
   await expect(page.getByRole("heading", { name: "认知地图固定包含四部分" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Known Knowns（已知的已知）" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Unknown Unknowns（未知的未知）" })).toBeVisible();
+  await expect(page.getByText("聊天界面不反复展示横轴和纵轴文字", { exact: false })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Finding your unknowns/ })).toHaveAttribute("href", "https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns");
+  await expect(page.getByRole("link", { name: "Matt Pocock / skills" })).toHaveAttribute("href", "https://github.com/mattpocock/skills");
+  await expect(page.getByRole("link", { name: "grill-with-docs 源文件" })).toHaveAttribute("href", "https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md");
 
   await expect(page.getByRole("heading", { name: "认知地图怎样调整下一轮" })).toBeVisible();
   await expect(page.getByText("上一轮 Verified Known Knowns 较少", { exact: false })).toBeVisible();
