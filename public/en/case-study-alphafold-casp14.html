@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How Research Quest combines a Known–Unknown cognition map with grill-me-with-docs to clarify a research task, preserve Context, and produce an executable Goal for Codex." />
+  <title>Research Quest: Cognition Maps, grill-me-with-docs, and Codex Goals</title>
+  <style>
+    :root { color:#172554; background:#f8fafc; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:18px; line-height:1.75; }
+    * { box-sizing:border-box; } body { margin:0; } a { color:#075985; font-weight:700; }
+    .language { position:fixed; z-index:10; top:.8rem; right:.8rem; padding:.55rem .85rem; border:1px solid #b8c7d9; border-radius:999px; color:#0f3d56; background:rgba(255,255,255,.96); box-shadow:0 6px 18px rgba(15,23,42,.1); text-decoration:none; }
+    .hero { padding:4rem 1.25rem 3rem; color:#fff; background:linear-gradient(135deg,#172554,#1d4ed8 58%,#0e7490); }
+    .hero-inner,main,footer { width:min(960px,calc(100% - 2rem)); margin:0 auto; }
+    .eyebrow { margin:0; color:#bfdbfe; font-size:.94rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+    h1 { max-width:23ch; margin:.45rem 0 1rem; font-size:clamp(2.1rem,7vw,4rem); line-height:1.12; }
+    .lede { max-width:72ch; font-size:1.22rem; }
+    .badge { display:inline-block; margin-top:.5rem; padding:.48rem .8rem; border:1px solid #99f6e4; border-radius:999px; color:#ccfbf1; }
+    main { padding:2.4rem 0 3.5rem; } article > * + * { margin-top:1.25rem; }
+    h2 { margin:2.6rem 0 .7rem; font-size:clamp(1.45rem,4vw,2rem); line-height:1.25; }
+    h3 { margin:0 0 .35rem; }
+    .callout,.plain,.goal,.clue,.task,.feedback { padding:1.15rem 1.25rem; border-radius:1rem; }
+    .callout { border-left:5px solid #2563eb; background:#eff6ff; } .plain { border:1px solid #99f6e4; background:#f0fdfa; }
+    .goal { border:1px solid #c4b5fd; background:#f5f3ff; } .clue { border:1px solid #fdba74; background:#fff7ed; }
+    .task { border:1px solid #86efac; background:#f0fdf4; } .feedback { border:1px solid #bfdbfe; background:#f8fbff; }
+    .label { margin:0 0 .3rem; color:#0f766e; font-weight:800; }
+    .two,.three,.quadrants,.feedback-list,.handoff { display:grid; gap:1rem; }
+    .two { grid-template-columns:repeat(2,minmax(0,1fr)); } .three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .two section,.three section { padding:1rem 1.1rem; border:1px solid #dbeafe; border-radius:1rem; background:#fff; }
+    .quadrants { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+    .quadrant { padding:1rem; border-radius:.9rem; } .quadrant h3 { font-size:1rem; }
+    .kk { border:1px solid #93c5fd; background:#eff6ff; } .uk { border:1px solid #c4b5fd; background:#f5f3ff; }
+    .ku { border:1px solid #fde68a; background:#fffbeb; } .uu { border:1px solid #fca5a5; background:#fef2f2; }
+    .steps { display:grid; gap:.9rem; padding:0; list-style:none; counter-reset:step; }
+    .steps li { position:relative; padding:1rem 1rem 1rem 4rem; border:1px solid #dbeafe; border-radius:.9rem; background:#fff; }
+    .steps li::before { position:absolute; left:1rem; top:1rem; display:grid; place-items:center; width:2rem; height:2rem; border-radius:50%; color:#fff; background:#0f766e; font-weight:800; counter-increment:step; content:counter(step); }
+    .steps strong { display:block; }
+    .flow { overflow-x:auto; padding:1.1rem; border-radius:1rem; color:#e2e8f0; background:#0f172a; }
+    .flow pre { margin:0; white-space:pre-wrap; font:1rem/1.72 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .feedback-list { grid-template-columns:repeat(2,minmax(0,1fr)); padding:0; list-style:none; }
+    .feedback-list li { padding:.9rem 1rem; border:1px solid #dbeafe; border-radius:.8rem; background:#fff; }
+    .handoff { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .handoff section { min-width:0; padding:1.1rem; border-radius:1rem; color:#e2e8f0; background:#0f172a; }
+    .handoff h3 { color:#fff; font-size:1.2rem; } .handoff pre { white-space:pre-wrap; overflow-wrap:anywhere; font:1rem/1.72 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .sources { color:#475569; } .cta { margin-top:2.5rem; padding:1.4rem; border-radius:1rem; color:#ecfeff; background:#0f172a; }
+    .cta h2 { margin-top:0; color:#fff; } .cta a { color:#67e8f9; }
+    footer { padding:0 0 2.5rem; color:#64748b; font-size:.96rem; }
+    @media(max-width:680px){ .language{position:absolute;top:.55rem;right:.55rem}.hero{padding-top:4.5rem}.two,.three,.quadrants,.feedback-list,.handoff{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <a class="language" href="../case-study-alphafold-casp14.html" lang="zh-CN" aria-label="切换到中文博文">中文</a>
+  <header class="hero"><div class="hero-inner">
+    <p class="eyebrow">Research Quest · cognition map + grill-me-with-docs</p>
+    <h1>Clarify the research task before asking Codex to execute it</h1>
+    <p class="lede">Research Quest turns research alignment into a small-step, game-like conversation. The goal is not decorative gamification: it is to help users express the real objective, constraints, preferences, questions, and evidence limits while the AI builds a sufficiently accurate Context.</p>
+    <span class="badge">Gamified alignment · cognition-map-driven questions · Context + Goal handoff</span>
+  </div></header>
+  <main><article>
+    <h2>Why one instruction is often not enough</h2>
+    <div class="callout"><p class="label">Example request</p><p>“Help me decide whether AlphaFold2 can be used for enzyme active-site analysis.”</p></div>
+    <p>The request names the research object, but it does not state the first downstream decision, the material already available, how far the evidence may support a conclusion, or what counts as complete. If Codex starts immediately, it must guess while executing.</p>
+    <p>Research Quest reads documents and existing discussion first. It then asks only what the material cannot answer and what can materially change the final Goal.</p>
+
+    <h2>Why game-like alignment can produce better Context</h2>
+    <div class="three">
+      <section><h3>Lower expression burden</h3><p>The user handles one high-value decision at a time instead of preparing a perfect specification up front.</p></section>
+      <section><h3>Make change visible</h3><p>Each turn shows how the map, progress, and current Goal changed, so misunderstandings can be corrected early.</p></section>
+      <section><h3>Encourage continued participation</h3><p>Turns, progress, and concrete feedback make it easier to reveal preferences, failure experience, and hidden constraints.</p></section>
+    </div>
+    <div class="plain"><p class="label">Core benefit</p><p>Gamification serves alignment. It helps the user keep supplying useful information and helps the AI prepare a more complete, traceable, and executable Context for Codex.</p></div>
+
+    <h2>Why the questions and answers stay restrained</h2>
+    <div class="two">
+      <section><h3>Reduce the user's information burden</h3><p>One high-value question and one focused answer are easier to understand than a questionnaire followed by a long general essay.</p></section>
+      <section><h3>Reduce AI context and reasoning drift</h3><p>Short, focused turns reduce irrelevant Context growth and make it harder for an unconfirmed assumption to contaminate later reasoning and Goal updates.</p></section>
+    </div>
+    <p>Restraint does not mean hiding necessary information. The user can ask follow-up questions at any time, and the AI expands only when the documents, cognition map, risk, or conflict requires it.</p>
+
+    <h2>The two core mechanisms</h2>
+    <div class="two">
+      <section><h3>Known–Unknown cognition map</h3><p>Tracks what is explicit, what the user may already know but has not expressed, what remains an acknowledged question, and what hidden risks may emerge only through counterexamples or execution.</p></section>
+      <section><h3>grill-me-with-docs</h3><p>Reads supplied material before asking. It avoids repeated questions, reuses the user's terminology, and defaults to one question that can change the final plan.</p></section>
+    </div>
+    <p class="sources">Design references: <a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns">A field guide to Claude Fable 5: Finding your unknowns</a> · <a href="https://github.com/mattpocock/skills">Matt Pocock / skills</a> · <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md">grill-with-docs source</a></p>
+
+    <h2>The fixed four-quadrant map</h2>
+    <div class="quadrants" aria-label="Known–Unknown cognition map">
+      <section class="quadrant kk"><h3>Known Knowns</h3><p>Knowledge the user has expressed, confirmed, or correctly applied.</p></section>
+      <section class="quadrant uk"><h3>Unknown Knowns</h3><p>Experience, judgement, or preference the user may possess but has not yet articulated.</p></section>
+      <section class="quadrant ku"><h3>Known Unknowns</h3><p>Questions the user already knows are unresolved and that can change the task.</p></section>
+      <section class="quadrant uu"><h3>Unknown Unknowns</h3><p>Hidden issues that may require conflicts, failures, prototypes, or real execution to expose.</p></section>
+    </div>
+    <p>Known Knowns follow an evidence progression: <strong>Candidate → Confirmed → Verified</strong>. A summary or claim does not become Verified merely because the AI wrote it.</p>
+
+    <h2>How the cognition map changes the next turn</h2>
+    <div class="flow"><pre>Few Verified Known Knowns
+→ reduce terminology and add concrete explanation
+→ return to research trade-offs only after the foundation is understood
+
+Known Unknowns are mostly closed
+→ stop repeating foundational questions
+→ move to completion rules, risk, or execution validation
+
+A new Unknown Unknown appears
+→ pause the original route
+→ add a risk branch
+→ update Context and Goal before continuing</pre></div>
+    <p>The cognition map is therefore a question generator, not a display-only panel. “Why this is the highest-value question now” should explain what the documents already establish, which quadrant contains the largest gap, and how closing that gap changes the Goal.</p>
+
+    <h2>How Research Quest clarifies a research need</h2>
+    <p>The Skill does not require a fixed number of turns. A simple task may take two or three; a conflicting or under-specified task may need more. The stopping rule is not “complete five levels” but “close the conversational unknowns that block execution.”</p>
+    <ol class="steps">
+      <li><strong>Read material first</strong>Extract the facts, terminology, constraints, and preferences already present.</li>
+      <li><strong>Build the cognition map</strong>Separate explicit knowledge, unspoken experience, open questions, and hidden risks.</li>
+      <li><strong>Ask one high-value question</strong>Choose the question most likely to change the objective, evidence, completion rule, or execution route.</li>
+      <li><strong>Accept three forms of user input</strong>The user can answer, ask the AI a question, or add Context and task clues proactively.</li>
+      <li><strong>Update Context and Goal</strong>Classify evidence, detect duplicates and conflicts, then shrink, skip, or rewrite the next question.</li>
+      <li><strong>Stop and hand off</strong>When more conversation no longer changes the executable plan, generate both Frozen Context and Codex Goal.</li>
+    </ol>
+
+    <h2>How the interface provides positive feedback</h2>
+    <div class="feedback"><ul class="feedback-list">
+      <li><strong>Goal progress and percentage</strong><br />Shows how close the task is to an executable state.</li>
+      <li><strong>Cognition-score change</strong><br />Rewards confirmed or correctly applied understanding, not arbitrary answers.</li>
+      <li><strong>Estimated remaining time</strong><br />Reduces uncertainty about how long alignment will continue.</li>
+      <li><strong>Current Goal change (Goal vN)</strong><br />Shows exactly how the latest decision changed the plan.</li>
+    </ul></div>
+
+    <h2>Users can interrupt the main path</h2>
+    <div class="two">
+      <section><h3>I have a question</h3><p>The main question pauses. The AI answers from the documents first, saves the Q&A as a clue, updates the map, and replans the current question without advancing progress.</p></section>
+      <section><h3>I want to add Context or a task clue</h3><p>The user can add documents, constraints, preferences, deadlines, results, or corrections. The AI classifies the clue, checks evidence and conflicts, updates Context and Goal, and then resumes.</p></section>
+    </div>
+    <p>User statements about their own goals, preferences, constraints, deadlines, and deliverables may be Confirmed. File contents, experiment results, and external facts remain Candidate until read or verified. Conflicts must be displayed rather than silently overwritten.</p>
+
+    <h2>Build your own game Skill</h2>
+    <p>Research Quest provides a reusable interaction method rather than a fixed art style or story. Keep the cognition map, document-first questioning, evidence states, and Context / Goal handoff, then adapt the presentation to an RPG, detective story, card game, management simulation, exploration game, or another style that fits your users.</p>
+    <p>Models such as Sol, Fable, or Kimi can help draft characters, narratives, levels, rewards, and interaction copy. Their role here is creative assistance, not a claim that they have been benchmarked against one another.</p>
+
+    <h2>The final handoff includes both Context and Goal</h2>
+    <p>Context explains what the user actually wants, what was discussed, and which information is trustworthy. Goal specifies what Codex should do, how success is checked, and when to stop. Neither is sufficient alone.</p>
+    <div class="handoff">
+      <section><h3>Frozen Context</h3><pre>Original need and final deliverable
+Documents and traceable sources
+User decisions, questions, and answers
+Added material, constraints, and preferences
+Known–Unknown cognition map
+Candidate / Confirmed / Verified evidence
+Goal vN history
+Open unknowns, conflicts, and closure conditions</pre></section>
+      <section><h3>Codex Goal</h3><pre>Context file path
+Real objective and non-goals
+Inputs, data, and execution steps
+Metrics and claim boundary
+Completion and exit criteria
+Root-cause rule after repeated failure
+Agent roles, tests, and independent review
+How execution results return to Context</pre></section>
+    </div>
+
+    <h2>Boundary of the public case</h2>
+    <p>The AlphaFold2 example demonstrates product logic and a public pilot design. It does not provide completed results for specific enzyme targets and does not treat pLDDT or structural similarity as proof of catalytic activity or substrate binding.</p>
+    <p class="sources">Public background: <a href="https://www.nature.com/articles/s41586-021-03819-2">AlphaFold2 Nature paper</a> · <a href="https://alphafold.ebi.ac.uk/">AlphaFold DB</a> · <a href="https://www.ebi.ac.uk/pdbe/">PDBe</a></p>
+
+    <section class="cta"><h2>Try, install, and contribute</h2><p><a href="./">English Demo</a> · <a href="../?view=full">Full Dashboard</a> · <a href="https://github.com/John-Lin98/ai-research-quest/releases/latest">Install the latest Skill</a> · <a href="https://github.com/John-Lin98/ai-research-quest">GitHub repository</a></p><p>Feedback, GitHub Stars, and follows are welcome. You are also encouraged to reuse the method and build your own game Skill.</p></section>
+  </article></main>
+  <footer>This page presents product logic and a public pilot design. It does not constitute experimental conclusions or an evaluation of research capability.</footer>
+</body>
+</html>
