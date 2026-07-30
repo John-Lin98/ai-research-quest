@@ -6,6 +6,14 @@ import type { CampaignId, GameState, LevelId } from "./types/index.ts";
 
 const store = new QuestStore();
 
+function LanguageSwitch() {
+  return (
+    <a className="rq-language-switch" href="./en/" lang="en" aria-label="Switch to the English version">
+      English
+    </a>
+  );
+}
+
 function download(record: { content: string | null; filename: string | null; media_type: string }): boolean {
   if (!record.content || !record.filename) return false;
   const href = URL.createObjectURL(new Blob([record.content], { type: record.media_type }));
@@ -85,7 +93,7 @@ function FullDashboardApp() {
     <QuestShell>
       <nav className="rq-product-nav" aria-label="完整 Dashboard 导航">
         <a href="./">返回聊天式 Demo</a>
-        <a href="https://github.com/John-Lin98/ai-research-quest/releases/tag/v1.1.0">安装 Skill</a>
+        <a href="https://github.com/John-Lin98/ai-research-quest/releases/latest">安装 Skill</a>
         <a href="./case-study-alphafold-casp14.html">案例博文</a>
       </nav>
       <p className="rq-live-status" role="status">{notice}</p>
@@ -179,5 +187,10 @@ function FullDashboardApp() {
 
 export default function App() {
   const view = new URLSearchParams(window.location.search).get("view");
-  return view === "full" ? <FullDashboardApp /> : <ChatQuestDemo />;
+  return (
+    <>
+      <LanguageSwitch />
+      {view === "full" ? <FullDashboardApp /> : <ChatQuestDemo />}
+    </>
+  );
 }
