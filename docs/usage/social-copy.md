@@ -8,6 +8,9 @@
 - 认知地图参考：https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns
 - grill-me / grill-with-docs 参考：https://github.com/mattpocock/skills
 - grill-with-docs 源文件：https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md
+- 认知地图参考：https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns
+- grill-me / grill-with-docs 参考：https://github.com/mattpocock/skills
+- grill-with-docs 源文件：https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md
 
 ## 一句话定位
 
