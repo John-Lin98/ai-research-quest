@@ -104,6 +104,7 @@
           <section><h3>Known–Unknown 四象限</h3><p>四象限告诉 AI：用户已经掌握什么、明确不知道什么、可能会但还没表达什么，以及还有哪些隐藏风险没有被看到。</p></section>
           <section><h3>grill-me-with-docs</h3><p>AI 先读文档，不重复问材料里已有的答案；默认每轮只问一个关键问题，并尽量沿用用户已经使用的术语。</p></section>
         </div>
+        <p class="sources">方法参考：<a href="https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns">A field guide to Claude Fable 5: Finding your unknowns（Known–Unknown 认知地图）</a> · <a href="https://github.com/mattpocock/skills">Matt Pocock / skills</a> · <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md">grill-with-docs 源文件</a></p>
 
         <h2>认知地图固定包含四部分</h2>
         <div class="quadrants" aria-label="Known–Unknown 四象限">
@@ -112,7 +113,6 @@
           <section class="quadrant ku"><h3>Known Unknowns（已知的未知）</h3><p>用户知道还缺答案的问题，例如这项结果最多能说明什么。</p></section>
           <section class="quadrant uu"><h3>Unknown Unknowns（未知的未知）</h3><p>需要通过反例、失败或真实执行才会出现的隐藏问题。</p></section>
         </div>
-        <p>聊天界面不反复展示横轴和纵轴文字，但四个位置和含义固定。问题、解释、进度和 Goal 变化都由这张地图产生。</p>
 
         <h2>认知地图怎样调整下一轮</h2>
         <div class="flow"><pre>上一轮 Verified Known Knowns 较少

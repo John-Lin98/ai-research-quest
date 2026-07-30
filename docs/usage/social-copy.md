@@ -5,6 +5,9 @@
 - 聊天式 Demo：https://john-lin98.github.io/ai-research-quest/
 - 案例博文：https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html
 - GitHub 与 Skill：https://github.com/John-Lin98/ai-research-quest
+- 认知地图参考：https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns
+- grill-me / grill-with-docs 参考：https://github.com/mattpocock/skills
+- grill-with-docs 源文件：https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md
 
 ## 一句话定位
 
@@ -18,17 +21,25 @@ Research Quest 是一个开源科研游戏 Skill。AI 先阅读文档与已有�
 
 欢迎体验，也欢迎在 GitHub Star 项目并 Follow 后续更新。
 
-## X 单帖版
+## X 单帖版（主帖 + 参考资料回复）
+
+### 主帖
 
 我做了一个开源科研游戏 Skill：Research Quest。
 
-AI 先读文档，用 Known–Unknown 认知地图 + grill-me-with-docs 每轮只问一个关键问题，并克制回答，降低用户阅读长文和 AI 错误上下文累积的负担。最后生成 Context + Goal 交给 Codex。
-
-也可用 Sol/Fable/Kimi 改造成 RPG、侦探或卡牌 Skill。
+AI 先读文档，用 Known–Unknown 认知地图 + grill-me-with-docs 每轮只问一个关键问题，并克制回答，降低用户阅读长文和 AI 错误 Context 累积的负担。最后生成 Context + Goal 交给 Codex。
 
 Demo：https://john-lin98.github.io/ai-research-quest/
 GitHub：https://github.com/John-Lin98/ai-research-quest
 欢迎 Star & Follow。
+
+### 参考资料回复
+
+方法参考：
+认知地图：https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns
+grill-me / grill-with-docs：https://github.com/mattpocock/skills
+
+也欢迎参考这套思路，用 Sol / Fable / Kimi 做成你喜欢的 RPG、侦探或卡牌 Skill。
 
 ## X Thread 版
 
@@ -68,6 +79,8 @@ GitHub：https://github.com/John-Lin98/ai-research-quest
 试玩：https://john-lin98.github.io/ai-research-quest/
 源码与 Skill：https://github.com/John-Lin98/ai-research-quest
 博文：https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html
+认知地图参考：https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns
+grill-me / grill-with-docs：https://github.com/mattpocock/skills
 
 这是一个仍待真实用户验证的产品假设，不声称已经证明提升科研能力或效率。
 
@@ -155,6 +168,14 @@ Demo：`https://john-lin98.github.io/ai-research-quest/`
 GitHub / Skill：`https://github.com/John-Lin98/ai-research-quest`
 
 案例博文：`https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html`
+
+方法参考：
+
+认知地图文章：`https://claude.com/blog/a-field-guide-to-claude-fable-finding-your-unknowns`
+
+grill-me / grill-with-docs GitHub：`https://github.com/mattpocock/skills`
+
+grill-with-docs 源文件：`https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md`
 
 它目前仍是一个等待真实用户验证的产品假设，不代表已经证明能够提升科研能力或效率。
 
