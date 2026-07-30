@@ -616,7 +616,7 @@ function AssistantTurn({
   );
 }
 
-function QuestionClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion }: {
+function QuestionClueTurn({ turn, onChoose, onAddContext, onAskQuestion }: {
   turn: Turn;
   onChoose?: (choice: Choice) => void;
   onAddContext?: () => void;
@@ -637,7 +637,7 @@ function QuestionClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion 
   );
 }
 
-function TaskClueTurn({ turn, onChoose, onCopy, onAddContext, onAskQuestion }: {
+function TaskClueTurn({ turn, onChoose, onAddContext, onAskQuestion }: {
   turn: Turn;
   onChoose?: (choice: Choice) => void;
   onAddContext?: () => void;
