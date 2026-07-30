@@ -1,0 +1,27 @@
+name: 临时清理过期 onCopy 接口
+
+on:
+  push:
+    branches: [agent/chat-ui-copy-feedback-v1]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: agent/chat-ui-copy-feedback-v1
+          persist-credentials: true
+      - run: python scripts/temp-remove-stale-oncopy.py
+      - shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- app/src/components/ChatQuestDemo.tsx
+          git diff --cached --quiet && exit 0
+          git commit -m "清理过期复制接口"
+          git push origin HEAD:agent/chat-ui-copy-feedback-v1
