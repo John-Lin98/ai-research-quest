@@ -19,11 +19,12 @@ test("英文 Demo 完整展示认知地图并支持逐轮选择", async ({ page 
   await expect(page.getByRole("heading", { name: "Known–Unknown cognition map" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "grill-me-with-docs" })).toBeVisible();
 
+  const selectedAnswer = "Check whether local active-site geometry is reliable enough for preliminary screening";
   const firstChoice = page.locator("#case .options .option").first();
   await expect(firstChoice).toContainText("Check whether local active-site geometry is reliable enough");
   await firstChoice.click();
   await expect(firstChoice).toContainText(/Copied|Selected/);
-  await expect(page.getByText("Check whether local active-site geometry is reliable enough for preliminary screening", { exact: true })).toBeVisible();
+  await expect(page.locator("#case .user .bubble").filter({ hasText: selectedAnswer }).last()).toHaveText(selectedAnswer);
   await expect(page.getByText(/Turn 2\/5/)).toBeVisible();
 });
 
