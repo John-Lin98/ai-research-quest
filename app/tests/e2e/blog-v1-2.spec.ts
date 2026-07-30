@@ -22,13 +22,19 @@ test("v1.2 博文说明游戏式 Context、自适应和正反馈", async ({ page
   await expect(page.getByText("目标进度条与百分比", { exact: true })).toBeVisible();
   await expect(page.getByText("当前目标变化 (Goal vN)", { exact: true })).toBeVisible();
 
-  await expect(page.getByRole("heading", { name: "点击选项怎样成为真实输入" })).toBeVisible();
-  await expect(page.getByText("支持按钮的宿主", { exact: true })).toBeVisible();
-  await expect(page.getByText("不支持按钮的宿主", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "为什么要克制提问和回答" })).toBeVisible();
+  await expect(page.getByText("降低用户获取信息的难度", { exact: true })).toBeVisible();
+  await expect(page.getByText("降低 AI 的上下文和推理负担", { exact: true })).toBeVisible();
+
+  await expect(page.getByRole("heading", { name: "用你喜欢的方式制作自己的游戏 Skill" })).toBeVisible();
+  await expect(page.getByText("Sol、Fable、Kimi", { exact: false })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "点击选项怎样成为真实输入" })).toHaveCount(0);
 
   await expect(page.getByRole("heading", { name: "最终同时交给 Codex：Context 与 Goal" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Frozen Context" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Codex Goal" })).toBeVisible();
+  await expect(page.getByText("欢迎试玩、提出修改意见", { exact: false })).toContainText("Star");
+  await expect(page.locator("footer")).toContainText("不构成具体的实验结论或科研能力评价");
 
   await expect(page.getByRole("link", { name: "安装 Research Quest Skill v1.2.0" })).toHaveAttribute(
     "href",
