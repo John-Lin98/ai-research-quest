@@ -49,6 +49,7 @@ test("每轮最后一个选项暂停闯关并生成固定关卡线索", async ({
     await expect(current.getByText("主目标进度暂停", { exact: true })).toBeVisible();
     await expect(current.getByText(/已保存到：/)).toBeVisible();
     await current.locator(".cq-option-select").filter({ hasText: item.choice }).click();
+    await expect(current.getByLabel("你的消息", { exact: true })).toContainText(item.choice);
   }
 
   const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
@@ -82,6 +83,7 @@ test("用户主动追加的上下文与任务线索会分类、暂停主线并�
     await expect(taskCard).toContainText(item.revised);
     await expect(taskCard).toContainText("这条线索如何改变认知地图");
     await current.locator(".cq-option-select").filter({ hasText: item.choice }).click();
+    await expect(current.getByLabel("你的消息", { exact: true })).toContainText(item.choice);
   }
 
   const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
@@ -100,7 +102,7 @@ test("点击单一选项会显示复制反馈并生成自然用户气泡", async
   await option.click();
   await expect(option).toContainText("已复制");
   await expect(first.getByText("先判断活性位点附近的结构是否可靠", { exact: true })).toBeVisible();
-  const userTurn = first.getByLabel("你的消息");
+  const userTurn = first.getByLabel("你的消息", { exact: true });
   await expect(userTurn).toBeVisible();
   await expect(userTurn.locator(".cq-user-bubble")).toContainText("先判断活性位点附近的结构是否可靠");
   await expect(userTurn.locator(".cq-avatar--user")).toBeVisible();
