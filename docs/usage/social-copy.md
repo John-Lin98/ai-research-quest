@@ -22,13 +22,12 @@ Research Quest 是一个开源科研游戏 Skill。AI 先阅读文档与已有�
 
 我做了一个开源科研游戏 Skill：Research Quest。
 
-AI 先读文档，用 Known–Unknown 认知地图 + grill-me-with-docs 每轮只问一个关键问题，并克制回答，减少用户阅读长文的负担，也避免 AI 在冗长或错误 Context 中越走越远。最后生成完整 Context + Goal 交给 Codex。
+AI 先读文档，用 Known–Unknown 认知地图 + grill-me-with-docs 每轮只问一个关键问题，并克制回答，降低用户阅读长文和 AI 错误上下文累积的负担。最后生成 Context + Goal 交给 Codex。
 
-你也可以参考它，用 Sol / Fable / Kimi 做成自己喜欢的 RPG、侦探或卡牌 Skill。
+也可用 Sol/Fable/Kimi 改造成 RPG、侦探或卡牌 Skill。
 
 Demo：https://john-lin98.github.io/ai-research-quest/
 GitHub：https://github.com/John-Lin98/ai-research-quest
-
 欢迎 Star & Follow。
 
 ## X Thread 版
