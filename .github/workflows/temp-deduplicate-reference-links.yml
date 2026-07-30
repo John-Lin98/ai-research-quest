@@ -1,0 +1,27 @@
+name: 临时运行参考链接幂等清理
+
+on:
+  push:
+    branches: [agent/final-reference-links]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: agent/final-reference-links
+          persist-credentials: true
+      - run: python scripts/temp-deduplicate-reference-links.py
+      - shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- public/case-study-alphafold-casp14.html docs/usage/social-copy.md app/tests/e2e/blog-v1-2.spec.ts
+          git diff --cached --quiet && { echo "已是目标状态。"; exit 0; }
+          git commit -m "清理重复参考链接"
+          git push origin HEAD:agent/final-reference-links
