@@ -32,7 +32,7 @@ test("v1.2 博文突出认知地图、克制交互和可自定义游戏 Skill", 
   await expect(page.getByText("RPG、侦探推理、卡牌、模拟经营、Boss 战", { exact: false })).toBeVisible();
 
   await expect(page.getByRole("heading", { name: "点击选项怎样成为真实输入" })).toHaveCount(0);
-  await expect(page.getByText("交互小细节：", { exact: false })).toContainText("不是 Research Quest 的核心价值");
+  await expect(page.locator(".detail-note")).toContainText("不是 Research Quest 的核心价值");
 
   await expect(page.getByRole("heading", { name: "最终同时交给 Codex：Context 与 Goal" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Frozen Context" })).toBeVisible();
