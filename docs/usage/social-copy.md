@@ -1,215 +1,173 @@
-# Research Quest 发布文案
+# Research Quest 最终发布文案
 
-以下内容围绕一个真实公开科研需求展示产品逻辑，不把游戏分数、自动演示或尚未执行的试点写成科研或学习效果结论。
+## 公开入口
 
-公开入口：
-
-- Demo：https://john-lin98.github.io/ai-research-quest/
+- 聊天式 Demo：https://john-lin98.github.io/ai-research-quest/
+- 案例博文：https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html
 - GitHub 与 Skill：https://github.com/John-Lin98/ai-research-quest
-- 真实科研需求案例：https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html
 
 ## 一句话定位
 
-> Research Quest 让 AI 先用更有趣的 1–3 个关键问题与你对齐目标，再用 Known–Unknown 四象限建立认知地图，最后整理任务 Context 和 Goal，交给 ChatGPT、Codex 或多 Agent 队伍持续执行到交付。
+> Research Quest 先用 Known–Unknown 认知地图和 grill-me-with-docs，把科研任务通过游戏式小步交互聊清楚，再把完整 Context 与 Goal 交给 Codex 或 Agent 执行。
 
-## 五条核心价值
+## 简短项目介绍
 
-1. **更有趣地弄清目标**：把枯燥命令改成任务地图、关卡、Boss、奖励和进度反馈。
-2. **建立四象限认知地图**：横轴是用户是否意识到，纵轴是用户是否掌握；固定展示 Known Knowns、Unknown Knowns、Known Unknowns、Unknown Unknowns。
-3. **小步快速对齐**：每回合通常 1 个、最多 3 个最影响最终任务的问题，减少认知负担和错误传播。
-4. **从理解走向执行**：AI 不只提问，还整理 Context、设计方案、生成 Goal，并交给 Codex/Agent 执行、验证和交付。
-5. **持续正反馈**：每轮展示四象限变化、认知分、科研目标进度、预计剩余时间和 Goal 版本变化。
+Research Quest 是一个开源科研游戏 Skill。AI 先阅读文档与已有讨论，通过 Known–Unknown 四象限找到当前最重要的认知空缺，每轮默认只问一个关键问题，并用克制、针对性的回答降低用户阅读长文的负担。用户可以回答、追问，也可以主动补充资料、约束、偏好和纠错；确认后的内容持续写入 Context 与 Goal，最后交给 Codex 或 Agent 执行。
 
-## 核心传播亮点：认知地图自适应
+这套方法也可以用于制作你自己的游戏 Skill：选择喜欢的 RPG、侦探、卡牌、经营或冒险风格，再让 Sol、Fable、Kimi 等你常用的模型帮助设计角色、剧情、关卡、反馈和交互文案，并根据用户反馈持续调整游戏体验。
 
-> 上一关如果显示 Verified Known Knowns 较少，下一关会自动增加基础认知提升环节；当用户已经掌握基础后，再切换到证据冲突、研究决策和迁移挑战。每次调整都会告诉用户原因，而不是隐藏在黑箱里。
+欢迎体验，也欢迎在 GitHub Star 项目并 Follow 后续更新。
 
-## 小红书：把 ChatGPT 科研变成玩游戏
+## X 单帖版
 
-### 标题
+我做了一个开源科研游戏 Skill：Research Quest。
 
-**把 ChatGPT 科研变成玩游戏：AI 不只回答问题，而是陪你通关真实任务**
+AI 先读文档，用 Known–Unknown 认知地图 + grill-me-with-docs 每轮只问一个关键问题，并克制回答，减少用户阅读长文的负担，也避免 AI 在冗长或错误 Context 中越走越远。最后生成完整 Context + Goal 交给 Codex。
 
-### 正文
+你也可以参考它，用 Sol / Fable / Kimi 做成自己喜欢的 RPG、侦探或卡牌 Skill。
 
-我发现，和 AI 做科研最累的地方，往往不是模型不会回答，而是：
+Demo：https://john-lin98.github.io/ai-research-quest/
+GitHub：https://github.com/John-Lin98/ai-research-quest
 
-- 我自己还没完全想清楚目标；
-- 一次对话里问题太多，认知负担很大；
-- AI 很容易把不确定回答继续传到后面；
-- 聊了很久，最后还是没有形成可执行任务。
+欢迎 Star & Follow。
 
-所以我做了 **Research Quest**。
+## X Thread 版
 
-它把人与 AI 的协作改造成一场回合制科研游戏：
+### 1/5
 
-> 真实目标 → 关卡提问 → 四象限认知地图 → Goal 更新 → Agent 执行 → 验证与交付
+我把科研需求澄清做成了一个开源游戏 Skill：Research Quest。
 
-每回合通常只问 **1 个主问题**，只有真正影响证据或执行边界时，才追加最多 2 个问题。这种方式类似 grill-me-with-docs 的小步追问：不一次轰炸十几个问题，而是每轮只消除一个最关键的不确定性。
+它不是在聊天上加经验值，而是先通过游戏式小步交互理解用户，再把足够完整的 Context 与 Goal 交给 Codex 或 Agent 执行。🧵
 
-认知地图固定为 Known–Unknown 四象限：
+### 2/5
 
-|  | 用户已经意识到 | 用户尚未意识到 |
-| --- | --- | --- |
-| 已经掌握 | Known Knowns | Unknown Knowns |
-| 尚未掌握 | Known Unknowns | Unknown Unknowns |
+核心是两件事：
 
-其中 Known Knowns 还要经过：
+1. Known–Unknown 四象限认知地图；
+2. grill-me-with-docs：先读文档，再问材料无法回答、又最影响结果的一个问题。
 
-> Candidate → Confirmed → Verified
+用户可以回答、追问，也可以主动补充资料、约束、偏好、截止时间和纠错。
 
-只有真正能应用的 Verified 才计入认知分。错误回答不会直接进入后续 Goal。
+### 3/5
 
-这次 Demo 使用一个真实科研需求：
+为什么强调“每轮一个问题”和“克制回答”？
 
-> AlphaFold2 / AlphaFold DB 预测能否支持酶活性位点几何初筛？
+对用户：不用一次理解十几个问题和一大段答案。
 
-玩家会逐关决定公开输入、局部区域、指标、覆盖率、Agent 分工、验收和失败退出规则。最终得到的不只是“建议”，而是一份可以交给 Codex 或多 Agent 执行的完整科研任务合同。
+对 AI：避免长 Context 持续膨胀，也减少错误假设进入后续推理和 Goal。
 
-每轮还会告诉你：
+目标不是少说话，而是每次只解决当前最有价值的不确定性。
 
-- 总进度和预计剩余时间；
-- 四象限解锁了什么；
-- 认知分提升了多少；
-- 科研目标达成到哪里；
-- Goal vN 相比上一版发生了什么变化。
+### 4/5
 
-我想验证的产品假设是：
+游戏风格不是固定的。你可以参考这套认知地图与小步对齐方法，制作自己的游戏 Skill：RPG、侦探、卡牌、经营、冒险都可以。
 
-> 当人与 AI 的交互更像共同闯关，而不是不断输入命令时，用户可能更愿意持续理解问题、表达偏好，并把科研任务真正做完。
+也可以让 Sol、Fable、Kimi 等你喜欢的模型参与角色、剧情、关卡、奖励和交互设计，再根据用户反馈持续优化。
 
-这仍然是一个等待验证的假设，不是已经证明的效果。
-
-在线试玩：`https://john-lin98.github.io/ai-research-quest/`
-
-GitHub 与可安装 Skill：`https://github.com/John-Lin98/ai-research-quest`
-
-### 建议标签
-
-`#AI科研 #ChatGPT #Codex #科研工具 #Agent #学习方法 #GitHub #独立开发`
-
-## 小红书 8 张卡片脚本
-
-### 卡片 1｜痛点
-
-**标题：为什么和 AI 做科研还是很累？**
-
-文案：长对话、目标模糊、问题太多、错误向后传播，最后没有形成可执行任务。
-
-### 卡片 2｜核心想法
-
-**标题：把科研对话变成闯关游戏**
-
-文案：任务地图、关卡、Boss、奖励、进度条，让每次交互都有清晰目标和正反馈。
-
-### 卡片 3｜四象限
-
-**标题：AI 先建立你的认知地图**
-
-文案：横轴看你是否意识到，纵轴看你是否掌握；固定得到 Known Knowns、Unknown Knowns、Known Unknowns、Unknown Unknowns。
-
-### 卡片 4｜小步提问
-
-**标题：每轮只问 1–3 个关键问题**
-
-文案：通常 1 个主问题，最多 2 个证据或边界问题；只解决当前最关键的不确定性。
-
-### 卡片 5｜防错
-
-**标题：错误回答不会进入后续任务**
-
-文案：Candidate → Confirmed → Verified。只有经过应用验证的知识才进入正式 Goal。
-
-### 卡片 6｜真实 Demo
-
-**标题：AlphaFold2 能否支持酶活性位点初筛？**
-
-文案：不是复述热点，而是把真实科研需求变成数据、指标、验收和 Agent 分工。
-
-### 卡片 7｜从游戏到执行
-
-**标题：通关不是结束，而是开始执行**
-
-文案：AI 整理 Context、方案和 Goal，交给 Codex / Agent 开发、实验、验证和交付。
-
-### 卡片 8｜最终价值
-
-**标题：让 AI 帮你更清楚地想，也更准确地做**
-
-文案：每轮展示认知分、目标进度、剩余时间和 Goal 变化，让科研协作更轻松、更有动力。
-
-## 中文 X Thread
-
-### 1/8
-
-我把“和 ChatGPT 做科研”做成了一场回合制游戏：Research Quest。它不是给聊天加经验值，而是让 AI 用更有趣的方式帮你弄清目标、建立认知地图，再把任务交给 Agent/Codex 真正完成。🧵
-
-### 2/8
-
-核心是两条同步循环：Game Loop 负责提问、学习、奖励和认知地图；Goal Loop 负责整理 Context、更新任务合同、调用工具和 Agent 执行。通关不是只生成提示词，而是继续做到可验证交付。
-
-### 3/8
-
-认知地图固定为 Known–Unknown 四象限。横轴：你是否已经意识到这个问题；纵轴：你实际上是否掌握。四格分别是 Known Knowns、Unknown Knowns、Known Unknowns、Unknown Unknowns。
-
-### 4/8
-
-每回合通常只问 1 个、最多 3 个最关键问题。一个决定路线，必要时一个验证理解、一个确认偏好或边界。不是一次列出 20 个问题，而是快速、小步地与你对齐。
-
-### 5/8
-
-为了避免错误向后传播，Known Knowns 还要经过 Candidate → Confirmed → Verified。AI 总结只能产生 Candidate；只有能在选择、小测或迁移中正确应用，才进入 Verified 和最终 Goal。
-
-### 6/8
-
-默认 Demo 使用真实公开科研需求：AlphaFold2 / AlphaFold DB 预测能否支持酶活性位点几何初筛？玩家逐关冻结输入、局部区域、指标、覆盖率、多 Agent 分工和退出规则。
-
-### 7/8
-
-每一轮都会显示：总进度、预计剩余时间、四象限变化、认知分、科研目标达成状态，以及 Goal vN 相比上一版新增了什么。正反馈必须具体，而不是只说“做得很好”。
-
-### 8/8
+### 5/5
 
 试玩：https://john-lin98.github.io/ai-research-quest/
-
 源码与 Skill：https://github.com/John-Lin98/ai-research-quest
+博文：https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html
 
-我想验证的是：游戏式小步协作，是否能让人与 AI 更准确地对齐，并更有动力把科研任务做完。
+这是一个仍待真实用户验证的产品假设，不声称已经证明提升科研能力或效率。
 
-## English X Thread
+欢迎 Star、Follow，也欢迎做出你自己的 Research Quest。
 
-### 1/8
+## 小红书标题
 
-I turned research collaboration with ChatGPT into a turn-based game: Research Quest. It is not a points layer on top of chat. AI first helps clarify your real goal, maps your cognition, then hands an executable Goal to Codex or an agent team. 🧵
+**我把科研需求澄清做成了游戏 Skill：先聊清楚，再交给 Codex**
 
-### 2/8
+备选：
 
-It runs two synchronized loops. The Game Loop handles questions, learning, feedback, and progression. The Goal Loop builds context, updates the execution contract, invokes tools and agents, verifies outputs, and continues until delivery.
+- **别再让 AI 一次问你 20 个问题了：我做了一个科研闯关 Skill**
+- **用认知地图和 grill-me-with-docs，把科研任务聊清楚**
+- **Research Quest：一个能不断理解你的科研游戏 Skill**
 
-### 3/8
+## 小红书正文
 
-The cognition map is a fixed Known–Unknown 2×2 matrix. The x-axis is whether the user is aware of the issue. The y-axis is whether the user actually possesses the knowledge: Known Knowns, Unknown Knowns, Known Unknowns, and Unknown Unknowns.
+和 AI 做科研时，我经常遇到一个问题：
 
-### 4/8
+不是 AI 完全不会回答，而是我还没有把需求想清楚，它却已经给了很长的方案。
 
-Each turn asks one main question and at most two necessary follow-ups. Only the questions that materially change the final goal, evidence boundary, preference, or execution route are asked. The point is fast, low-load alignment—not a giant questionnaire.
+接下来通常会发生几件事：
 
-### 5/8
+- 用户要一次理解大量问题和长篇回答；
+- AI 根据不完整信息继续推理；
+- 一个错误假设被带入越来越长的上下文；
+- 聊了很久，最后仍然没有形成 Codex 可以执行的任务。
 
-To prevent error propagation, Known Knowns follow Candidate → Confirmed → Verified. An AI summary can only create a Candidate. Knowledge enters the formal Goal only after application, correction, a quiz, or a transfer task validates it.
+所以我做了一个开源科研游戏 Skill：**Research Quest**。
 
-### 6/8
+它的核心不是“把聊天做得像游戏”，而是用游戏式交互帮助人与 AI 逐步对齐需求，获得足够准确的 Context。
 
-The public demo uses a real research need: can AlphaFold2 / AlphaFold DB predictions support preliminary enzyme active-site geometry screening? Players freeze inputs, local regions, metrics, coverage, agent roles, acceptance criteria, and failure handling.
+核心逻辑只有两部分：
 
-### 7/8
+### 1. Known–Unknown 认知地图
 
-Every turn shows concrete positive feedback: progress, remaining time, quadrant changes, cognition score, research-goal status, and the exact difference between Goal vN and the previous version.
+AI 持续维护四个区域：
 
-### 8/8
+- Known Knowns（已知的已知）：用户已经明确并能使用的内容；
+- Unknown Knowns（未知的已知）：用户可能有经验或偏好，但还没说出来；
+- Known Unknowns（已知的未知）：用户知道还缺答案的问题；
+- Unknown Unknowns（未知的未知）：需要通过反例、失败或真实执行才会暴露的风险。
 
-Try it: https://john-lin98.github.io/ai-research-quest/
+这张地图不是装饰。下一轮问什么、需要解释多深、是否补基础、何时停止提问，都由它决定。
 
-Source and installable Skill: https://github.com/John-Lin98/ai-research-quest
+### 2. grill-me-with-docs
 
-The product hypothesis is still open: can playful, small-step AI collaboration improve alignment, engagement, and task completion?
+AI 先读用户提供的文档、历史讨论和已有 Context，不重复询问材料里已有的答案。
+
+然后每轮默认只问一个最影响最终结果的问题。用户回答后，AI 更新认知地图、Context 和 Goal，再决定下一步。
+
+用户也可以随时：
+
+- 暂停主线，向 AI 追问；
+- 主动补充资料、限制、偏好、截止时间或实验结果；
+- 指出 AI 的理解错误并要求回滚 Goal。
+
+### 为什么要“有针对性地提问 + 克制地回答”？
+
+这不是为了故意把内容切碎，而是同时降低人与 AI 的负担。
+
+对用户来说，不需要一次理解十几个问题，也不必从长篇回答里自己寻找最关键的一句话。
+
+对 AI 来说，可以避免 Context 无限增长，减少错误假设进入后续推理链路，更容易持续对齐用户真正想完成的任务。
+
+最终，Research Quest 会生成两份内容：
+
+- **Frozen Context**：真实目标、文档、用户选择、偏好、认知地图、冲突和开放未知；
+- **Codex Goal**：输入、步骤、指标、完成标准、失败退出、测试和 Agent 分工。
+
+然后把两者一起交给 Codex 或 Agent 执行。
+
+### 你也可以做自己的游戏 Skill
+
+Research Quest 的游戏风格不是固定的。
+
+你可以保留“认知地图 + 小步对齐”的核心，然后换成自己喜欢的形式：RPG、侦探推理、卡牌构筑、经营养成、冒险探索都可以。
+
+也可以充分利用 Sol、Fable、Kimi 等你常用模型的游戏化创作能力，让它们帮助设计角色、剧情、关卡、奖励和交互风格，并根据用户的选择、卡点和反馈持续优化体验。
+
+目前项目已经开源：
+
+Demo：`https://john-lin98.github.io/ai-research-quest/`
+
+GitHub / Skill：`https://github.com/John-Lin98/ai-research-quest`
+
+案例博文：`https://john-lin98.github.io/ai-research-quest/case-study-alphafold-casp14.html`
+
+它目前仍是一个等待真实用户验证的产品假设，不代表已经证明能够提升科研能力或效率。
+
+欢迎试玩，也欢迎大家多多 **Star 和 Follow**。更欢迎你参考这套思路，做出属于自己的游戏 Skill。
+
+## 小红书建议标签
+
+`#AI科研 #ChatGPT #Codex #科研工具 #Agent #游戏化学习 #提示词 #GitHub #独立开发 #Kimi`
+
+## 发布边界
+
+- 不把公开 AlphaFold2 试点写成已经完成的科研实验；
+- 不声称游戏化已经被证明提高科研能力、效率或创造力；
+- Sol、Fable、Kimi 在文案中作为用户可选择的游戏化创作模型示例，不代表完成了统一基准测试；
+- 宣传时优先链接 GitHub `releases/latest`，确保安装包与当前主分支一致。
