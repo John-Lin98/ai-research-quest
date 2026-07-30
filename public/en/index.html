@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Research Quest is an open-source gamified research Skill that reads project documents, maps Known–Unknowns, asks one high-value question per turn, and hands a traceable Context and Goal to Codex or another agent." />
+  <title>Research Quest | English Demo</title>
+  <style>
+    :root { --border:#dbe3ef; --text:#172033; --muted:#64748b; --accent:#0f766e; --soft:#f0fdfa; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:#f8fafc; }
+    * { box-sizing:border-box; }
+    body { margin:0; }
+    button,input,textarea { font:inherit; }
+    a { color:#075985; font-weight:700; }
+    .language { position:fixed; z-index:10; top:.8rem; right:.8rem; padding:.55rem .85rem; border:1px solid #b8c7d9; border-radius:999px; color:#0f3d56; background:rgba(255,255,255,.96); box-shadow:0 6px 18px rgba(15,23,42,.1); text-decoration:none; }
+    .shell { width:min(980px,calc(100% - 2rem)); margin:0 auto; padding:1.5rem 0 4rem; }
+    .hero { padding:clamp(1.4rem,4vw,2.6rem); border:1px solid #c7d2fe; border-radius:1.25rem; background:linear-gradient(145deg,#fff,#f0f7ff); }
+    .eyebrow { margin:0; color:#0e7490; font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { max-width:22ch; margin:.35rem 0 .8rem; font-size:clamp(2.1rem,6vw,3.55rem); line-height:1.07; }
+    .hero p { max-width:74ch; line-height:1.65; }
+    .links { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
+    .links a { display:inline-flex; align-items:center; min-height:2.5rem; padding:.55rem .82rem; border:1px solid #b8c7d9; border-radius:.65rem; background:#fff; text-decoration:none; }
+    .principles,.feedback,.handoff { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+    .principles { margin:1rem 0; }
+    .card { padding:1rem; border:1px solid var(--border); border-radius:.9rem; background:#fff; }
+    .card h2,.card h3 { margin:.1rem 0 .45rem; }
+    .card p { margin:.35rem 0 0; color:#475569; line-height:1.6; }
+    .mode { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; margin:1rem 0; padding:.42rem; border:1px solid var(--border); border-radius:.9rem; background:#fff; }
+    .mode button { min-height:2.8rem; border:0; border-radius:.65rem; color:#334155; background:transparent; font-weight:800; }
+    .mode button.active { color:#fff; background:var(--accent); }
+    .panel { display:none; }
+    .panel.active { display:grid; gap:1rem; }
+    .overview { display:grid; grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr); gap:1rem; align-items:start; }
+    .map { padding:.9rem; border:1px solid #cbd5e1; border-radius:.9rem; background:#f8fafc; }
+    .map-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; }
+    .quadrant { min-width:0; padding:.72rem; border:1px solid var(--border); border-radius:.7rem; background:#fff; }
+    .quadrant strong { display:block; font-size:.92rem; }
+    .quadrant p { margin:.3rem 0 0; color:#475569; font-size:.86rem; line-height:1.5; overflow-wrap:anywhere; }
+    .kk { border-color:#93c5fd; background:#eff6ff; } .uk { border-color:#c4b5fd; background:#f5f3ff; } .ku { border-color:#f5d565; background:#fffbeb; } .uu { border-color:#fca5a5; background:#fef2f2; }
+    .thread { display:grid; gap:.85rem; }
+    .assistant { max-width:94%; padding:1rem; border:1px solid var(--border); border-radius:1rem; background:#fff; box-shadow:0 8px 20px rgba(30,41,59,.04); }
+    .assistant header { display:flex; gap:.65rem; align-items:center; }
+    .avatar { display:grid; place-items:center; width:2.45rem; height:2.45rem; border-radius:50%; color:#fff; background:var(--accent); font-size:.78rem; font-weight:900; }
+    .assistant header div { display:grid; }
+    .assistant header small { color:var(--muted); }
+    .assistant > p { line-height:1.65; }
+    .why { margin:.8rem 0; padding:.8rem .9rem; border-left:4px solid #2563eb; background:#eff6ff; }
+    .why p { margin:.25rem 0 0; color:#334155; line-height:1.58; }
+    .progress { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; margin:.8rem 0; }
+    .metric { padding:.65rem .72rem; border-radius:.62rem; color:#475569; background:#f1f5f9; }
+    .metric strong { display:block; margin-top:.15rem; color:var(--accent); }
+    .track { height:.55rem; margin-top:.3rem; overflow:hidden; border-radius:999px; background:#cbd5e1; }
+    .track i { display:block; height:100%; border-radius:inherit; background:#14b8a6; }
+    .question { margin-top:.85rem; }
+    .question > strong { display:block; margin-bottom:.55rem; }
+    .options { display:grid; gap:.55rem; }
+    .option { display:grid; gap:.22rem; width:100%; padding:.82rem .92rem; border:1px solid #b8c7d9; border-radius:.72rem; color:var(--text); background:#fff; text-align:left; }
+    .option:hover { border-color:var(--accent); background:var(--soft); }
+    .option span { font-weight:750; }
+    .option small { color:var(--muted); }
+    .option.context { border-style:dashed; border-color:#22c55e; background:#f0fdf4; }
+    .option.question-option { border-style:dashed; border-color:#fb923c; background:#fff7ed; }
+    .user { display:flex; justify-self:end; align-items:flex-end; gap:.55rem; width:min(78%,700px); }
+    .user .bubble { padding:.8rem 1rem; border:1px solid #bfd3f5; border-radius:1rem 1rem .25rem 1rem; color:#17345f; background:#eaf2ff; line-height:1.55; }
+    .user .avatar { color:#17345f; background:#bfdbfe; }
+    .notice { margin:0; padding:.65rem .8rem; border-radius:.65rem; color:#0f4c45; background:#ecfdf5; font-size:.9rem; }
+    .handoff > section { min-width:0; padding:1rem; border-radius:.85rem; color:#e2e8f0; background:#0f172a; }
+    .handoff h3 { margin:0 0 .55rem; color:#fff; }
+    pre { white-space:pre-wrap; overflow-wrap:anywhere; font: .88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .custom-form { display:grid; gap:.8rem; padding:1rem; border:1px solid var(--border); border-radius:1rem; background:#fff; }
+    label { display:grid; gap:.35rem; font-weight:800; }
+    input,textarea { width:100%; min-width:0; padding:.72rem .78rem; border:1px solid #94a3b8; border-radius:.62rem; color:var(--text); background:#fff; }
+    textarea { min-height:7rem; resize:vertical; }
+    .primary { justify-self:start; min-height:2.55rem; padding:.62rem .9rem; border:1px solid var(--accent); border-radius:.62rem; color:#fff; background:var(--accent); font-weight:800; }
+    .generated { display:none; gap:.75rem; }
+    .generated.active { display:grid; }
+    .generated > section { padding:.9rem; border:1px solid var(--border); border-radius:.75rem; background:#fff; }
+    footer { margin-top:1.4rem; padding-top:1rem; border-top:1px solid var(--border); color:var(--muted); line-height:1.6; }
+    @media (max-width:760px) { .language { position:absolute; top:.55rem; right:.55rem; } .shell { width:min(100% - 1rem,980px); padding-top:3.4rem; } .overview,.principles,.feedback,.handoff { grid-template-columns:1fr; } .assistant { max-width:100%; } .user { width:94%; } }
+    @media (max-width:480px) { .mode { grid-template-columns:1fr; } .map-grid { gap:.45rem; } .quadrant { padding:.55rem; } .quadrant p { font-size:.74rem; } }
+  </style>
+</head>
+<body>
+  <a class="language" href="../" lang="zh-CN" aria-label="切换到中文版本">中文</a>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Cognition map + grill-me-with-docs</p>
+      <h1>Turn a vague research request into a traceable Context and Goal</h1>
+      <p><strong>Research Quest</strong> is an open-source gamified research Skill. It reads project documents first, maps what the user knows and does not yet know, asks one high-value question per turn, and keeps each answer focused. When the task is clear enough, it hands a Frozen Context and an executable Goal to Codex or another agent.</p>
+      <div class="links" aria-label="Product links">
+        <a href="https://github.com/John-Lin98/ai-research-quest/releases/latest">Install the Skill</a>
+        <a href="./case-study-alphafold-casp14.html">Read the English article</a>
+        <a href="../?view=full">Full Dashboard</a>
+        <a href="https://github.com/John-Lin98/ai-research-quest">GitHub</a>
+      </div>
+    </header>
+
+    <section class="principles" aria-label="Core design principles">
+      <article class="card"><h2>Known–Unknown cognition map</h2><p>Tracks explicit knowledge, unspoken experience, open questions, and hidden risks. The map decides what to ask next, how much terminology to use, and when to stop interviewing.</p></article>
+      <article class="card"><h2>grill-me-with-docs</h2><p>Reads documents and existing Context before asking. It does not repeat questions that the material already answers, and it defaults to one question that can actually change the final Goal.</p></article>
+    </section>
+
+    <nav class="mode" aria-label="Demo mode">
+      <button type="button" class="active" data-panel="case">Try the public case</button>
+      <button type="button" data-panel="custom">Start from my own need</button>
+    </nav>
+
+    <section id="case" class="panel active" aria-labelledby="case-title">
+      <div class="overview card">
+        <div><p class="eyebrow">Deterministic public case</p><h2 id="case-title">AlphaFold2 active-site pilot</h2><p>The demo shows how a broad request becomes a small, reviewable public pilot. It demonstrates product logic only and does not claim experimental results.</p></div>
+        <div id="top-map" class="map" aria-label="Current Known–Unknown map"></div>
+      </div>
+      <p id="notice" class="notice" aria-live="polite">The current decisions live in page memory. The final round shows the Context and Goal that would be handed to Codex.</p>
+      <div id="thread" class="thread" aria-label="English Research Quest conversation">
+        <article class="user"><div class="bubble">I want to know whether AlphaFold2 predictions can support enzyme active-site analysis.</div><span class="avatar" aria-hidden="true">You</span></article>
+      </div>
+      <button id="restart" class="primary" type="button" hidden>Restart the case</button>
+    </section>
+
+    <section id="custom" class="panel" aria-labelledby="custom-title">
+      <article class="card"><p class="eyebrow">Local starter only</p><h2 id="custom-title">Prepare a starting Context for your own research need</h2><p>This browser page does not run an LLM. It organizes your input locally; the installed Skill performs document reading, adaptive questioning, evidence classification, and Goal updates in ChatGPT or another agent host.</p></article>
+      <div class="custom-form">
+        <label>What research task are you trying to clarify?<textarea id="need" placeholder="Example: I need to choose and reproduce a recent RNA inverse-folding baseline."></textarea></label>
+        <label>What final deliverable do you need?<input id="deliverable" placeholder="Example: a benchmark plan and an executable Codex Goal" /></label>
+        <label>What material or constraints already exist?<textarea id="constraints" placeholder="Example: public papers, one GPU, a two-day pilot, no private data"></textarea></label>
+        <button id="generate" class="primary" type="button">Generate starter Context + prompt</button>
+      </div>
+      <div id="generated" class="generated" aria-live="polite"></div>
+    </section>
+
+    <footer>
+      <p><strong>Interaction note:</strong> choosing an option copies its text when the browser allows it and turns it into a user reply. In a real ChatGPT conversation, users can also type their own answer, question, correction, or task clue.</p>
+      <p>This page is a local, deterministic public demo. Do not enter private code, credentials, personal data, unpublished results, server paths, datasets, or checkpoints.</p>
+    </footer>
+  </main>
+
+  <script>
+    const rounds = [
+      {
+        title: "Decide the real downstream purpose",
+        message: "The documents identify the research object, but not the decision this work should support. Before selecting tools or metrics, we need to define the first practical judgement.",
+        why: "This is the largest Known Unknown because a geometry check, docking screen, and catalytic-mechanism study require different evidence and completion criteria.",
+        progress: 20, score: 18, remaining: "about 4 turns", goal: "Goal v0.1 — define the first decision the pilot must support.",
+        map: ["The research object is AlphaFold2 / AlphaFold DB active-site predictions.", "The user may already prefer a fast pilot, but has not stated it.", "Which downstream decision should the first pilot support?", "A vague goal may send Codex toward the wrong metrics or workflow."],
+        question: "Which first decision would be most useful?",
+        options: [
+          ["Check whether local active-site geometry is reliable enough for preliminary screening", "Keeps the first pilot small and structure-focused."],
+          ["Add ligand docking to rank targets", "Requires ligand preparation, docking controls, and a broader evidence boundary."],
+          ["Study catalytic mechanism directly", "Requires evidence beyond a small computational geometry pilot."]
+        ]
+      },
+      {
+        title: "Identify the material already available",
+        message: "The first purpose is now recorded. The next question is not ‘what data exists in general’, but which concrete references can support the selected comparison.",
+        why: "Documents can answer many factual questions, but the user still needs to confirm which prediction, experimental structure, and active-site annotations are actually available.",
+        progress: 40, score: 34, remaining: "about 3 turns", goal: "Goal v0.2 — add traceable public inputs and a material audit.",
+        map: ["The pilot will focus on local active-site geometry.", "The user may have prior experience aligning PDB and sequence numbering.", "Are prediction, experimental structure, and active-site annotations all available?", "Residue numbering and chain mapping may not align even when all files exist."],
+        question: "Which statement best matches the material you have?",
+        options: [
+          ["AlphaFold DB predictions, matching PDB structures, and public catalytic-residue annotations are available", "Enables a direct public pilot after identifier and numbering checks."],
+          ["Predictions and PDB structures exist, but active-site annotations are incomplete", "Adds an annotation-recovery step before comparison."],
+          ["Only predicted structures are currently available", "The task must become a workflow or material-discovery pilot rather than direct validation."]
+        ]
+      },
+      {
+        title: "Set the claim boundary",
+        message: "Having enough files does not mean the result can support every scientific claim. We now need to state what the computation may and may not conclude.",
+        why: "This prevents a local geometry comparison from being misread as proof of catalytic activity, substrate binding, or drug-discovery value.",
+        progress: 60, score: 52, remaining: "about 2 turns", goal: "Goal v0.3 — limit conclusions to a reviewable computational pilot.",
+        map: ["Purpose and public material are now explicit.", "The user may already know useful local thresholds or failure cases.", "How far should the first-round conclusion go?", "High confidence or similarity can still be mistaken for functional correctness."],
+        question: "What is the safest first-round conclusion?",
+        options: [
+          ["Report whether local geometry supports preliminary screening, including failure cases", "Matches the available computational evidence."],
+          ["Add docking and make a preliminary binding-ranking claim", "Requires additional controls and should be reported separately."],
+          ["Do not make a conclusion yet; only verify that the workflow runs", "Useful when identifiers or annotations remain unreliable."]
+        ]
+      },
+      {
+        title: "Define a completion rule",
+        message: "The purpose, material, and claim boundary are clear. One final decision is needed so Codex knows when the pilot is finished rather than expanding indefinitely.",
+        why: "A completion rule reduces cherry-picking and forces failures to be recorded instead of showing only successful examples.",
+        progress: 80, score: 71, remaining: "about 1 turn", goal: "Goal v0.4 — add sample coverage, failure logging, and an exit condition.",
+        map: ["The public pilot and claim boundary are defined.", "The user prefers a small, reviewable first pass.", "What sample size and success coverage count as complete?", "Successful-only reporting would create selection bias."],
+        question: "Which completion rule should Codex use?",
+        options: [
+          ["Evaluate 10 public targets and obtain reviewable outputs for at least 8, while logging every failure", "A small but auditable pilot with an explicit exit rule."],
+          ["Evaluate 30 targets stratified by enzyme family", "More informative, but larger than the first pilot."],
+          ["Run one smoke case only", "Valid for pipeline verification, not for a research-facing result."]
+        ]
+      },
+      {
+        title: "Freeze Context and hand off the Goal",
+        message: "The high-value Known Unknowns for the first pilot are closed. Further questions now require real execution, so the interview stops and the task is handed to Codex.",
+        why: "Research Quest should stop asking once more conversation no longer changes the executable plan. New Unknown Unknowns should come back from implementation notes and real failures.",
+        progress: 100, score: 86, remaining: "ready for handoff", goal: "Goal v1.0 — Frozen Context and executable Codex Goal are ready.",
+        map: ["Purpose, material, claim boundary, completion rule, and handoff format are explicit.", "Further preferences can be discovered during review of real outputs.", "No remaining conversational blocker for the first pilot.", "Real identifier, numbering, and structural edge cases must be discovered during execution."],
+        final: true
+      }
+    ];
+
+    const thread = document.querySelector('#thread');
+    const topMap = document.querySelector('#top-map');
+    const notice = document.querySelector('#notice');
+    const restart = document.querySelector('#restart');
+    let roundIndex = 0;
+    let answers = [];
+
+    function mapHtml(values, label = 'Known–Unknown cognition map') {
+      const names = ['Known Knowns','Unknown Knowns','Known Unknowns','Unknown Unknowns'];
+      const classes = ['kk','uk','ku','uu'];
+      return `<strong>${label}</strong><div class="map-grid">${values.map((value,index)=>`<section class="quadrant ${classes[index]}"><strong>${names[index]}</strong><p>${value}</p></section>`).join('')}</div>`;
+    }
+
+    function feedbackHtml(item) {
+      return `<div class="progress"><section class="metric">Goal progress<strong>${item.progress}%</strong><div class="track"><i style="width:${item.progress}%"></i></div></section><section class="metric">Cognition score<strong>${item.score}</strong></section><section class="metric">Estimated remaining<strong>${item.remaining}</strong></section><section class="metric">Current Goal change<strong>${item.goal}</strong></section></div>`;
+    }
+
+    function appendUser(text) {
+      const article = document.createElement('article');
+      article.className = 'user';
+      article.innerHTML = `<div class="bubble"></div><span class="avatar" aria-hidden="true">You</span>`;
+      article.querySelector('.bubble').textContent = text;
+      thread.append(article);
+    }
+
+    async function choose(text, button) {
+      button.disabled = true;
+      const original = button.innerHTML;
+      try { await navigator.clipboard.writeText(text); button.innerHTML = '<span>Copied</span><small>Adding this as your reply…</small>'; }
+      catch { button.innerHTML = '<span>Selected</span><small>Adding this as your reply…</small>'; }
+      setTimeout(() => {
+        button.innerHTML = original;
+        answers.push(text);
+        appendUser(text);
+        roundIndex += 1;
+        renderRound();
+      }, 600);
+    }
+
+    function renderRound() {
+      const item = rounds[roundIndex];
+      topMap.innerHTML = mapHtml(item.map);
+      const article = document.createElement('article');
+      article.className = 'assistant';
+      article.innerHTML = `<header><span class="avatar">RQ</span><div><strong>Research Quest</strong><small>Turn ${roundIndex + 1}/${rounds.length} · ${item.title}</small></div></header><p>${item.message}</p><aside class="why"><strong>Why this is the highest-value question now</strong><p>${item.why}</p></aside><div class="map">${mapHtml(item.map,`Turn ${roundIndex + 1} map`)}</div>${feedbackHtml(item)}`;
+      if (item.final) {
+        const context = `Frozen Context\n- Goal: assess whether public AlphaFold2 predictions support preliminary active-site geometry screening.\n- Inputs: public predictions, matching experimental structures, and catalytic-residue annotations.\n- Claim boundary: computational geometry pilot only; no catalytic-activity or binding claim.\n- Completion: 10 public targets, at least 8 reviewable outputs, all failures logged.\n- User decisions: ${answers.join(' | ')}\n- Open risks: identifier, chain, residue-numbering, and local-structure edge cases.`;
+        const goal = `Codex Goal\n1. Audit the public identifiers, chains, residue numbering, and annotation sources.\n2. Select 10 traceable public targets without using private data.\n3. Compare active-site-local geometry using one frozen protocol.\n4. Produce reviewable outputs for at least 8 targets and log every failure.\n5. Report only what the computation supports.\n6. Maintain implementation notes for new unknowns and deviations.\n7. Return results to the cognition map before expanding the task.`;
+        article.innerHTML += `<div class="handoff"><section><h3>Frozen Context</h3><pre>${context}</pre></section><section><h3>Codex Goal</h3><pre>${goal}</pre></section></div>`;
+        restart.hidden = false;
+        notice.textContent = 'The public case is complete. The handoff contains both Context and Goal; real execution should write new unknowns back into the map.';
+      } else {
+        const question = document.createElement('section');
+        question.className = 'question';
+        question.innerHTML = `<strong>${item.question}</strong><div class="options"></div>`;
+        const options = question.querySelector('.options');
+        item.options.forEach(([label,detail]) => {
+          const button = document.createElement('button');
+          button.type = 'button'; button.className = 'option';
+          button.innerHTML = `<span></span><small></small>`;
+          button.querySelector('span').textContent = label;
+          button.querySelector('small').textContent = detail;
+          button.addEventListener('click',()=>choose(label,button));
+          options.append(button);
+        });
+        const contextButton = document.createElement('button');
+        contextButton.type='button'; contextButton.className='option context';
+        contextButton.innerHTML='<span>I want to add Context or a task clue</span><small>Add material, constraints, preferences, deadlines, results, or a correction.</small>';
+        contextButton.addEventListener('click',()=>{
+          notice.textContent='In the installed Skill, this pauses the main question, classifies the new clue, checks evidence and conflicts, updates the cognition map, and rewrites the current question.';
+        });
+        options.append(contextButton);
+        const askButton = document.createElement('button');
+        askButton.type='button'; askButton.className='option question-option';
+        askButton.innerHTML='<span>Pause the quest — I have a question</span><small>The Skill answers from the documents first, saves the Q&A, and then replans the next question.</small>';
+        askButton.addEventListener('click',()=>{
+          notice.textContent='In the installed Skill, questions do not advance or reduce progress. The answer becomes a saved clue, not automatically Verified knowledge.';
+        });
+        options.append(askButton);
+        article.append(question);
+      }
+      thread.append(article);
+      article.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+
+    restart.addEventListener('click',()=>{
+      roundIndex=0; answers=[]; restart.hidden=true;
+      thread.innerHTML='<article class="user"><div class="bubble">I want to know whether AlphaFold2 predictions can support enzyme active-site analysis.</div><span class="avatar" aria-hidden="true">You</span></article>';
+      notice.textContent='The current decisions live in page memory. The final round shows the Context and Goal that would be handed to Codex.';
+      renderRound();
+      window.scrollTo({top:document.querySelector('#case').offsetTop - 20,behavior:'smooth'});
+    });
+
+    document.querySelectorAll('.mode button').forEach(button => button.addEventListener('click',()=>{
+      document.querySelectorAll('.mode button').forEach(item=>item.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(item=>item.classList.remove('active'));
+      button.classList.add('active'); document.querySelector(`#${button.dataset.panel}`).classList.add('active');
+    }));
+
+    document.querySelector('#generate').addEventListener('click',()=>{
+      const need=document.querySelector('#need').value.trim();
+      const deliverable=document.querySelector('#deliverable').value.trim();
+      const constraints=document.querySelector('#constraints').value.trim();
+      if(!need || !deliverable){ document.querySelector('#generated').className='generated active'; document.querySelector('#generated').innerHTML='<section><strong>Please provide the research need and final deliverable.</strong></section>'; return; }
+      const context=`Initial Research Quest Context\n- Research need: ${need}\n- Desired deliverable: ${deliverable}\n- Existing material or constraints: ${constraints || 'Not specified yet'}\n- Evidence state: user goals and preferences may be Confirmed; document facts remain Candidate until read.\n- Next step: read the supplied documents, build the four-quadrant cognition map, and ask one high-value question.`;
+      const prompt=`Use the Research Quest Skill for this task. Read my documents and current Context before asking anything. Build the Known–Unknown cognition map, explain why the current gap matters, and ask only one question that can change the final Goal. Let me answer, ask a question, or add a task clue at any time. Keep Candidate / Confirmed / Verified evidence distinct. When the conversational blockers are closed, generate a Frozen Context and an executable Goal for Codex or another agent.`;
+      const box=document.querySelector('#generated'); box.className='generated active';
+      box.innerHTML=`<section><h3>Starter Context</h3><pre></pre></section><section><h3>Starter prompt</h3><pre></pre></section>`;
+      box.children[0].querySelector('pre').textContent=context; box.children[1].querySelector('pre').textContent=prompt;
+    });
+
+    renderRound();
+  </script>
+</body>
+</html>

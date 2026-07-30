@@ -11,6 +11,7 @@
       body { margin: 0; }
       a { color: #075985; font-weight: 700; }
       a:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+      .language-switch { position: fixed; z-index: 10; top: .8rem; right: .8rem; padding: .55rem .85rem; border: 1px solid #b8c7d9; border-radius: 999px; color: #0f3d56; background: rgba(255,255,255,.96); box-shadow: 0 6px 18px rgba(15,23,42,.1); text-decoration: none; }
       .hero { padding: 4rem 1.25rem 3rem; color: #fff; background: linear-gradient(135deg, #172554, #1d4ed8 58%, #0e7490); }
       .hero__inner, main, footer { width: min(960px, calc(100% - 2rem)); margin: 0 auto; }
       .eyebrow { margin: 0; color: #bfdbfe; font-size: .94rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
@@ -65,10 +66,11 @@
       .cta a { color: #67e8f9; }
       .sources { font-size: 1rem; color: #475569; }
       footer { padding: 0 0 2.5rem; color: #64748b; font-size: .96rem; }
-      @media (max-width: 680px) { .hero { padding-top: 3rem; } .two-loop, .three-grid, .quadrants, .feedback-list, .handoff-grid { grid-template-columns: 1fr; } .bubble { max-width: 100%; } }
+      @media (max-width: 680px) { .language-switch { position: absolute; top: .55rem; right: .55rem; } .hero { padding-top: 4.5rem; } .two-loop, .three-grid, .quadrants, .feedback-list, .handoff-grid { grid-template-columns: 1fr; } .bubble { max-width: 100%; } }
     </style>
   </head>
   <body>
+    <a class="language-switch" href="./en/case-study-alphafold-casp14.html" lang="en" aria-label="Switch to the English article">English</a>
     <header class="hero">
       <div class="hero__inner">
         <p class="eyebrow">Research Quest · Cognition Map + grill-me-with-docs</p>
