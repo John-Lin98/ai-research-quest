@@ -39,8 +39,9 @@ test("每轮最后一个选项暂停闯关并生成固定关卡线索", async ({
     { question: "为什么要先规定 10 个目标和至少 8 个有效结果？", answer: "给 Codex 一个清楚的结束条件", choice: "检查 10 个公开目标，至少 8 个得到可复核结果" },
   ];
 
-  for (const item of rounds) {
-    const current = page.locator(".cq-turn-pair").last();
+  for (let index = 0; index < rounds.length; index += 1) {
+    const item = rounds[index];
+    const current = page.locator(".cq-turn-pair").nth(index);
     const clueButton = current.locator(".cq-option-row--clue .cq-option-select");
     await expect(clueButton).toContainText("暂不闯关，我还有一些问题");
     await clueButton.click();
@@ -49,6 +50,7 @@ test("每轮最后一个选项暂停闯关并生成固定关卡线索", async ({
     await expect(current.getByText("主目标进度暂停", { exact: true })).toBeVisible();
     await expect(current.getByText(/已保存到：/)).toBeVisible();
     await current.locator(".cq-option-select").filter({ hasText: item.choice }).click();
+    await expect(current.getByLabel("你的消息", { exact: true })).toContainText(item.choice);
   }
 
   const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
@@ -71,7 +73,7 @@ test("用户主动追加的上下文与任务线索会分类、暂停主线并�
 
   for (let index = 0; index < rounds.length; index += 1) {
     const item = rounds[index];
-    const current = page.locator(".cq-turn-pair").last();
+    const current = page.locator(".cq-turn-pair").nth(index);
     await current.locator(".cq-option-row--task .cq-option-select").click();
     await expect(current.getByText(item.clue, { exact: true })).toBeVisible();
     const taskCard = current.getByLabel(`第 ${index + 1} 回合上下文与任务线索`);
@@ -82,6 +84,7 @@ test("用户主动追加的上下文与任务线索会分类、暂停主线并�
     await expect(taskCard).toContainText(item.revised);
     await expect(taskCard).toContainText("这条线索如何改变认知地图");
     await current.locator(".cq-option-select").filter({ hasText: item.choice }).click();
+    await expect(current.getByLabel("你的消息", { exact: true })).toContainText(item.choice);
   }
 
   const frozen = page.getByLabel("Frozen Context 与 Codex Goal");
@@ -92,13 +95,26 @@ test("用户主动追加的上下文与任务线索会分类、暂停主线并�
   await expect(frozen).toContainText("新线索先分类、去重、检查冲突并判断 Candidate / Confirmed");
 });
 
-test("普通选择直接成为带头像的用户回复并提供复制兼容", async ({ page }) => {
+test("点击单一选项会显示复制反馈并生成自然用户气泡", async ({ page }) => {
   await page.goto("/");
   const first = page.locator(".cq-turn-pair").first();
-  await expect(first.getByRole("button", { name: /复制选项：先判断活性位点附近的结构是否可靠/ })).toBeVisible();
-  await first.locator(".cq-option-select").filter({ hasText: "先判断活性位点附近的结构是否可靠" }).click();
+  await expect(first.locator(".cq-option-copy")).toHaveCount(0);
+  const option = first.getByRole("button", { name: "选择：先判断活性位点附近的结构是否可靠" });
+  await option.click();
+  await expect(option).toContainText("已复制");
   await expect(first.getByText("先判断活性位点附近的结构是否可靠", { exact: true })).toBeVisible();
-  await expect(first.locator(".cq-avatar--user")).toBeVisible();
+  const userTurn = first.getByLabel("你的消息", { exact: true });
+  await expect(userTurn).toBeVisible();
+  await expect(userTurn.locator(".cq-user-bubble")).toContainText("先判断活性位点附近的结构是否可靠");
+  await expect(userTurn.locator(".cq-avatar--user")).toBeVisible();
+});
+
+test("聊天交互说明只在页面底部出现一次", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".cq-composer")).toHaveCount(0);
+  const note = page.getByText("点击选项会自动复制，并生成一条用户回复", { exact: false });
+  await expect(note).toHaveCount(1);
+  await expect(page.locator(".cq-footer").getByText("点击选项会自动复制", { exact: false })).toBeVisible();
 });
 
 test("自定义需求生成的启动材料包含自由追问与主动任务线索协议", async ({ page }, testInfo) => {
