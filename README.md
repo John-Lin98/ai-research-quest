@@ -194,4 +194,11 @@ node skills/research-quest/scripts/public-safety-scan.mjs --include-dist
 - English documentation index: [docs/README.md](docs/README.md)
 - Chinese documentation index: [docs/README.zh-CN.md](docs/README.zh-CN.md)
 
+## Contributing and maintenance
+
+- [Contributing guide](CONTRIBUTING.md)
+- [Maintainers and decision process](MAINTAINERS.md)
+- [Security policy](SECURITY.md)
+- [Privacy policy](PRIVACY.md)
+
 Research Quest is released under the [MIT License](LICENSE). Third-party software and licenses are listed in [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).
