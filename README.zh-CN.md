@@ -195,4 +195,11 @@ node skills/research-quest/scripts/public-safety-scan.mjs --include-dist
 - English demo-data guide：[docs/usage/demo-data.en.md](docs/usage/demo-data.en.md)
 - 双语文档索引：[docs/README.zh-CN.md](docs/README.zh-CN.md)
 
+## 贡献与维护
+
+- [贡献指南](CONTRIBUTING.md)
+- [维护者与决策流程](MAINTAINERS.md)
+- [安全策略](SECURITY.zh-CN.md)
+- [隐私说明](PRIVACY.zh-CN.md)
+
 项目采用 [MIT License](LICENSE)。第三方软件及其许可证见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES)。
