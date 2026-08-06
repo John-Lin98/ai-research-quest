@@ -4,23 +4,23 @@ This document describes the current maintainership and decision-making process f
 
 ## Current maintainers
 
-| Maintainer | GitHub                                       | Role                           | Responsibilities                                                                                                               |
-| ---------- | -------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Maintainer | GitHub | Role | Responsibilities |
+|---|---|---|---|
 | Lin Zefeng | [@John-Lin98](https://github.com/John-Lin98) | Creator and primary maintainer | Project direction, Skill contract, cognition-map mechanism, schema, releases, pull-request review, security and privacy review |
 
 ## Maintainer responsibilities
 
 The primary maintainer is responsible for:
 
-* defining the project's scope and public claim boundaries;
-* maintaining the canonical Research Quest Skill;
-* reviewing changes to the Known–Unknown cognition map and evidence-state rules;
-* maintaining the shared schema and public fixtures;
-* reviewing pull requests and triaging issues;
-* keeping English and Chinese public documentation consistent;
-* maintaining regression tests, privacy checks and security checks;
-* preparing and publishing versioned Skill releases;
-* making final merge, release and deprecation decisions.
+- defining the project's scope and public claim boundaries;
+- maintaining the canonical Research Quest Skill;
+- reviewing changes to the Known–Unknown cognition map and evidence-state rules;
+- maintaining the shared schema and public fixtures;
+- reviewing pull requests and triaging issues;
+- keeping English and Chinese public documentation consistent;
+- maintaining regression tests, privacy checks and security checks;
+- preparing and publishing versioned Skill releases;
+- making final merge, release and deprecation decisions.
 
 ## Decision-making process
 
@@ -38,12 +38,12 @@ Feedback and alternative proposals are welcome. Decisions should be documented i
 
 The primary maintainer currently has final authority to:
 
-* approve and merge pull requests;
-* publish GitHub releases;
-* modify the canonical Skill contract;
-* update the shared schema;
-* change public safety or privacy policies;
-* appoint additional maintainers.
+- approve and merge pull requests;
+- publish GitHub releases;
+- modify the canonical Skill contract;
+- update the shared schema;
+- change public safety or privacy policies;
+- appoint additional maintainers.
 
 Authorship alone does not grant merge or release authority.
 
@@ -51,7 +51,7 @@ Authorship alone does not grant merge or release authority.
 
 A release should:
 
-1. be based on an reviewed commit from the default branch;
+1. be based on a reviewed commit from the default branch;
 2. pass the repository's contract, browser, build and public-safety checks;
 3. include a versioned Skill archive;
 4. include a checksum for the archive;
@@ -62,11 +62,11 @@ A release should:
 
 Additional maintainers may be appointed after sustained contributions that demonstrate:
 
-* understanding of the Skill contract and evidence model;
-* reliable review and issue-triage work;
-* respect for privacy, security and public claim boundaries;
-* ability to maintain tests and documentation;
-* consistent participation over time.
+- understanding of the Skill contract and evidence model;
+- reliable review and issue-triage work;
+- respect for privacy, security and public claim boundaries;
+- ability to maintain tests and documentation;
+- consistent participation over time.
 
 Maintainer changes must be recorded in this file through a reviewed pull request.
 
