@@ -228,46 +228,64 @@ AI 自评只能作为 Candidate 证据。
 
 同因失败 2–3 次后禁止机械重试；必须先做 root-cause 或改变变量。
 
-## 9. Self-Improvement
+## 9. Self-Improvement｜两级进化
 
 详细协议见 [self-improvement-protocol.md](self-improvement-protocol.md)。
 
-默认私有账本：
+### Level 1｜Personal Evolution
+
+默认私有路径：
 
 ```text
 <project>/.research-quest/experience-ledger.jsonl
+<project>/.research-quest/local-policy.md
 ```
 
-只有脱敏摘要才允许进入公开仓库。
+目标是优先让 Skill 对当前用户越来越好用。个人偏好、项目习惯和 do-not-repeat 可以快速进入 local policy，但不得自动写入公共 Skill。
 
-推荐事件：
+### Level 2｜Global Evolution
 
-```text
-user_correction
-repeated_question
-goal_drift
-excessive_scaffolding
-bad_grill
-duplicate_search
-repeated_failure
-unverified_claim
-tool_or_workflow_failure
-successful_pattern
-user_override
-```
-
-Meta-review：
+Global Evolution 只吸收跨多个独立用户重复出现的共同痛点。
 
 ```text
-Observe
-→ cluster Experience Events
-→ 1–3 mutations
-→ replay / held-out eval
+opt-in sanitized signals
+→ pattern_key
+→ distinct-source aggregation
+→ common-pain gate
+→ Champion–Challenger
+→ risk gate
 → PR
-→ promote / rollback
+→ auto-promote mutable / human-approve protected
 ```
 
-默认 **Propose**，不直接修改主分支。
+单一用户重复很多次不能等价为“很多用户都需要”。
+
+默认不开启隐式遥测；全局反馈必须是明确 opt-in 的脱敏 bundle。
+
+### 分级自治
+
+- Mutable：Prompt、Grill、Search policy、Memory 格式、tool routing、workflow、非敏感 UI；通过跨用户证据 + eval 后可自动 merge/release；
+- Protected：隐私、安全、证据纪律、外部验证、evaluator integrity、telemetry、Promotion Gate、user agency；必须人工审批。
+
+### Personal Champion 真值优先
+
+Personal Challenger 只能在以下 Hard Gates 全部 PASS 后比较个性化收益：
+
+- Truth；
+- Task Success；
+- Evidence Integrity；
+- Independent Judgment；
+- Protected Layer。
+
+```text
+PROMOTE
+=
+all hard gates PASS
+AND
+personal utility improves
+```
+
+禁止用“更符合用户偏好 / 更让用户满意”补偿正确性、证据质量或必要反驳能力的下降。
 
 ## 10. Context Checkpoint
 

@@ -16,7 +16,8 @@ if (!eventFile) {
 }
 
 const event=JSON.parse(fs.readFileSync(eventFile,"utf8"));
-const required=["id","event_type","symptom","evidence_summary","impact","root_cause_candidate","lesson","do_not_repeat","proposed_change_scope","privacy_status"];
+if(!event.pattern_key) event.pattern_key=`coarse:${event.event_type}`;
+const required=["id","event_type","pattern_key","symptom","evidence_summary","impact","root_cause_candidate","lesson","do_not_repeat","proposed_change_scope","privacy_status"];
 for(const key of required){
   if(!(key in event)) throw new Error(`missing required field: ${key}`);
 }

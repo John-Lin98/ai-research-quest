@@ -15,7 +15,9 @@
       "proposed_change_scope": [
         "skills/research-quest/SKILL.md"
       ],
-      "privacy_status": "sanitized"
+      "privacy_status": "sanitized",
+      "pattern_key": "ui.dashboard.over_scaffolded",
+      "policy_kind": "behavior"
     },
     {
       "id": "evt-002",
@@ -30,7 +32,9 @@
         "skills/research-quest/SKILL.md",
         "skills/research-quest/references/rules-and-templates.md"
       ],
-      "privacy_status": "sanitized"
+      "privacy_status": "sanitized",
+      "pattern_key": "grill.low_value.choice_over_blind_spot",
+      "policy_kind": "behavior"
     },
     {
       "id": "evt-003",
@@ -45,7 +49,9 @@
         "skills/research-quest/SKILL.md",
         "skills/research-quest/references/self-improvement-protocol.md"
       ],
-      "privacy_status": "sanitized"
+      "privacy_status": "sanitized",
+      "pattern_key": "memory.failed_routes.discarded",
+      "policy_kind": "behavior"
     }
   ],
   "candidate_mutations": [
@@ -69,7 +75,19 @@
         "failure-memory",
         "user-agency"
       ],
-      "promotion_status": "candidate"
+      "promotion_status": "candidate",
+      "evolution_scope": "personal",
+      "risk_class": "mutable",
+      "cross_user_support": 0,
+      "objective_hard_gates": [
+        "truth",
+        "task_success",
+        "evidence_integrity",
+        "independent_judgment",
+        "protected_layer"
+      ],
+      "personal_fit_can_override_hard_gates": false,
+      "promotion_logic": "all_hard_gates_pass_and_personal_utility_improves"
     }
   ]
 }

@@ -18,7 +18,13 @@ const events=fs.readFileSync(ledger,"utf8").split(/\r?\n/).filter(Boolean).map(J
 const lessons=[];
 const bans=[];
 const successes=[];
+let skippedFactual=0;
 for(const e of events){
+  const policyKind=e.policy_kind || "behavior";
+  if(policyKind==="factual"){
+    skippedFactual++;
+    continue;
+  }
   if(e.lesson && !lessons.includes(e.lesson)) lessons.push(e.lesson);
   if(e.do_not_repeat && !bans.includes(e.do_not_repeat)) bans.push(e.do_not_repeat);
   if(e.event_type==="successful_pattern" && e.lesson && !successes.includes(e.lesson)) successes.push(e.lesson);
@@ -37,7 +43,7 @@ const md=[
   "## Successful patterns to prefer",
   ...(successes.length ? successes.map(x=>`- ${x}`) : ["- None recorded."]),
   "",
-  `Generated from ${events.length} experience event(s).`,
+  `Generated from ${events.length} experience event(s); skipped factual-state events: ${skippedFactual}.`,
   ""
 ].join("\n");
 fs.mkdirSync(path.dirname(output),{recursive:true});

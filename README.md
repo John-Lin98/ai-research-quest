@@ -202,3 +202,21 @@ node skills/research-quest/scripts/public-safety-scan.mjs --include-dist
 - [Privacy policy](PRIVACY.md)
 
 Research Quest is released under the [MIT License](LICENSE). Third-party software and licenses are listed in [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).
+
+
+This makes Research Quest a controlled RSI Skill that can accumulate experience, avoid repeating mistakes, and improve over time rather than staying a one-shot prompt or workflow.
+
+### Two-level evolution: personalize first, generalize second
+
+Research Quest v2.1 separates self-improvement into two levels:
+
+- **Personal Evolution**: a local Experience Ledger and local-policy.md can quickly learn one user's preferences, repeated failures, do-not-repeat rules, and successful working patterns;
+- **Global Evolution**: only pain points repeated across multiple independent users with the same explicit pattern_key may become candidates for the public Skill.
+
+Implicit telemetry is off by default. Personal data stays local; sanitized global feedback is exported only after explicit opt-in.
+
+Autonomy is risk-tiered:
+- the **Mutable Layer** may auto-promote after cross-user evidence and replay evaluation;
+- the **Protected Layer** — privacy, safety, evidence discipline, evaluator integrity, telemetry scope, and user agency — always requires human approval.
+
+Personal Champion promotion also follows a truth-first constitution: personalization may improve *how* the system helps a user, but it may not trade away truth, task success, evidence integrity, independent judgment, or protected safeguards.

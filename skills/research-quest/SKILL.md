@@ -216,12 +216,54 @@ Observe
 → Promote or rollback
 ```
 
-Research Quest 采用**双速 RSI**：
+Research Quest 采用**两级、双速 RSI**：
 
-- **Fast Loop｜本地适应**：Experience Ledger 可生成 `.research-quest/local-policy.md`，下一次 Quest 立即读取，用于减少重复提问、重复失败和无效脚手架；
-- **Slow Loop｜全局进化**：跨会话重复问题进入 mutation → replay/eval → PR → release。
+- **Level 1｜Personal Evolution**：Experience Ledger 生成 `.research-quest/local-policy.md`，优先让 Skill 对当前用户越来越好用；个人偏好可以快速适应，不要求对所有用户通用；
+- **Level 2｜Global Evolution**：只有跨多个独立用户重复出现的共同痛点，才进入公共 Skill mutation → Champion–Challenger replay/eval → PR → release。
 
-默认全局是 **Propose 模式**：允许自动提出修改、更新候选分支、运行 eval 和创建 PR，但**不得绕过测试直接修改主分支**。
+Personal 规则不得因为单个用户高频出现就自动升级成 Global 规则。
+
+全局升级采用已批准的**分级自治模式 B**：
+
+- **Mutable Layer｜低风险**：Prompt、Grill 启发式、Search policy、Memory 格式、tool routing、workflow efficiency、非敏感 UI 等；只有跨用户证据 + Champion–Challenger + required checks 全部通过后，才允许自动 merge + release；
+- **Protected Layer｜高风险**：隐私、安全、证据纪律、外部事实验证、evaluator integrity、telemetry/数据收集、Promotion Gate、用户 agency；可以自动提出和测试，但必须人工批准后才能 merge。
+
+系统不得自行降低 Protected Layer。
+
+### Personal Champion Constitution｜真值优先
+
+Personal Evolution 可以高度适配当前用户，但个性化只能优化**怎样帮助用户**，不能重新定义**什么是真、什么算完成、什么证据足够**。
+
+任何 Personal Challenger 晋升前必须满足硬门：
+
+- **Truth**：事实正确性不得下降；
+- **Task Success**：核心任务完成能力不得下降；
+- **Evidence Integrity**：证据标准、验证边界和不确定性表达不得下降；
+- **Independent Judgment**：不能因为更了解用户而减少必要的反例、质疑和纠错；
+- **Protected Layer**：安全、隐私、evaluator integrity 和 user agency 不得被削弱。
+
+Personal Fit、表达风格、少问废话、工具偏好和效率只能在这些硬门全部通过后作为优化目标。
+
+```text
+Promote Personal Challenger
+=
+Objective Gates PASS
+AND
+Personal Utility improves
+```
+
+禁止通过“更让用户满意”补偿客观正确性、证据质量或独立判断能力的下降。
+
+### Personal Memory Write Gate
+
+Personalization 不能把用户一句未核验的陈述直接固化成长期事实或工作规则。
+
+- `local-policy.md` 只保存行为偏好、协作经验、do-not-repeat 和已验证有效模式；
+- 用户/外部世界的事实性陈述必须保留**来源、归属、范围和证据状态**，进入 Context/Memory，而不是行为 policy；
+- 未核验事实保持 Candidate，不得因重复出现而升级；
+- 发生冲突时优先保留多个带来源版本，直到验证或用户明确纠正自己的偏好/约束。
+
+这样避免“迎合 → 写入 memory → 后续持续复用”的持久化错误。
 
 只有在维护者显式允许 Promote，且满足以下条件时，才允许自动合并/发布：
 
@@ -232,6 +274,8 @@ Research Quest 采用**双速 RSI**：
 - 变更可解释、可回滚。
 
 每条重要摩擦只保存会改变未来决策的**脱敏摘要**，不要把完整私有会话、未公开科研结果或敏感路径写入公共仓库。
+
+Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 opt-in 后，才允许把脱敏的 `pattern_key` 痛点信号导出用于跨用户聚合。
 
 详细事件格式、Mutation Contract、Promotion Gate 与回滚规则见：
 [references/self-improvement-protocol.md](references/self-improvement-protocol.md)。

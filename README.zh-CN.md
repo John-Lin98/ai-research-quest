@@ -41,6 +41,19 @@ Observe
 
 这使 Research Quest 从“一次性提示词/流程”变成一个可以积累经验、避免重复犯错并持续改进的受控 RSI Skill。
 
+### 两级进化：先服务个人，再升级全局
+
+Research Quest v2.1 将自我改进拆成两级：
+
+- **Personal Evolution**：本地 Experience Ledger → local-policy.md，允许快速学习单个用户的偏好、失败经验和有效工作方式；
+- **Global Evolution**：只有多个独立用户出现同一个明确 `pattern_key` 痛点后，才进入公共 Skill 的 Champion–Challenger 与 Promotion Gate。
+
+默认不开启隐式遥测。Personal 数据留在本地；只有显式 opt-in 后才导出脱敏 global feedback bundle。
+
+同时采用分级自治：
+- **Mutable Layer** 通过跨用户证据和回放评测后可自动晋升；
+- **Protected Layer**（隐私、安全、证据纪律、evaluator integrity、telemetry、用户控制权）必须人工审批。
+
 ## 在线入口
 
 - [中文聊天式 Demo](https://john-lin98.github.io/ai-research-quest/)
