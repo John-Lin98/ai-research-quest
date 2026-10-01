@@ -230,6 +230,30 @@ Personal 规则不得因为单个用户高频出现就自动升级成 Global 规
 
 系统不得自行降低 Protected Layer。
 
+### Personal Champion Constitution｜真值优先
+
+Personal Evolution 可以高度适配当前用户，但个性化只能优化**怎样帮助用户**，不能重新定义**什么是真、什么算完成、什么证据足够**。
+
+任何 Personal Challenger 晋升前必须满足硬门：
+
+- **Truth**：事实正确性不得下降；
+- **Task Success**：核心任务完成能力不得下降；
+- **Evidence Integrity**：证据标准、验证边界和不确定性表达不得下降；
+- **Independent Judgment**：不能因为更了解用户而减少必要的反例、质疑和纠错；
+- **Protected Layer**：安全、隐私、evaluator integrity 和 user agency 不得被削弱。
+
+Personal Fit、表达风格、少问废话、工具偏好和效率只能在这些硬门全部通过后作为优化目标。
+
+```text
+Promote Personal Challenger
+=
+Objective Gates PASS
+AND
+Personal Utility improves
+```
+
+禁止通过“更让用户满意”补偿客观正确性、证据质量或独立判断能力的下降。
+
 只有在维护者显式允许 Promote，且满足以下条件时，才允许自动合并/发布：
 
 - 必需测试和公开安全扫描全部通过；
