@@ -216,12 +216,19 @@ Observe
 → Promote or rollback
 ```
 
-Research Quest 采用**双速 RSI**：
+Research Quest 采用**两级、双速 RSI**：
 
-- **Fast Loop｜本地适应**：Experience Ledger 可生成 `.research-quest/local-policy.md`，下一次 Quest 立即读取，用于减少重复提问、重复失败和无效脚手架；
-- **Slow Loop｜全局进化**：跨会话重复问题进入 mutation → replay/eval → PR → release。
+- **Level 1｜Personal Evolution**：Experience Ledger 生成 `.research-quest/local-policy.md`，优先让 Skill 对当前用户越来越好用；个人偏好可以快速适应，不要求对所有用户通用；
+- **Level 2｜Global Evolution**：只有跨多个独立用户重复出现的共同痛点，才进入公共 Skill mutation → Champion–Challenger replay/eval → PR → release。
 
-默认全局是 **Propose 模式**：允许自动提出修改、更新候选分支、运行 eval 和创建 PR，但**不得绕过测试直接修改主分支**。
+Personal 规则不得因为单个用户高频出现就自动升级成 Global 规则。
+
+全局升级采用已批准的**分级自治模式 B**：
+
+- **Mutable Layer｜低风险**：Prompt、Grill 启发式、Search policy、Memory 格式、tool routing、workflow efficiency、非敏感 UI 等；只有跨用户证据 + Champion–Challenger + required checks 全部通过后，才允许自动 merge + release；
+- **Protected Layer｜高风险**：隐私、安全、证据纪律、外部事实验证、evaluator integrity、telemetry/数据收集、Promotion Gate、用户 agency；可以自动提出和测试，但必须人工批准后才能 merge。
+
+系统不得自行降低 Protected Layer。
 
 只有在维护者显式允许 Promote，且满足以下条件时，才允许自动合并/发布：
 
@@ -232,6 +239,8 @@ Research Quest 采用**双速 RSI**：
 - 变更可解释、可回滚。
 
 每条重要摩擦只保存会改变未来决策的**脱敏摘要**，不要把完整私有会话、未公开科研结果或敏感路径写入公共仓库。
+
+Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 opt-in 后，才允许把脱敏的 `pattern_key` 痛点信号导出用于跨用户聚合。
 
 详细事件格式、Mutation Contract、Promotion Gate 与回滚规则见：
 [references/self-improvement-protocol.md](references/self-improvement-protocol.md)。
