@@ -12,7 +12,7 @@ const data = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 const allowedModes = new Set(["observe","propose","promote"]);
 const allowedPrivacy = new Set(["sanitized","private-local-only"]);
 const requiredEvent = [
-  "id","event_type","symptom","evidence_summary","impact",
+  "id","event_type","pattern_key","symptom","evidence_summary","impact",
   "root_cause_candidate","lesson","do_not_repeat",
   "proposed_change_scope","privacy_status"
 ];
@@ -59,6 +59,9 @@ for (const mut of data.candidate_mutations) {
   if (!Array.isArray(mut.regression_risks) || mut.regression_risks.length < 1) {
     fail(`mutation ${mut.id} must declare regression risks`);
   }
+  if (!["personal","global"].includes(mut.evolution_scope)) fail(`invalid evolution_scope for ${mut.id}`);
+  if (!["mutable","protected"].includes(mut.risk_class)) fail(`invalid risk_class for ${mut.id}`);
+  if (mut.evolution_scope==="global" && Number(mut.cross_user_support||0) < 2) fail(`global mutation ${mut.id} needs cross-user support`);
   if (!["candidate","accepted","rejected","rolled-back"].includes(mut.promotion_status)) {
     fail(`invalid promotion_status for ${mut.id}`);
   }
@@ -82,3 +85,32 @@ const policy=fs.readFileSync(policyPath,"utf8");
 if(!policy.includes("Do not repeat") || !policy.includes(data.events[0].do_not_repeat)) fail("local adaptive policy smoke test failed");
 fs.rmSync(tmp,{recursive:true,force:true});
 console.log("experience ledger + local policy smoke test OK");
+
+const globalDir=path.join(tmp,"global");
+fs.mkdirSync(globalDir,{recursive:true});
+for(const source of ["u1","u2","u3"]){
+  const sourceFile=path.join(tmp,`source-${source}.txt`);
+  fs.writeFileSync(sourceFile,source+"\n");
+  const bundlePath=path.join(globalDir,`${source}.json`);
+  execFileSync(process.execPath,[
+    path.resolve(here,"export-global-feedback.mjs"),
+    "--ledger",ledgerPath,
+    "--output",bundlePath,
+    "--source-id-file",sourceFile
+  ],{stdio:"pipe"});
+}
+const reportPath=path.join(tmp,"global-report.json");
+execFileSync(process.execPath,[
+  path.resolve(here,"aggregate-global-feedback.mjs"),
+  "--dir",globalDir,
+  "--min-sources","3",
+  "--output",reportPath
+],{stdio:"pipe"});
+const report=JSON.parse(fs.readFileSync(reportPath,"utf8"));
+if(report.candidate_count<1) fail("global common-pain gate smoke test failed");
+const expectedPattern=data.events[0].pattern_key;
+const pattern=report.patterns.find(x=>x.pattern_key===expectedPattern);
+if(!pattern || pattern.distinct_sources!==3 || !pattern.global_candidate) fail("global distinct-source aggregation failed");
+console.log("personal/global evolution smoke test OK");
+
+fs.rmSync(tmp,{recursive:true,force:true});
