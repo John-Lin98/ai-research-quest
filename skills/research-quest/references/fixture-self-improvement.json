@@ -16,7 +16,8 @@
         "skills/research-quest/SKILL.md"
       ],
       "privacy_status": "sanitized",
-      "pattern_key": "ui.dashboard.over_scaffolded"
+      "pattern_key": "ui.dashboard.over_scaffolded",
+      "policy_kind": "behavior"
     },
     {
       "id": "evt-002",
@@ -32,7 +33,8 @@
         "skills/research-quest/references/rules-and-templates.md"
       ],
       "privacy_status": "sanitized",
-      "pattern_key": "grill.low_value.choice_over_blind_spot"
+      "pattern_key": "grill.low_value.choice_over_blind_spot",
+      "policy_kind": "behavior"
     },
     {
       "id": "evt-003",
@@ -48,7 +50,8 @@
         "skills/research-quest/references/self-improvement-protocol.md"
       ],
       "privacy_status": "sanitized",
-      "pattern_key": "memory.failed_routes.discarded"
+      "pattern_key": "memory.failed_routes.discarded",
+      "policy_kind": "behavior"
     }
   ],
   "candidate_mutations": [
