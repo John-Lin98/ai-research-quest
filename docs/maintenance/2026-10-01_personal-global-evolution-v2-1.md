@@ -47,3 +47,30 @@
 - 比较目标指标、回归、成本和安全；
 - 输出机器可读 promotion report；
 - 只允许 Mutable + Global + Promotion PASS 进入自动合并候选。
+
+## 已批准的 Personal Champion Constitution
+
+用户已批准：
+
+> Personalization 可以优化“怎样帮助用户”，但不能改变“什么是真”。
+
+任何 Personal Challenger 晋升必须满足五个 Objective Hard Gates：
+
+1. Truth；
+2. Task Success；
+3. Evidence Integrity；
+4. Independent Judgment；
+5. Protected Layer。
+
+只有上述硬门全部通过后，才允许以 Personal Utility（用户适配、减少无效问题、效率、工具路由、汇报方式等）作为优化目标。
+
+该规则已同步到：
+- SKILL.md；
+- self-improvement-protocol.md；
+- rules-and-templates.md；
+- fixture-self-improvement.json；
+- validate-self-improvement.mjs。
+
+## 发布准备
+
+已新增 release-v2-1.yml。合并 PR #18 后，完整发布验证通过时自动创建 v2.1.0 Release。
