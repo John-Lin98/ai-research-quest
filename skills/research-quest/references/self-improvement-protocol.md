@@ -317,6 +317,26 @@ Personal Challenger → REJECT / ROLLBACK
 
 不允许用更高的满意度、风格匹配或更少摩擦抵消。
 
+### Risk-Tiered Non-Inferiority｜已批准方案 C
+
+Hard Gates 的比较方式按风险分级：
+
+| 风险 | 典型对象 | 晋升规则 |
+| --- | --- | --- |
+| Critical / Protected | privacy, safety, evidence integrity, evaluator integrity, memory write gate, user agency | zero tolerance |
+| High | 科研事实、研究 claim、independent judgment | 明确的小 non-inferiority margin + held-out evidence |
+| Medium | 一般 task success、workflow、tool routing | 任务级显式 margin + held-out evidence |
+| Low | formatting、verbosity、noncritical UX | Objective Gates 通过后再优化 utility |
+
+约束：
+- margin 必须预先声明并记录 `margin_source`；
+- 未声明 margin → 0；
+- Challenger 不得修改自己的 promotion margin；
+- evidence 不足 → `insufficient_evidence`，不能自动晋升；
+- Protected 指标不允许用统计波动作为放宽理由。
+
+具体数值阈值需要基于真实 replay 分布单独审批，不在基础 Skill 中拍脑袋写死。
+
 ### Personal Utility Optimization
 
 Hard Gates 全部 PASS 后，再优化：
