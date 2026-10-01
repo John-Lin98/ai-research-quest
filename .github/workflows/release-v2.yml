@@ -84,8 +84,8 @@ jobs:
           - Grill 优先攻击真正会改变决策的盲点、反例、失败模式和路线取舍；
           - 新增 Search Mode：不同假设并行、novelty、预算漏斗和剪枝；
           - 新增 Experience Memory：记录失败根因、do-not-repeat 和下一轮搜索启示；
-          - 新增受控 Self-Improvement：Observe → Diagnose → Propose → Replay/Eval → PR → Promote/Rollback；
-          - 提供 Experience Ledger 记录/聚类工具与离线自我改进验证器；
+          - 新增双速受控 Self-Improvement：Fast Loop 本地 Experience Ledger → local-policy.md；Slow Loop Observe → Diagnose → Propose → Replay/Eval → PR → Promote/Rollback；
+          - 提供 Experience Ledger 记录/聚类工具、本地策略生成器与离线自我改进验证器；
           - 默认只自动提出候选修改和 PR，不允许未经评测直接修改主分支；
           - 针对 GPT-6 Sol / Astra 等强推理模型减少过度脚手架，采用渐进披露和按需读取。
 
