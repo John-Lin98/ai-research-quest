@@ -37,6 +37,7 @@ Get-FileHash -Algorithm SHA256 research-quest-skill-bundle.zip
 
 ```powershell
 node .\skills\research-quest\scripts\generate-test-sessions.mjs --check-only
+node .\skills\research-quest\scripts\validate-self-improvement.mjs
 npx --yes --package ajv-cli@5 --package ajv-formats ajv validate `
   --spec=draft2020 --strict=true --allow-union-types -c ajv-formats `
   -s shared/game-state.schema.json `
@@ -44,3 +45,13 @@ npx --yes --package ajv-cli@5 --package ajv-formats ajv validate `
 ```
 
 三份 fixture 必须全部通过；`review_status` 必须为 `approved`，且 `real_research_results_included` 必须为 `false`。
+
+
+## v2.0 额外发布门
+
+- `validate-self-improvement.mjs` 必须通过；
+- Experience Ledger smoke test 必须通过；
+- `public-safety-scan.mjs --include-dist --require-approved` 必须通过；
+- `SKILL.md` 必须包含 Search Mode、Experience Memory 和 Self-Improvement；
+- 本地私有账本目录 `.research-quest/` 必须保持在 `.gitignore`；
+- 自动升级默认不得绕过 PR / eval 直接写入主分支。
