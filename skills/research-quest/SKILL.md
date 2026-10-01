@@ -37,9 +37,12 @@ Research Quest 同时支持三种循环：
 1. 当前用户指令；
 2. 当前会话与已提供文件；
 3. 已有 Context / Goal / handoff；
-4. 需要时再读取外部资料或真实执行结果。
+4. 若存在，读取项目私有 `.research-quest/local-policy.md` 作为**本地适应层**；
+5. 需要时再读取外部资料或真实执行结果。
 
 不要为了“完整”强制读完全部仓库或全部历史。材料已经回答的问题不再问。
+
+本地适应层只能补充“少犯什么错、偏好什么有效模式”，不能覆盖用户最新指令、真实执行状态或 Protected Layer。
 
 开场只需给出：
 - 当前 Goal；
@@ -213,7 +216,12 @@ Observe
 → Promote or rollback
 ```
 
-默认是 **Propose 模式**：允许自动提出修改、更新候选分支、运行 eval 和创建 PR，但**不得绕过测试直接修改主分支**。
+Research Quest 采用**双速 RSI**：
+
+- **Fast Loop｜本地适应**：Experience Ledger 可生成 `.research-quest/local-policy.md`，下一次 Quest 立即读取，用于减少重复提问、重复失败和无效脚手架；
+- **Slow Loop｜全局进化**：跨会话重复问题进入 mutation → replay/eval → PR → release。
+
+默认全局是 **Propose 模式**：允许自动提出修改、更新候选分支、运行 eval 和创建 PR，但**不得绕过测试直接修改主分支**。
 
 只有在维护者显式允许 Promote，且满足以下条件时，才允许自动合并/发布：
 
