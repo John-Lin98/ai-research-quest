@@ -4,10 +4,11 @@
 
 让 Research Quest 随真实使用不断改善，同时避免“AI 自己觉得自己更好”或把用户私有内容直接写回公共仓库。
 
-默认采用受控 RSI：
+默认采用**双速受控 RSI**：
 
 ```text
-Observe → Diagnose → Propose → Replay/Eval → PR → Promote/Rollback
+Fast Loop: Observe → Local Experience Ledger → local-policy.md → 下一次立即适应
+Slow Loop: Observe → Diagnose → Propose → Replay/Eval → PR → Promote/Rollback
 ```
 
 ## 1. Experience Event
@@ -53,7 +54,35 @@ privacy_status
 - 用户上传文件的原文；
 - 可反推出敏感项目的信息。
 
-## 2. Meta-review 触发
+## 2. Fast Loop｜本地快速适应
+
+默认私有路径：
+
+```text
+<project>/.research-quest/experience-ledger.jsonl
+<project>/.research-quest/local-policy.md
+```
+
+有文件写入能力时：
+1. 关键纠错/失败后记录 Experience Event；
+2. 运行或等价执行 `summarize-experience.mjs`；
+3. 用 `build-local-policy.mjs` 生成本地策略；
+4. 下一次 Quest 启动时读取本地策略。
+
+本地策略可以记录：
+- 不要重复的错误；
+- 已验证有效的交互模式；
+- 项目特定偏好；
+- 已确认的搜索/验证习惯。
+
+它不得覆盖：
+- 用户最新指令；
+- Protected Layer；
+- 外部事实的验证要求。
+
+`.research-quest/` 应保持在 `.gitignore` 中。
+
+## 3. Slow Loop｜Meta-review 触发
 
 满足任一条件即可触发：
 
@@ -65,7 +94,7 @@ privacy_status
 
 Meta-review 输出不超过 3 个候选修改，优先高影响、低风险改动。
 
-## 3. Mutation Contract
+## 4. Mutation Contract
 
 每个候选修改必须写清：
 
@@ -91,7 +120,7 @@ Protected，不得由普通 Self-Improvement 自动放宽：
 - 用户最新指令优先；
 - 公开仓库不得泄露私有项目内容。
 
-## 4. Eval Gate
+## 5. Eval Gate
 
 至少检查六类行为：
 
@@ -112,7 +141,7 @@ Protected，不得由普通 Self-Improvement 自动放宽：
 - 每单位成本获得的新有效证据；
 - held-out replay 成功率。
 
-## 5. Promotion Gate
+## 6. Promotion Gate
 
 默认三档：
 
@@ -139,7 +168,7 @@ Protected，不得由普通 Self-Improvement 自动放宽：
 
 才允许自动合并/发布。
 
-## 6. Rollback
+## 7. Rollback
 
 以下任一情况立即回滚候选升级：
 
@@ -149,7 +178,7 @@ Protected，不得由普通 Self-Improvement 自动放宽：
 - held-out replay 出现关键退化；
 - 自动化无法解释为什么新版更好。
 
-## 7. Quest 内反馈闭环
+## 8. Quest 内反馈闭环
 
 普通 Quest 结束或重大纠错发生时，Skill 可内部生成一条脱敏 Experience Event。
 
@@ -159,7 +188,7 @@ Protected，不得由普通 Self-Improvement 自动放宽：
 - 准备升级 Skill；
 才展示。
 
-## 8. 推荐维护流程
+## 9. 推荐维护流程
 
 ```text
 真实使用
