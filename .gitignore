@@ -3,3 +3,6 @@ app/dist/
 app/test-results/
 app/playwright-report/
 npm-debug.log*
+
+# Local/private Research Quest experience ledger
+.research-quest/

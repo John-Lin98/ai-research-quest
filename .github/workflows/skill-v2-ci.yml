@@ -1,0 +1,39 @@
+name: Research Quest v2 CI
+
+on:
+  pull_request:
+    paths:
+      - "skills/research-quest/**"
+      - "shared/game-state.schema.json"
+      - "app/**"
+      - ".github/workflows/skill-v2-ci.yml"
+  push:
+    branches:
+      - "feat/gpt6-sol-research-quest-v2"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+
+      - name: 安装依赖
+        run: npm ci --prefix app
+
+      - name: 运行合同与自我改进测试
+        run: npm run test:contract --prefix app
+
+      - name: 构建 Demo
+        run: npm run build --prefix app
+
+      - name: 公开安全扫描
+        run: node skills/research-quest/scripts/public-safety-scan.mjs --include-dist --require-approved

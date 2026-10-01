@@ -1,4 +1,4 @@
 interface:
   display_name: "Research Quest"
-  short_description: "Turn sanitized context into a verified quest and Codex Goal"
-  default_prompt: "Use $research-quest to turn my sanitized project materials into a seven-level cognition map and an executable Codex Goal."
+  short_description: "Map unknowns, grill blind spots, verify evidence, and evolve an executable goal"
+  default_prompt: "Use $research-quest to recover my real context, identify the highest-value unknown, grill it one step at a time, verify important claims, remember failed routes, and forge an executable Goal when further questions no longer change the first action."

@@ -4,7 +4,7 @@
 
 Research Quest 是一个**改造人与 AI 科研聊天方式的 Skill**。它不要求用户学习一款独立游戏，而是让 AI 先读项目文档和已有 Context，再通过 Known–Unknown 四象限找到最关键的认知空缺，每轮默认只问一个真正影响最终结果的问题。
 
-> **核心逻辑：认知地图 + grill-me-with-docs。** 文档先回答能回答的问题，AI 不重复追问；四象限决定本轮为什么问、问多深、何时停止，以及 Goal 应怎样变化。
+> **v2 核心逻辑：认知地图 + 高价值 Grill + 搜索/验证/记忆/进化。** 文档先回答能回答的问题，AI 不重复追问；需要创造性突破时进入 Search Mode，并把成功与失败转化为下一轮搜索策略。
 
 ```text
 真实科研需求 + 文档 + 历史讨论
@@ -17,7 +17,29 @@ Research Quest 是一个**改造人与 AI 科研聊天方式的 Skill**。它不
 → 重写当前问题
 → Frozen Context
 → Codex / Agent 执行、验证和交付
+→ Experience Memory
+→ Meta-review / Self-Improvement
 ```
+
+## v2.0：Research Quest 会随着使用受控进化
+
+v2 增加了 **Self-Improvement Controller**。它不会把完整私有聊天上传到仓库，而是在有文件/项目权限时记录脱敏的高价值 Experience Event，例如：重复提问、低价值 Grill、Goal 漂移、重复失败、未经验证的事实和明显有效的新模式。
+
+默认流程：
+
+```text
+Observe
+→ Experience Ledger
+→ Diagnose / cluster
+→ Candidate mutation
+→ Replay / held-out eval
+→ PR
+→ Promote or rollback
+```
+
+默认是 **Propose 模式**：可以自动发现问题、提出 Skill 修改、运行评测并生成 PR，但不能绕过测试直接修改主分支。只有通过合同测试、公开安全扫描、证据纪律和 held-out/replay 检查后，才允许升级默认行为。
+
+这使 Research Quest 从“一次性提示词/流程”变成一个可以积累经验、避免重复犯错并持续改进的受控 RSI Skill。
 
 ## 在线入口
 

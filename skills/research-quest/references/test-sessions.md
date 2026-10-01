@@ -1,5 +1,7 @@
 # 三个完整测试会话
 
+> v2 说明：这三份 fixture 继续作为**向后兼容回归测试**，用于保护四象限、证据链、Goal 导出和隐私合同；它们不再规定真实 Chat Mode 必须固定七关、固定计分或每轮完整 Dashboard。v2 的自我改进行为由 `fixture-self-improvement.json` 与 `validate-self-improvement.mjs` 额外验证。
+
 三个会话均为模拟、公开安全的验收 fixture，不代表真实项目、真实用户或产品效果。每份 JSON 都包含序章、双战役各七关、选择与决定、Prompt Clues、三级认证、四类 Known–Unknown、最终考试、状态/Goal 导出和隐私信封。
 
 ## 科研规划会话
