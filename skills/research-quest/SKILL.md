@@ -189,9 +189,9 @@ Next search implication
 
 Memory 的目标不是保存所有聊天，而是保存**会改变未来决策的经验**。
 
-## 8. Evolution Loop：让搜索策略本身变好
+## 8. Evolution Loop：让搜索策略和 Skill 本身变好
 
-每完成一批任务或实验，做一次轻量 Meta-review：
+每完成一批任务、出现关键纠错，或用户明确要求优化 Skill 时，做一次轻量 Meta-review：
 
 - 哪类路线成功率更高？
 - 哪类 evaluator 最能提前淘汰坏方向？
@@ -199,10 +199,38 @@ Memory 的目标不是保存所有聊天，而是保存**会改变未来决策�
 - 哪些失败重复出现？
 - 哪些信息应该更早询问？
 - 哪些步骤可以删除？
+- 本次使用暴露了哪些 Research Quest 自身的问题？
+
+Research Quest 可以进入**受控 Self-Improvement**：
+
+```text
+Observe
+→ 记录脱敏 Experience Events
+→ Diagnose / cluster
+→ 提出 1–3 个候选修改
+→ Replay / held-out eval
+→ 自动创建 PR
+→ Promote or rollback
+```
+
+默认是 **Propose 模式**：允许自动提出修改、更新候选分支、运行 eval 和创建 PR，但**不得绕过测试直接修改主分支**。
+
+只有在维护者显式允许 Promote，且满足以下条件时，才允许自动合并/发布：
+
+- 必需测试和公开安全扫描全部通过；
+- Candidate / Confirmed / Verified 的证据纪律没有被削弱；
+- 至少一个目标行为指标改善；
+- held-out replay 没有关键回归；
+- 变更可解释、可回滚。
+
+每条重要摩擦只保存会改变未来决策的**脱敏摘要**，不要把完整私有会话、未公开科研结果或敏感路径写入公共仓库。
+
+详细事件格式、Mutation Contract、Promotion Gate 与回滚规则见：
+[references/self-improvement-protocol.md](references/self-improvement-protocol.md)。
 
 只有在 held-out 或后续真实任务上改善，才能把新策略升级为默认规则。否则回滚。
 
-这是一种受控的 RSI：**改进 workflow / skill / agent / search policy，而不是宣称模型本身已经递归自我提升。**
+这是一种受控 RSI：**改进 workflow / skill / agent / search policy，而不是宣称模型本身已经递归自我提升。**
 
 ## 9. Chat Mode：保持轻量
 
