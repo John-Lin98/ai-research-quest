@@ -87,7 +87,7 @@ console.log("experience ledger + local policy smoke test OK");
 
 const globalDir=path.join(tmp,"global");
 fs.mkdirSync(globalDir,{recursive:true});
-for(const source of ["u1","u2","u3"]){
+for(const source of ["user1","user2","user3"]){
   const sourceFile=path.join(tmp,`source-${source}.txt`);
   fs.writeFileSync(sourceFile,source+"\n");
   const bundlePath=path.join(globalDir,`${source}.json`);
