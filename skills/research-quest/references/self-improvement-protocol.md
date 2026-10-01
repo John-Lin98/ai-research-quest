@@ -295,7 +295,62 @@ auto mutation
 
 ---
 
-## 8. Mutation Contract
+## 8. Personal Champion Constitution
+
+Personal Evolution 允许高度个性化，但采用**硬门 + 优化目标**，而不是把所有指标加权成一个总分。
+
+### Objective Hard Gates
+
+Personal Challenger 必须全部通过：
+
+1. **Truth Gate**：事实正确性、事实核验和不确定性校准不低于 Champion；
+2. **Task Success Gate**：核心任务成功率不低于 Champion；
+3. **Evidence Integrity Gate**：不能降低证据门槛、隐藏负结果或把 Candidate 伪装成 Verified；
+4. **Independent Judgment Gate**：在用户假设存在问题时，仍应提出必要反例、冲突证据和风险；
+5. **Protected Layer Gate**：隐私、安全、evaluator integrity、telemetry 范围、Promotion Gate 和 user agency 无回归。
+
+任何一个 Hard Gate FAIL：
+
+```text
+Personal Challenger → REJECT / ROLLBACK
+```
+
+不允许用更高的满意度、风格匹配或更少摩擦抵消。
+
+### Personal Utility Optimization
+
+Hard Gates 全部 PASS 后，再优化：
+
+- user fit；
+- fewer unnecessary questions；
+- fewer manual corrections；
+- preferred workflow；
+- lower cost / latency；
+- better tool routing；
+- clearer reporting；
+- better continuity across projects。
+
+```text
+PROMOTE
+=
+all Objective Hard Gates PASS
+AND
+Personal Utility > Champion
+```
+
+### Anti-sycophancy rule
+
+“更懂用户”不等于“更赞同用户”。
+
+当用户偏好与事实、实验结果或独立判断冲突时：
+
+> Truth / Task Success / Evidence Integrity 优先。
+
+该规则属于 **Protected Layer**，Personal 或 Global Self-Improvement 都不得自动放宽。
+
+---
+
+## 9. Mutation Contract
 
 每个 mutation 必须写清：
 
@@ -313,7 +368,7 @@ auto mutation
 
 ---
 
-## 9. Eval Gate
+## 10. Eval Gate
 
 至少检查：
 
@@ -339,7 +394,7 @@ auto mutation
 
 ---
 
-## 10. Global Feedback Pipeline
+## 11. Global Feedback Pipeline
 
 默认不开启隐式遥测。
 
@@ -364,7 +419,7 @@ local private ledger
 
 ---
 
-## 11. Rollback
+## 12. Rollback
 
 以下任一情况立即回滚：
 - safety / privacy 回归；
@@ -376,7 +431,7 @@ local private ledger
 
 ---
 
-## 12. 推荐维护流程
+## 13. 推荐维护流程
 
 ```text
 Personal:
