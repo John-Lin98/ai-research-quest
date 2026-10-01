@@ -1,0 +1,116 @@
+name: 发布 Research Quest Skill v2.0.0
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查 Release 是否已存在
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v2.0.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 检出最新主分支
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: 配置 Node.js
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+
+      - name: 安装依赖
+        if: steps.release.outputs.exists != 'true'
+        run: npm ci --prefix app
+
+      - name: 运行完整发布验证
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          npm run test:contract --prefix app
+          npm run build --prefix app
+          node skills/research-quest/scripts/public-safety-scan.mjs --include-dist
+
+      - name: 创建 Skill 发行包
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          git archive --format=zip --output=research-quest-skill-v2.0.0.zip HEAD             skills/research-quest             shared/game-state.schema.json             LICENSE             THIRD_PARTY_NOTICES
+          sha256sum research-quest-skill-v2.0.0.zip | tee research-quest-skill-v2.0.0.sha256
+
+      - name: 解包并验证 RSI 能力
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          mkdir /tmp/research-quest-skill-v2.0.0
+          unzip -q research-quest-skill-v2.0.0.zip -d /tmp/research-quest-skill-v2.0.0
+          cd /tmp/research-quest-skill-v2.0.0
+          node skills/research-quest/scripts/generate-test-sessions.mjs --check-only
+          node skills/research-quest/scripts/validate-self-improvement.mjs
+          grep -Fq "Search Mode" skills/research-quest/SKILL.md
+          grep -Fq "Experience Memory" skills/research-quest/SKILL.md
+          grep -Fq "Self-Improvement" skills/research-quest/SKILL.md
+          grep -Fq "Candidate" skills/research-quest/SKILL.md
+          grep -Fq "Confirmed" skills/research-quest/SKILL.md
+          grep -Fq "Verified" skills/research-quest/SKILL.md
+
+      - name: 写入 Release 说明
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          cat > release-notes-v2.0.0.md <<'EOF'
+          ## Research Quest Skill v2.0.0
+
+          v2 将 Research Quest 从固定回合式科研问答升级为面向强推理模型的“认知对齐 + 高价值 Grill + 搜索/验证/记忆/进化”协议。
+
+          ### 核心更新
+
+          - 保留 Known–Unknown 四象限和 Candidate → Confirmed → Verified；
+          - 默认使用轻量聊天，不再每轮强制输出完整 Dashboard；
+          - Grill 优先攻击真正会改变决策的盲点、反例、失败模式和路线取舍；
+          - 新增 Search Mode：不同假设并行、novelty、预算漏斗和剪枝；
+          - 新增 Experience Memory：记录失败根因、do-not-repeat 和下一轮搜索启示；
+          - 新增受控 Self-Improvement：Observe → Diagnose → Propose → Replay/Eval → PR → Promote/Rollback；
+          - 提供 Experience Ledger 记录/聚类工具与离线自我改进验证器；
+          - 默认只自动提出候选修改和 PR，不允许未经评测直接修改主分支；
+          - 针对 GPT-6 Sol / Astra 等强推理模型减少过度脚手架，采用渐进披露和按需读取。
+
+          ### 自我改进边界
+
+          - 默认只保存脱敏 Experience Event，不上传完整私有会话；
+          - AI 自评不能把外部事实升级为 Verified；
+          - 隐私、安全、证据纪律和用户控制权属于 Protected Layer；
+          - 升级必须通过合同测试、公开安全扫描和 held-out/replay 评估。
+
+          ### 安装包
+
+          `research-quest-skill-v2.0.0.zip` 包含：
+          - `skills/research-quest/`；
+          - `shared/game-state.schema.json`；
+          - MIT License；
+          - 第三方软件说明。
+
+          ZIP SHA-256 见随附 `.sha256` 文件。
+          EOF
+
+      - name: 创建 GitHub Release
+        if: steps.release.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create v2.0.0             research-quest-skill-v2.0.0.zip             research-quest-skill-v2.0.0.sha256             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "Research Quest Skill v2.0.0"             --notes-file release-notes-v2.0.0.md
