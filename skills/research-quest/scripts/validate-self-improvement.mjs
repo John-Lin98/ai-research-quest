@@ -94,7 +94,24 @@ const policyPath=path.join(tmp,"local-policy.md");
 execFileSync(process.execPath,[path.resolve(here,"build-local-policy.mjs"),"--ledger",ledgerPath,"--output",policyPath],{stdio:"pipe"});
 const policy=fs.readFileSync(policyPath,"utf8");
 if(!policy.includes("Do not repeat") || !policy.includes(data.events[0].do_not_repeat)) fail("local adaptive policy smoke test failed");
-console.log("experience ledger + local policy smoke test OK");
+
+const factualEvent={
+  ...data.events[0],
+  id:"evt-factual-write-gate",
+  event_type:"unverified_claim",
+  pattern_key:"memory.unverified_fact.write",
+  policy_kind:"factual",
+  lesson:"UNVERIFIED_FACT_MUST_NOT_APPEAR_IN_LOCAL_POLICY",
+  do_not_repeat:"UNVERIFIED_FACT_MUST_NOT_APPEAR_AS_POLICY"
+};
+const factualPath=path.join(tmp,"factual-event.json");
+fs.writeFileSync(factualPath,JSON.stringify(factualEvent,null,2));
+execFileSync(process.execPath,[path.resolve(here,"record-experience.mjs"),"--event",factualPath,"--ledger",ledgerPath],{stdio:"pipe"});
+execFileSync(process.execPath,[path.resolve(here,"build-local-policy.mjs"),"--ledger",ledgerPath,"--output",policyPath],{stdio:"pipe"});
+const gatedPolicy=fs.readFileSync(policyPath,"utf8");
+if(gatedPolicy.includes("UNVERIFIED_FACT_MUST_NOT_APPEAR")) fail("personal memory write gate failed");
+if(!gatedPolicy.includes("skipped factual-state events: 1")) fail("factual skip count missing");
+console.log("experience ledger + local policy + memory write gate smoke test OK");
 
 const globalDir=path.join(tmp,"global");
 fs.mkdirSync(globalDir,{recursive:true});
