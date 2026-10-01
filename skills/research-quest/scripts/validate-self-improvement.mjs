@@ -83,7 +83,6 @@ const policyPath=path.join(tmp,"local-policy.md");
 execFileSync(process.execPath,[path.resolve(here,"build-local-policy.mjs"),"--ledger",ledgerPath,"--output",policyPath],{stdio:"pipe"});
 const policy=fs.readFileSync(policyPath,"utf8");
 if(!policy.includes("Do not repeat") || !policy.includes(data.events[0].do_not_repeat)) fail("local adaptive policy smoke test failed");
-fs.rmSync(tmp,{recursive:true,force:true});
 console.log("experience ledger + local policy smoke test OK");
 
 const globalDir=path.join(tmp,"global");
