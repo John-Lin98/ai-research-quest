@@ -4,7 +4,7 @@
 
 Research Quest is an **open-source Skill for improving how users and AI clarify research tasks**. It does not require the user to learn a separate game. The AI reads project documents and existing Context first, builds a Known–Unknown cognition map, and defaults to one question that can materially change the final result.
 
-> **Core logic: cognition map + grill-me-with-docs.** Documents answer what they already contain; the AI does not ask again. The four quadrants decide why the current question matters, how much terminology to use, when to stop, and how the Goal should change.
+> **v2 core logic: cognition map + high-value Grill + search / verification / memory / evolution.** Documents answer what they already contain; the AI does not ask again. Creative tasks can enter Search Mode, and successes and failures update the next search policy.
 
 ```text
 Real research need + documents + previous discussion
