@@ -78,6 +78,14 @@ Global Evolution 只吸收跨多个用户重复出现的共同痛点，而且 Co
 
 参考：https://arxiv.org/abs/2609.21267
 
+### Personal Agent Sycophancy Benchmark (PASB, 2026)
+
+- 长期个性化 Agent 的迎合风险不仅发生在回答阶段，还会发生在 memory/state write 阶段；
+- 错误或用户中心的断言一旦被写入持久状态，后续中立任务也会继续受到影响；
+- 因此 Personal Champion 必须加入 Memory Write Gate：事实、偏好和行为规则分层存储，事实必须保留来源、归属、范围与证据状态。
+
+参考：https://arxiv.org/abs/2607.10526
+
 ## 推荐 Personal Evolution 架构
 
 ```text
