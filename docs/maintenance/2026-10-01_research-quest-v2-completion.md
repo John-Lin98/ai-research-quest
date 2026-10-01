@@ -36,3 +36,39 @@
    - 重复失败率；
    - 最终执行成功率。
 3. 只有 v2 eval 明确更好后，再更新公开 Demo 的 UI/schema。
+
+
+## RSI 实质升级补充
+
+本轮已经从“原则”推进到可运行能力：
+
+- 新增 `self-improvement-protocol.md`；
+- 新增脱敏 Experience Event fixture；
+- 新增 `record-experience.mjs`：写入项目私有 Experience Ledger；
+- 新增 `summarize-experience.mjs`：聚类重复问题并触发 Meta-review；
+- 新增 `build-local-policy.mjs`：从私有经验账本生成本地快速适应策略；
+- 新增 `validate-self-improvement.mjs`，覆盖账本写入、聚类和 local policy smoke test；
+- 合同测试已接入自我改进验证；
+- `.research-quest/` 默认加入 `.gitignore`，避免私有经验误提交；
+- 新增双速 RSI：
+  - Fast Loop：本地 `experience-ledger.jsonl → local-policy.md`，下一次 Quest 即时适应；
+  - Slow Loop：跨会话 Experience → mutation → replay/eval → PR → release；
+- 新增 v2 CI 和 v2.0.0 自动发布 workflow；
+- 修复早先 Pages CI 暴露的 tracked-public-path allowlist 问题；
+- 正式发布门收紧为 `public-safety-scan --include-dist --require-approved`。
+
+## 当前默认权限模型
+
+- Observe：允许；
+- Local Adaptation：允许；
+- Propose + Eval + PR：允许；
+- 自动写 main：默认禁止；
+- 自动合并与自动 Release：只有在明确授权 Promote 且所有 protected gates 通过时允许。
+
+## 当前待决策
+
+最重要的产品/治理决策不是“能否自我修改”，而是：
+
+> 在所有 eval、安全、held-out replay 和回滚条件都通过后，Research Quest 是否应拥有自动合并自己的升级 PR 的权限？
+
+这决定 v2.0 是“自动提出升级的 RSI-ready Skill”，还是进一步进入“受控自动晋升”的 RSI Skill。
