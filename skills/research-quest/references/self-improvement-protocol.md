@@ -2,38 +2,107 @@
 
 ## 目标
 
-让 Research Quest 随真实使用不断改善，同时避免“AI 自己觉得自己更好”或把用户私有内容直接写回公共仓库。
+让 Research Quest 随真实使用持续改善，同时把**个人适应**与**全局 Skill 进化**严格分离。
 
-默认采用**双速受控 RSI**：
+核心原则：
+
+> Personal Evolution 可以非常快、非常个性化；Global Evolution 必须来自跨用户共同痛点，并经过更严格的独立评测。
+
+系统同时有两条轴：
+
+1. **进化范围**：Personal / Global；
+2. **变更权限**：Mutable / Protected。
+
+---
+
+## 1. Two-Level Evolution
+
+### Level 1｜Personal Evolution
+
+目标：先让 Research Quest 对当前用户越来越好用。
 
 ```text
-Fast Loop: Observe → Local Experience Ledger → local-policy.md → 下一次立即适应
-Slow Loop: Observe → Diagnose → Propose → Replay/Eval → PR → Promote/Rollback
+单个用户真实使用
+→ Experience Ledger
+→ 发现纠错 / 偏好 / 重复失败 / 有效模式
+→ local-policy.md
+→ 下一次 Quest 立即读取
+→ 个性化行为持续优化
 ```
 
-## 1. Experience Event
+允许强个性化：
+- 表达风格；
+- Grill 深度；
+- 是否偏好表格、方案比较或直接执行；
+- 常见项目类型；
+- 搜索/验证节奏；
+- do-not-repeat；
+- 已验证有效的工作习惯。
 
-只记录会改变未来 Skill 行为的高价值事件，不保存完整聊天。
+默认私有路径：
+
+```text
+<project>/.research-quest/experience-ledger.jsonl
+<project>/.research-quest/local-policy.md
+```
+
+Personal Evolution **不要求跨用户一致性**，只要求：
+- 对该用户有明确证据；
+- 不违反 Protected Layer；
+- 可以随时回滚；
+- 不把个人偏好自动写入公共 Skill。
+
+### Level 2｜Global Evolution
+
+目标：只把**多个不同用户共同遇到的问题**固化进公共 Research Quest。
+
+```text
+多个用户 / 多来源的脱敏反馈
+→ 语义 pattern_key
+→ 跨用户聚合
+→ Common Pain Gate
+→ Candidate Mutation
+→ Champion–Challenger Replay
+→ Risk Gate
+→ PR
+→ Auto-promote or Human Approval
+```
+
+Personal Experience 不能直接升级为 Global Rule。
+
+一个个人事件最多只能成为：
+
+```text
+personal lesson
+→ global candidate signal
+```
+
+只有出现跨用户重复证据后才进入 Global Evolution。
+
+---
+
+## 2. Experience Event
 
 推荐事件类型：
 
-- `user_correction`：用户纠正了错误理解或事实；
-- `repeated_question`：已知信息被重复询问；
-- `goal_drift`：Skill 把任务带离用户真实目标；
-- `excessive_scaffolding`：固定 UI / 流程妨碍任务推进；
-- `duplicate_search`：多 Agent 或多轮重复同类探索；
-- `repeated_failure`：同因失败被机械重试；
-- `unverified_claim`：外部事实未经验证就升级；
-- `bad_grill`：问题没有改变决策，或退化成低价值问卷；
-- `tool_or_workflow_failure`：工具/工作流设计导致失败；
-- `successful_pattern`：新的交互/搜索/验证模式明显有效；
-- `user_override`：用户跳过 Skill 流程并给出更有效路线。
+- `user_correction`
+- `repeated_question`
+- `goal_drift`
+- `excessive_scaffolding`
+- `duplicate_search`
+- `repeated_failure`
+- `unverified_claim`
+- `bad_grill`
+- `tool_or_workflow_failure`
+- `successful_pattern`
+- `user_override`
 
-每条事件至少包含：
+推荐字段：
 
 ```text
 id
 event_type
+pattern_key
 symptom
 evidence_summary
 impact
@@ -44,164 +113,286 @@ proposed_change_scope
 privacy_status
 ```
 
-### 隐私
+### pattern_key
 
-默认只允许保存**脱敏摘要**。不得自动把以下内容写入公共仓库：
-
-- 私有代码；
-- 未公开科研结果；
-- 服务器路径、凭据、个人身份信息；
-- 用户上传文件的原文；
-- 可反推出敏感项目的信息。
-
-## 2. Fast Loop｜本地快速适应
-
-默认私有路径：
+`pattern_key` 是可跨会话比较的语义问题签名，例如：
 
 ```text
-<project>/.research-quest/experience-ledger.jsonl
-<project>/.research-quest/local-policy.md
+grill.low_value.choice_over_blind_spot
+ui.dashboard.over_scaffolded
+search.duplicate_parallel_routes
+memory.repeated_same_root_cause
+verification.self_judge_promoted_fact
 ```
 
+Personal Ledger 可以暂时只有 coarse pattern；但 **Global auto-promotion 必须使用明确 pattern_key**，不能只按宽泛的 `event_type` 合并。
+
+---
+
+## 3. Privacy Firewall
+
+默认不上传完整聊天。
+
+不得自动进入公共反馈：
+- 私有代码；
+- 未公开科研结果；
+- 路径、凭据、身份信息；
+- 用户文件原文；
+- 可以反推出具体项目的信息。
+
+Global Evolution 默认采用 **opt-in sanitized feedback**。
+
+推荐导出的公共信号只包含：
+
+```text
+pattern_key
+event_type
+impact
+proposed_change_scope
+optional sanitized lesson
+anonymous source bucket
+```
+
+默认不包含完整 `symptom` / `evidence_summary`。
+
+---
+
+## 4. Personal Fast Loop
+
 有文件写入能力时：
-1. 关键纠错/失败后记录 Experience Event；
-2. 运行或等价执行 `summarize-experience.mjs`；
-3. 用 `build-local-policy.mjs` 生成本地策略；
-4. 下一次 Quest 启动时读取本地策略。
 
-本地策略可以记录：
-- 不要重复的错误；
-- 已验证有效的交互模式；
-- 项目特定偏好；
-- 已确认的搜索/验证习惯。
+1. 关键纠错、失败或成功模式 → 写入 Experience Ledger；
+2. 聚类本地事件；
+3. 生成 `local-policy.md`；
+4. 下一次 Quest 启动时读取；
+5. 若本地策略导致新问题，立即回滚相关规则。
 
-它不得覆盖：
+本地策略优先服务当前用户，不要求“对所有人都好”。
+
+但不得覆盖：
 - 用户最新指令；
-- Protected Layer；
-- 外部事实的验证要求。
+- 隐私与安全；
+- Candidate → Confirmed → Verified；
+- 外部事实必须验证；
+- 用户对最终决策的控制权。
 
-`.research-quest/` 应保持在 `.gitignore` 中。
+---
 
-## 3. Slow Loop｜Meta-review 触发
+## 5. Global Common-Pain Gate
 
-满足任一条件即可触发：
+Global mutation 至少需要满足：
 
-1. 用户明确要求“优化/改进这个 Skill”；
-2. 同类摩擦事件累计 ≥3；
-3. 一次 Quest 出现关键失败或用户强制纠错；
-4. 完成一个重要项目/战役；
-5. 达到维护者设定的会话或事件批次。
+### 5.1 跨用户证据
 
-Meta-review 输出不超过 3 个候选修改，优先高影响、低风险改动。
+默认：
+- 同一明确 `pattern_key`；
+- 来自多个 distinct source buckets；
+- 最低阈值建议 ≥3 个独立来源；
+- 单个用户重复 20 次不能伪装成 20 个用户的共同痛点。
 
-## 4. Mutation Contract
+### 5.2 不是个人偏好
 
-每个候选修改必须写清：
+以下通常保持 Personal：
+- 喜欢更长/更短回答；
+- 特定学科术语偏好；
+- 项目路径、工具、GPU 习惯；
+- 个人审批节奏。
 
+以下更可能进入 Global：
+- 已知信息被重复询问；
+- 高级用户仍被迫做基础选择题；
+- 多 Agent 重复同一路线；
+- AI 自评把事实错误升级；
+- 失败经验没有阻止重复失败；
+- Skill 阻塞用户明确执行请求。
+
+### 5.3 多样性要求
+
+Global replay 必须覆盖不同用户类型 / 任务类型，避免只对最近几次会话过拟合。
+
+---
+
+## 6. Champion–Challenger
+
+公共 Skill 永远保留当前稳定版 **Champion**。
+
+候选修改是 **Challenger**。
+
+```text
+Champion
+   vs
+Challenger
+   ↓
+historical replay
++ held-out tasks
++ different user/task cohorts
++ safety regression
++ cost / latency
+   ↓
+Challenger truly better?
+```
+
+Challenger 只有在：
+- 目标问题明显改善；
+- 关键能力无回归；
+- 成本没有不可接受恶化；
+- 安全/隐私/证据纪律通过；
+
+才允许进入 Promotion Gate。
+
+---
+
+## 7. Risk-Based Autonomy｜已批准方案 B
+
+### Mutable Layer｜低风险，可自动晋升
+
+示例：
+- Prompt / wording；
+- Grill 选题启发式；
+- Search policy；
+- Memory 格式；
+- tool routing；
+- workflow efficiency；
+- 非敏感 UI 行为；
+- 测试与文档增强。
+
+满足全部条件时，可以：
+
+```text
+auto mutation
+→ eval
+→ Champion–Challenger PASS
+→ PR
+→ required checks PASS
+→ auto merge
+→ auto release
+```
+
+### Protected Layer｜高风险，必须人工审批
+
+包括：
+- 隐私策略；
+- 安全规则；
+- Candidate / Confirmed / Verified 证据纪律；
+- 外部事实验证要求；
+- evaluator integrity；
+- telemetry / 用户数据收集范围；
+- Promotion Gate 本身；
+- 用户 agency / 最终控制权。
+
+任何触及 Protected Layer 的 mutation：
+
+```text
+自动发现
+→ 自动提出
+→ 自动测试
+→ PR
+→ 人类审批
+→ 才可 merge
+```
+
+系统不得自行降低自己的保护门。
+
+---
+
+## 8. Mutation Contract
+
+每个 mutation 必须写清：
+
+- evolution_scope: personal / global；
+- risk_class: mutable / protected；
 - 当前问题；
 - 支持证据；
-- 要修改的文件或规则；
-- 预期改善的行为；
-- 可能回归；
-- 如何验证；
-- 回滚条件。
+- cross-user support（global only）；
+- 修改文件 / 规则；
+- 预期改善；
+- 回归风险；
+- replay / held-out 设计；
+- promotion criteria；
+- rollback criteria。
 
-允许修改：
-- `SKILL.md`；
-- references / templates；
-- agent prompt；
-- fixtures / eval；
-- 非敏感公开 Demo 行为。
+---
 
-Protected，不得由普通 Self-Improvement 自动放宽：
-- 隐私/安全边界；
-- Candidate → Confirmed → Verified 的证据原则；
-- 外部事实需要验证；
-- 用户最新指令优先；
-- 公开仓库不得泄露私有项目内容。
+## 9. Eval Gate
 
-## 5. Eval Gate
+至少检查：
 
-至少检查六类行为：
+1. No-repeat；
+2. High-value Grill；
+3. Evidence discipline；
+4. Search diversity；
+5. Failure memory；
+6. User agency；
+7. Personal-fit（Personal Evolution）；
+8. Cross-user generalization（Global Evolution）。
 
-1. **No-repeat**：材料已有答案时不再询问；
-2. **High-value Grill**：问题会改变 Goal/路线/验收/风险；
-3. **Evidence discipline**：AI 自评不能把外部事实升级为 Verified；
-4. **Search diversity**：并行路线具有实质差异；
-5. **Failure memory**：同因失败触发 do-not-repeat / route switch；
-6. **User agency**：用户要求直接执行时 Skill 不得阻塞。
-
-建议附加指标：
+推荐指标：
 
 - 重复问题率；
 - 用户纠错率；
 - Goal 大改次数；
 - 重复失败率；
 - 首次可执行动作所需轮数；
-- 每单位成本获得的新有效证据；
-- held-out replay 成功率。
+- Useful Novel Evidence / cost；
+- held-out replay 成功率；
+- 不同 user/task cohort 的回归率。
 
-## 6. Promotion Gate
+---
 
-默认三档：
+## 10. Global Feedback Pipeline
 
-### Observe
-只收集脱敏 Experience Events，不修改 Skill。
+默认不开启隐式遥测。
 
-### Propose（默认）
-自动：
-- 聚类问题；
-- 生成 1–3 个 mutation；
-- 更新候选分支；
-- 运行 eval；
-- 创建 PR。
-
-不自动合并。
-
-### Promote
-仅在维护者显式允许，并满足：
-- 所有必需测试通过；
-- 无安全/隐私回归；
-- 至少一个目标指标改善；
-- 无关键 held-out 回归；
-- PR 可回滚。
-
-才允许自动合并/发布。
-
-## 7. Rollback
-
-以下任一情况立即回滚候选升级：
-
-- 公开安全扫描失败；
-- Verified 证据纪律被削弱；
-- 用户控制权下降；
-- held-out replay 出现关键退化；
-- 自动化无法解释为什么新版更好。
-
-## 8. Quest 内反馈闭环
-
-普通 Quest 结束或重大纠错发生时，Skill 可内部生成一条脱敏 Experience Event。
-
-不要每轮打断用户展示 Self-Improvement 细节。只有：
-- 用户要求查看；
-- 问题影响当前任务；
-- 准备升级 Skill；
-才展示。
-
-## 9. 推荐维护流程
+推荐：
 
 ```text
-真实使用
-→ Experience Ledger
-→ Meta-review
-→ Candidate mutation
-→ v1/v2 replay
-→ safety + contract eval
-→ PR
-→ maintainer / protected gate
-→ merge
-→ release
-→ 继续收集新证据
+local private ledger
+→ explicit opt-in export
+→ sanitized feedback bundle
+→ aggregate multiple source buckets
+→ common-pain report
+→ global mutation candidate
 ```
 
-这是一种**受控 RSI**：系统可以发现自身问题并提出改进，但“是否真的更好”由独立 eval 与受保护规则决定。
+仓库可提供工具来：
+- 导出脱敏 bundle；
+- 聚合多个 bundle；
+- 统计 distinct sources；
+- 生成 common-pain candidate。
+
+但是否上传由用户/部署环境明确决定。
+
+---
+
+## 11. Rollback
+
+以下任一情况立即回滚：
+- safety / privacy 回归；
+- 证据纪律削弱；
+- user agency 下降；
+- held-out 关键退化；
+- Global change 只改善单一用户群；
+- 自动化无法解释新版为什么更好。
+
+---
+
+## 12. 推荐维护流程
+
+```text
+Personal:
+use → ledger → local-policy → immediate adaptation
+
+Global:
+opt-in sanitized signals
+→ common-pain clustering
+→ mutation
+→ champion–challenger
+→ risk gate
+→ PR
+→ auto-promote mutable / human-approve protected
+→ release
+```
+
+这使 Research Quest 形成真正的两级进化：
+
+> **先为每个用户变得更懂他，再只把所有用户共同受益的部分升级成公共能力。**
