@@ -15,7 +15,8 @@
       "proposed_change_scope": [
         "skills/research-quest/SKILL.md"
       ],
-      "privacy_status": "sanitized"
+      "privacy_status": "sanitized",
+      "pattern_key": "ui.dashboard.over_scaffolded"
     },
     {
       "id": "evt-002",
@@ -30,7 +31,8 @@
         "skills/research-quest/SKILL.md",
         "skills/research-quest/references/rules-and-templates.md"
       ],
-      "privacy_status": "sanitized"
+      "privacy_status": "sanitized",
+      "pattern_key": "grill.low_value.choice_over_blind_spot"
     },
     {
       "id": "evt-003",
@@ -45,7 +47,8 @@
         "skills/research-quest/SKILL.md",
         "skills/research-quest/references/self-improvement-protocol.md"
       ],
-      "privacy_status": "sanitized"
+      "privacy_status": "sanitized",
+      "pattern_key": "memory.failed_routes.discarded"
     }
   ],
   "candidate_mutations": [
@@ -69,7 +72,10 @@
         "failure-memory",
         "user-agency"
       ],
-      "promotion_status": "candidate"
+      "promotion_status": "candidate",
+      "evolution_scope": "personal",
+      "risk_class": "mutable",
+      "cross_user_support": 0
     }
   ]
 }
