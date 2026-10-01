@@ -50,6 +50,10 @@ const sourceEntries = [
 
 const trackedPublicPathAllowlist = [
   ".gitignore",
+  ".github/CODEOWNERS",
+  ".github/PULL_REQUEST_TEMPLATE.md",
+  "CONTRIBUTING.md",
+  "MAINTAINERS.md",
   "README.md",
   "README.zh-CN.md",
   "LICENSE",
@@ -72,6 +76,7 @@ const trackedPublicPathPrefixes = [
   "public/en/",
   "skills/research-quest/",
   "docs/usage/",
+  "docs/maintenance/",
 ];
 
 const exactAllowlist = new Map([
