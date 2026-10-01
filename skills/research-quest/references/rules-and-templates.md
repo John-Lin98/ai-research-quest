@@ -1,401 +1,361 @@
-# Research Quest 规则与模板
+# Research Quest v2｜规则与模板
 
-## 1. 核心循环
+本文件是 `SKILL.md` 的渐进披露参考。若与 `SKILL.md` 冲突，以 `SKILL.md` 为准。
+
+## 1. 核心状态机
 
 ```text
-读取文档与已有 Context
-→ 建立 Known–Unknown 四象限
-→ 选择最高价值认知空缺
-→ 默认只问一个问题
-→ 用户回答、提问或主动补充任务线索
-→ 分类、验证、去重与冲突检查
-→ 保存回答、线索与 Goal vN
-→ 重新生成当前问题
-→ Frozen Context
-→ Codex / Agent 执行
+Goal
+→ Recover Context
+→ Known–Unknown Map
+→ High-value Grill
+→ Search (when needed)
+→ Verify
+→ Select / Prune
+→ Experience Memory
+→ Meta-review
+→ Goal / Search-policy Update
 ```
 
-四象限负责决定问题；grill-me-with-docs 负责减少无效提问。
+Research Quest 有三层循环：
 
-## 2. 文档优先检查
+- **Understanding Loop**：关闭会改变决策的认知空缺；
+- **Execution Loop**：真实执行并用 evaluator 验证；
+- **Evolution Loop**：从轨迹中更新 Skill / Agent / workflow / search policy。
 
-每轮提问前必须记录：
+## 2. 文档与 Context 优先
+
+每轮先判断：
 
 ```markdown
-- 已读取材料：
-- 材料已经回答：
-- 从材料提取的 Candidate：
-- 用户主动补充的线索：
-- 当前最大认知空缺：
-- 为什么必须由用户回答：
-- 对 Goal 的影响：
+- 当前用户真正要求什么：
+- 已有材料已经回答什么：
+- 已验证事实：
+- 当前最大开放未知：
+- 这个未知会改变什么：
+- AI 能否通过工具/执行自己验证：
 ```
 
-禁止重复询问材料里已有答案。无法读取的材料要明确记录限制，不得猜测正文。
+规则：
 
-## 3. 每轮问题预算
+- 文档已有答案，不再询问；
+- AI 能通过工具验证的事实，不把验证工作推回用户；
+- 用户最新指令 > 当前真实执行状态 > Frozen Context > Skill 默认流程；
+- 只读取当前任务需要的材料，不为“完整”无条件遍历全部 references。
 
-默认只问一个主问题。确有必要时可增加证据问题或边界问题，但每轮最多三个，不为了完整感凑题。
+## 3. Known–Unknown
 
-## 4. Known–Unknown 四象限
+### Known Knowns｜已知的已知
 
-|  | 用户已经意识到 | 用户尚未意识到 |
-| --- | --- | --- |
-| **已经掌握** | **Known Knowns｜已知的已知** | **Unknown Knowns｜未知的已知** |
-| **尚未掌握** | **Known Unknowns｜已知的未知** | **Unknown Unknowns｜未知的未知** |
-
-紧凑聊天界面可以省略轴文字，但位置和语义不能变化。
-
-### Known Knowns 认证
+证据链：
 
 ```text
 Candidate → Confirmed → Verified
 ```
 
-只有 Verified 计入正式认知分。
+- Candidate：新线索、未经核验的事实或初步解释；
+- Confirmed：用户明确确认自己的目标/偏好/约束，或多个可靠来源一致；
+- Verified：通过可靠来源、测试、实验、迁移或真实执行验证。
 
-### Known Unknowns 模板
+### Unknown Knowns｜未知的已知
 
-| ID | 缺少的答案 | 为什么重要 | 关闭方式 | Goal 字段 |
-| --- | --- | --- | --- | --- |
-| ku-001 |  |  | 用户/文档/执行 |  |
+用户可能已有但尚未表达的：
+- 经验；
+- 判断；
+- 偏好；
+- 隐含停止规则；
+- 过去失败教训。
 
-### Unknown Knowns 模板
+优先通过“为什么”“过去发生过什么”“如果 A/B 冲突你选什么”暴露，而不是问抽象偏好。
 
-| ID | 可能已有的经验或偏好 | 暴露方式 | 当前状态 |
-| --- | --- | --- | --- |
-| uk-001 |  | 方案比较/过去经验/理由/主动线索 | under-investigation |
+### Known Unknowns｜已知的未知
 
-### Unknown Unknowns 模板
+每项至少包含：
 
-| ID | 隐藏风险 | 发现来源 | 处理动作 |
-| --- | --- | --- | --- |
-| uu-001 |  | 反例/失败/冲突/真实执行 | 插入支线或修改 Goal |
+| 字段 | 内容 |
+| --- | --- |
+| 问题 | 仍缺少什么 |
+| 决策影响 | 会改变什么 |
+| 关闭方式 | 用户 / 文档 / 工具 / 执行 |
+| 关闭条件 | 什么证据足够 |
 
-## 5. “为什么这一步最值得问”模板
+### Unknown Unknowns｜未知的未知
+
+来自：
+- 反例；
+- 冲突证据；
+- 失败；
+- 现实执行；
+- evaluator 被利用；
+- 用户纠错。
+
+发现后不扣分，直接决定是否插入风险关或改变路线。
+
+## 4. Grill 选择规则
+
+默认每轮一个主问题。
+
+价值近似：
 
 ```text
-文档已经告诉我们：<已有信息>
-认知地图当前最大空缺：<象限与问题>
-这个问题会改变：<目标/方法/验收/边界>
+Decision Impact × Uncertainty × Risk / Cost-to-answer
 ```
 
-必须使用通俗表达和用户已经使用的术语。
+高价值 Grill 应该至少改变一项：
+- Goal；
+- evaluator / success criteria；
+- 方法路线；
+- 资源分配；
+- 风险边界；
+- 下一轮搜索空间。
 
-| 避免 | 推荐 |
-| --- | --- |
-| 输入资产 | 你手里有哪些资料 |
-| 证据边界 | 这一步最多能说明什么 |
-| 冻结目标 | 先把目标定下来 |
-| 验收合同 | 做到什么才算完成 |
-| Goal delta | 当前目标变化 |
+### 高掌握度用户
 
-## 6. 每轮聊天模板
+优先：
+- 反例；
+- 边界条件；
+- failure mode；
+- conflicting evidence；
+- route tradeoff；
+- evaluator 是否可信。
+
+不要退化成基础定义题或机械 A/B/C。
+
+### 选项何时使用
+
+只有在选项能显著降低表达成本时使用。用户始终可以：
+- 自由回答；
+- 反问；
+- 补充 Context；
+- 要求直接执行。
+
+## 5. 默认 Chat Mode
+
+普通回合：
 
 ```markdown
-## Research Quest｜第 N 回合：<标题>
+## Research Quest｜第 N 回合：<Boss>
 
-### 一句话回顾
-<上一轮选择、它怎样改变任务>
+**Goal**：<一句话>
+**已确认**：<1–3 条>
+**地图变化**：<只展示变化的象限>
+**进度**：<粗粒度>
 
-### 保存状态
-<已写入的真实路径；或“当前会话 Context，导出后保存为 research-quest-context.md”>
+### 为什么现在处理它
+<1–3 句>
 
-### 为什么这一步最值得问
-<文档已有信息 + 四象限最大空缺 + Goal 影响>
-
-### Known–Unknown 四象限
-- Known Knowns｜已知的已知：
-- Unknown Knowns｜未知的已知：
-- Known Unknowns｜已知的未知：
-- Unknown Unknowns｜未知的未知：
-
-### 通关进度
-- 目标进度：<百分比与进度条>
-- 认知分：
-- 预计剩余：
-- 当前目标变化 (Goal vN)：
-
-### 关键问题
-<默认一个问题>
-
-### 回答选项
-A. <完整可发送文本>
-B. <完整可发送文本>
-C. <完整可发送文本>
-D. 我想补充上下文或任务线索
-E. 暂不闯关，我还有一些问题
+### Grill
+<一个会改变决策的问题>
 ```
 
-“暂不闯关，我还有一些问题”必须是最后一个选项。
+不要每轮重复：
+- 完整四象限；
+- 伪精确百分比；
+- 认知分；
+- 固定五个选项。
 
-## 7. 选择输入规则
+只有以下情况展示完整 Dashboard：
+- 用户要求；
+- 路线切换；
+- Goal Forge 前；
+- Context 漂移；
+- 线程交接。
 
-### 支持按钮
+## 6. Search Mode
 
-点击普通选项后：
+当任务需要创造性突破、方法设计或开放搜索时：
 
-- 选项直接成为用户回复；
-- 显示用户聊天气泡；
-- 写入 Context、四象限和 Goal vN。
+### 路线多样化
 
-### 不支持按钮
+可分：
+- first-principles；
+- literature；
+- simplest baseline；
+- counterexample / red team；
+- transfer / analogy；
+- failure-driven；
+- wildcard。
 
-为每项提供复制按钮或完整可复制文本。用户也可以直接输入回答、问题或任务线索。
+多 Agent 必须对应不同假设，而不是 N 次相同 prompt。
 
-## 8. 用户提问：关卡线索模板
-
-### 触发
-
-- 点击“暂不闯关，我还有一些问题”；
-- 或直接输入任意问题。
-
-### 状态变化
-
-- 主问题暂停；
-- 主进度和认知分不变；
-- 当前问题、四象限和 Goal 版本保存；
-- 用户问题新增或细化 Known Unknown。
-
-### 模块模板
-
-```markdown
-## Research Quest · 关卡线索
-
-### 用户问题
-
-### 问题答案与依据
-
-### 保存位置
-`50_Projects/<project>/QA/round-<N>-clue.md`
-
-### 这条线索如何改变认知地图
-- Known Knowns：
-- Unknown Knowns：
-- Known Unknowns：
-- Unknown Unknowns：
-
-### 通关进度
-- 主目标进度暂停：<百分比>
-- 认知分：主分不变
-- 当前目标变化 (Goal vN)：暂不冻结新决定
-
-### 重新生成的 grill-me 问题
-```
-
-回答前先查文档和 Context；材料无法支持时必须明确说明。回答后依据新地图重写问题，不能机械重复。
-
-## 9. 用户主动补充：上下文与任务线索模板
-
-### 触发
-
-- 点击“我想补充上下文或任务线索”；
-- 或主动输入资料、约束、偏好、截止时间、目标修正、结果、链接、文件说明或纠错。
-
-### 分类
-
-| 类型 | 示例 |
-| --- | --- |
-| 目标线索 | 最终希望回答什么 |
-| 产物线索 | 需要论文、代码、Goal 或报告 |
-| 资料线索 | 文件、数据、代码、链接 |
-| 方法线索 | 已选方法或不能改变的技术路线 |
-| 约束线索 | 不能公开、不能修改、预算限制 |
-| 偏好线索 | 先小试点、重视可解释性 |
-| 时间资源 | 截止时间、GPU、人员 |
-| 完成标准 | 多少样本、哪些检查通过 |
-| 结果线索 | 已有指标、实验观察 |
-| 纠错线索 | 前一条 Context 有误 |
-
-### 证据判断
-
-- 用户对自己目标、偏好、约束、截止时间和最终产物的明确陈述：Confirmed；
-- 文件存在、数据内容、实验结果或外部事实：Candidate，读取或核验后升级；
-- 与已有 Context 冲突：展示冲突，不静默覆盖；
-- 明确纠错：标记旧条目被替代，并回滚相关 Goal。
-
-### 线索记录模板
-
-```markdown
-## 上下文与任务线索
-- 原始用户表述：
-- 线索类型：
-- 来源或路径：
-- 证据状态：Candidate / Confirmed / Verified
-- 与已有 Context：新增 / 重复 / 冲突 / 纠错
-- 影响象限：
-- 影响 Goal 字段：
-- 保存位置：
-- 更新时间：
-```
-
-### 模块模板
-
-```markdown
-## Research Quest · 上下文与任务线索
-
-### 用户主动补充
-
-### 线索分类与证据状态
-
-### AI 的通俗整理
-
-### 保存位置
-`50_Projects/<project>/task_clues/round-<N>-task-clue.md`
-
-### 这条线索如何改变认知地图
-- Known Knowns：
-- Unknown Knowns：
-- Known Unknowns：
-- Unknown Unknowns：
-
-### 通关进度
-- 主目标进度暂停：<百分比>
-- 认知分：主分不变
-- 当前目标变化 (Goal vN)：新增 Candidate / Confirmed 线索
-
-### 重新生成的 grill-me 问题
-```
-
-### 问题重规划规则
-
-- 完全回答当前问题：跳过原问题；
-- 部分回答：缩小原问题；
-- 改变目标或硬约束：重算路线、进度和时间；
-- 暴露风险：新增 Unknown Unknown；
-- 与当前问题无关：保存后恢复原问题。
-
-不得让用户重复提供已经收到的线索。
-
-## 10. 保存规则
-
-### 可写文件
+### 预算漏斗
 
 ```text
-50_Projects/<project>/context/research-quest-context.md
-50_Projects/<project>/QA/round-<N>-clue.md
-50_Projects/<project>/task_clues/round-<N>-task-clue.md
+cheap broad search
+→ novelty / feasibility filter
+→ small verification
+→ prune
+→ allocate to positive signal
+→ deep verification
 ```
 
-### 仅会话或浏览器内存
+推荐优化：
 
-必须说明：
+```text
+Useful Novel Evidence / (Compute + Time + Human Attention)
+```
 
-> 已写入当前会话 Context；主动导出后保存为 `research-quest-context.md`。
+## 7. Verification
 
-不得谎称已经持久化。
+优先最便宜、最快、可靠的外部 evaluator。
 
-## 11. Context 文档模板
+| 领域 | 优先 evaluator |
+| --- | --- |
+| Coding | tests / benchmark |
+| 数学 | proof / verifier |
+| 科研 | 数据 / 模拟 / 实验 / 独立复现 |
+| Agent | held-out task / success rate / cost |
+| 产品 | 真实任务完成率 / 用户行为 |
+
+AI 自评只能作为 Candidate 证据。
+
+## 8. Experience Memory
+
+重要尝试记录：
+
+```markdown
+- Goal:
+- Hypothesis / Route:
+- Action:
+- Evidence:
+- Result:
+- Why worked / failed:
+- Cost:
+- Reusable lesson:
+- Do-not-repeat:
+- Next search implication:
+```
+
+同因失败 2–3 次后禁止机械重试；必须先做 root-cause 或改变变量。
+
+## 9. Self-Improvement
+
+详细协议见 [self-improvement-protocol.md](self-improvement-protocol.md)。
+
+默认私有账本：
+
+```text
+<project>/.research-quest/experience-ledger.jsonl
+```
+
+只有脱敏摘要才允许进入公开仓库。
+
+推荐事件：
+
+```text
+user_correction
+repeated_question
+goal_drift
+excessive_scaffolding
+bad_grill
+duplicate_search
+repeated_failure
+unverified_claim
+tool_or_workflow_failure
+successful_pattern
+user_override
+```
+
+Meta-review：
+
+```text
+Observe
+→ cluster Experience Events
+→ 1–3 mutations
+→ replay / held-out eval
+→ PR
+→ promote / rollback
+```
+
+默认 **Propose**，不直接修改主分支。
+
+## 10. Context Checkpoint
+
+只保存未来会用到的信息：
 
 ```markdown
 # Research Quest Context
 
-## 原始需求
-
-## 最终产物
-
-## 已读材料
-
-## 每轮主问题与选择
-| 回合 | 问题 | 用户选择 | 证据级别 | Goal 变化 |
-| --- | --- | --- | --- | --- |
-
-## 用户问题与关卡线索
-
-## 用户主动追加的上下文与任务线索
-
-## Known–Unknown 四象限
-### Known Knowns｜已知的已知
-#### Candidate
-#### Confirmed
-#### Verified
-
-### Unknown Knowns｜未知的已知
-### Known Unknowns｜已知的未知
-### Unknown Unknowns｜未知的未知
-
-## 用户偏好与术语
-
-## Goal 版本记录
-
-## 开放问题与关闭条件
-
-## 成功标准和退出规则
-
-## 保存路径与更新时间
+## Goal / Non-goal
+## Success criteria
+## Hard constraints
+## Verified evidence
+## Active hypotheses
+## Tried-and-failed routes
+## Do-not-repeat
+## Known Unknowns
+## Unknown Unknowns
+## Current best route
+## Next Grill / next executable action
+## Experience events worth retaining
 ```
 
-## 12. 错误防传播
+有写入能力时写明确路径；没有则如实说明仅在会话中。
 
-- 不确定、自相矛盾或未核验：Candidate；
-- 用户明确确认自己的目标、偏好或约束：Confirmed；
-- 在方案、小测、迁移或执行中正确应用：Verified；
-- 错误或证据不足：不进入后续 Goal。
+## 11. Goal Forge
 
-发现错误或冲突时回滚相关 Goal，并用一个更简单的问题重新确认。
-
-## 13. 自适应难度
-
-- Known Knowns 少：少术语、具体对比；
-- Known Unknowns 多：优先关闭用户已经意识到的问题；
-- Unknown Knowns 多：提取理由、经验和偏好；
-- Unknown Unknown 新增：插入失败或风险关；
-- 用户主动线索关闭问题：跳过或缩小原问题；
-- 核心 Known Unknowns 已有关闭条件：停止提问，进入 Goal Forge。
-
-## 14. 最终考试
-
-只设置三道与当前任务直接相关的应用题：
-
-1. 决策应用；
-2. 结果能说明什么、不能说明什么；
-3. 迁移到邻近任务需要增加什么。
-
-正式 Skill 使用解释式评分；离线 Demo 可以使用确定性规则展示流程。
-
-## 15. Codex Goal 模板
+当剩余未知不会改变首轮执行时停止追问。
 
 ```markdown
-# Codex Goal｜<名称>
+# Goal｜<名称>
 
-开始前读取：<Frozen Context 路径>
-不要重复询问已经确认的决定。
-
-## 目标与非目标
-
-## 已读材料和用户偏好
-
-## Known–Unknown 四象限摘要
-
-## 用户问题、关卡线索与主动任务线索
-
-## 输入、步骤、指标和产物
-
-## 成功标准
-
-## Agent 分工与通信
-
-## 测试、独立审查、中文 PR 和合并
-
-## 失败处理
-同一关键问题 3–5 轮实质不同尝试仍失败时，输出根因分析。
+## Objective / Non-goal
+## Verified Context
+## Inputs
+## Active hypotheses / routes
+## Evaluator
+## Success criteria
+## Exploration budget
+## Pruning rules
+## Memory / Do-not-repeat
+## Agent roles (only if useful)
+## Tests / independent review
+## Stop / rollback / escalation
+## Outputs / Handoff
 ```
 
-## 16. 完成检查单
+不要为了多 Agent 而多 Agent。确定性工作优先代码或固定 workflow。
 
-- [ ] 提问前读取了材料；
-- [ ] 没有重复询问文档已有答案；
-- [ ] 每轮默认只有一个关键问题；
-- [ ] 四象限中英标题和位置正确；
-- [ ] “为什么问”引用了文档与认知空缺；
-- [ ] 普通选择写入了 Context；
-- [ ] 最后一个选项是“暂不闯关，我还有一些问题”；
-- [ ] 倒数第二个选项是“我想补充上下文或任务线索”；
-- [ ] 用户问题进入关卡线索并重写当前问题；
-- [ ] 主动线索完成分类、证据判断、去重和冲突检查；
-- [ ] Context 包含主问题、关卡线索和任务线索；
-- [ ] 保存状态真实可核验；
-- [ ] 显示目标进度和当前目标变化 (Goal vN)；
-- [ ] 错误回答或未核验事实未进入后续 Goal；
-- [ ] 最终 Goal 引用 Frozen Context；
-- [ ] 公开产物不含敏感信息或虚构实验结论。
+## 12. Self-Improvement Mutation Contract
+
+每次 Skill 升级候选必须回答：
+
+```markdown
+## Problem
+<真实摩擦>
+
+## Evidence
+<脱敏事件 / replay / test>
+
+## Mutation
+<修改哪些规则/文件>
+
+## Expected improvement
+<目标行为>
+
+## Regression risks
+<可能变差的地方>
+
+## Eval
+<如何证明>
+
+## Promotion gate
+<何时合并>
+
+## Rollback
+<何时撤回>
+```
+
+## 13. 完成检查
+
+- [ ] 没有重复询问已有答案；
+- [ ] Grill 会改变实际决策；
+- [ ] AI 可验证的内容没有推回给用户；
+- [ ] 外部事实没有仅靠自评升为 Verified；
+- [ ] 并行搜索具有路线多样性；
+- [ ] 重复失败形成 do-not-repeat；
+- [ ] Context 只保留未来有价值的信息；
+- [ ] Self-Improvement 只保存脱敏事件；
+- [ ] Mutation 有 eval、回归风险和回滚条件；
+- [ ] 用户要求直接执行时没有被 Skill 阻塞；
+- [ ] 保存状态真实可核验。
