@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -63,3 +65,16 @@ for (const mut of data.candidate_mutations) {
 }
 
 console.log(`self-improvement fixture OK: ${data.events.length} events, ${data.candidate_mutations.length} mutation(s)`);
+
+
+const tmp=fs.mkdtempSync(path.join(os.tmpdir(),"research-quest-rsi-"));
+const eventPath=path.join(tmp,"event.json");
+const ledgerPath=path.join(tmp,"ledger.jsonl");
+fs.writeFileSync(eventPath,JSON.stringify(data.events[0],null,2));
+execFileSync(process.execPath,[path.resolve(here,"record-experience.mjs"),"--event",eventPath,"--ledger",ledgerPath],{stdio:"pipe"});
+const summaryRaw=execFileSync(process.execPath,[path.resolve(here,"summarize-experience.mjs"),"--ledger",ledgerPath],{encoding:"utf8"});
+const summary=JSON.parse(summaryRaw);
+if(summary.events!==1) fail("experience ledger smoke test did not record exactly one event");
+if(!Array.isArray(summary.groups) || summary.groups.length!==1) fail("experience summary smoke test failed");
+fs.rmSync(tmp,{recursive:true,force:true});
+console.log("experience ledger smoke test OK");
