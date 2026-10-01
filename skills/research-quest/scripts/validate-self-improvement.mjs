@@ -76,5 +76,9 @@ const summaryRaw=execFileSync(process.execPath,[path.resolve(here,"summarize-exp
 const summary=JSON.parse(summaryRaw);
 if(summary.events!==1) fail("experience ledger smoke test did not record exactly one event");
 if(!Array.isArray(summary.groups) || summary.groups.length!==1) fail("experience summary smoke test failed");
+const policyPath=path.join(tmp,"local-policy.md");
+execFileSync(process.execPath,[path.resolve(here,"build-local-policy.mjs"),"--ledger",ledgerPath,"--output",policyPath],{stdio:"pipe"});
+const policy=fs.readFileSync(policyPath,"utf8");
+if(!policy.includes("Do not repeat") || !policy.includes(data.events[0].do_not_repeat)) fail("local adaptive policy smoke test failed");
 fs.rmSync(tmp,{recursive:true,force:true});
-console.log("experience ledger smoke test OK");
+console.log("experience ledger + local policy smoke test OK");
