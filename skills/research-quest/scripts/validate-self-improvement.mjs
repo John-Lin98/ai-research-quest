@@ -62,6 +62,17 @@ for (const mut of data.candidate_mutations) {
   if (!["personal","global"].includes(mut.evolution_scope)) fail(`invalid evolution_scope for ${mut.id}`);
   if (!["mutable","protected"].includes(mut.risk_class)) fail(`invalid risk_class for ${mut.id}`);
   if (mut.evolution_scope==="global" && Number(mut.cross_user_support||0) < 2) fail(`global mutation ${mut.id} needs cross-user support`);
+  if (mut.evolution_scope==="personal") {
+    const requiredGates=["truth","task_success","evidence_integrity","independent_judgment","protected_layer"];
+    if (!Array.isArray(mut.objective_hard_gates)) fail(`personal mutation ${mut.id} missing objective_hard_gates`);
+    for (const gate of requiredGates) {
+      if (!mut.objective_hard_gates.includes(gate)) fail(`personal mutation ${mut.id} missing hard gate ${gate}`);
+    }
+    if (mut.personal_fit_can_override_hard_gates !== false) fail(`personal mutation ${mut.id} must forbid personal-fit override`);
+    if (mut.promotion_logic !== "all_hard_gates_pass_and_personal_utility_improves") {
+      fail(`personal mutation ${mut.id} has invalid promotion logic`);
+    }
+  }
   if (!["candidate","accepted","rejected","rolled-back"].includes(mut.promotion_status)) {
     fail(`invalid promotion_status for ${mut.id}`);
   }
