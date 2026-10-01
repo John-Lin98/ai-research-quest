@@ -348,6 +348,16 @@ Personal Utility > Champion
 
 该规则属于 **Protected Layer**，Personal 或 Global Self-Improvement 都不得自动放宽。
 
+### Personal Memory Write Gate
+
+Personal Agent 的“记住”也是一次高风险状态更新。
+
+- `local-policy.md` 只能写行为偏好、协作经验、do-not-repeat 与验证过的有效模式；
+- 事实性内容必须保留 source / attribution / scope / evidence status，并存入 Context/Memory，而不是 behavioral policy；
+- `policy_kind=factual` 的 Experience Event 不得进入 local-policy；
+- 重复出现不能自动把 Candidate 事实升级为 Confirmed/Verified；
+- 用户偏好和用户事实必须区分：偏好可由用户直接 Confirm，外部事实仍需验证。
+
 ---
 
 ## 9. Mutation Contract
