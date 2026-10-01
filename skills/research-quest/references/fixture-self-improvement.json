@@ -75,7 +75,16 @@
       "promotion_status": "candidate",
       "evolution_scope": "personal",
       "risk_class": "mutable",
-      "cross_user_support": 0
+      "cross_user_support": 0,
+      "objective_hard_gates": [
+        "truth",
+        "task_success",
+        "evidence_integrity",
+        "independent_judgment",
+        "protected_layer"
+      ],
+      "personal_fit_can_override_hard_gates": false,
+      "promotion_logic": "all_hard_gates_pass_and_personal_utility_improves"
     }
   ]
 }
