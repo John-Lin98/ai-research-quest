@@ -36,4 +36,4 @@ jobs:
         run: npm run build --prefix app
 
       - name: 公开安全扫描
-        run: node skills/research-quest/scripts/public-safety-scan.mjs --include-dist
+        run: node skills/research-quest/scripts/public-safety-scan.mjs --include-dist --require-approved
