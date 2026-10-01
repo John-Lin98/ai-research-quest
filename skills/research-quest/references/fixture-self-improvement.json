@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "mode": "propose",
+  "session_id": "sanitized-demo-2026-10-01",
+  "events": [
+    {
+      "id": "evt-001",
+      "event_type": "excessive_scaffolding",
+      "symptom": "Every round repeated the full dashboard and score even when the user already understood the framework.",
+      "evidence_summary": "Sanitized maintainer replay: user repeatedly redirected the interaction toward substantive discussion.",
+      "impact": "high",
+      "root_cause_candidate": "Fixed chat template was treated as mandatory instead of adaptive.",
+      "lesson": "Default to lightweight chat; show the full dashboard only when state changes materially or the user asks.",
+      "do_not_repeat": "Do not render full four-quadrant dashboard every round by default.",
+      "proposed_change_scope": [
+        "skills/research-quest/SKILL.md"
+      ],
+      "privacy_status": "sanitized"
+    },
+    {
+      "id": "evt-002",
+      "event_type": "bad_grill",
+      "symptom": "Grill sometimes became a multiple-choice preference question instead of attacking a decisive blind spot.",
+      "evidence_summary": "Sanitized maintainer feedback requested stronger counterexamples, failure analysis and route tradeoffs.",
+      "impact": "high",
+      "root_cause_candidate": "Question-generation rule optimized format completion rather than decision value.",
+      "lesson": "Rank questions by decision impact and use counterexamples for advanced users.",
+      "do_not_repeat": "Do not ask a low-impact preference question when a higher-impact evaluator or failure-mode question exists.",
+      "proposed_change_scope": [
+        "skills/research-quest/SKILL.md",
+        "skills/research-quest/references/rules-and-templates.md"
+      ],
+      "privacy_status": "sanitized"
+    },
+    {
+      "id": "evt-003",
+      "event_type": "successful_pattern",
+      "symptom": "Search/verify/select/remember/evolve framing improved the usefulness of long research discussions.",
+      "evidence_summary": "Sanitized maintainer feedback explicitly requested this loop to become part of the Skill.",
+      "impact": "high",
+      "root_cause_candidate": "none",
+      "lesson": "Preserve the evolutionary loop and make failures update future search policy.",
+      "do_not_repeat": "Do not treat failed routes as disposable chat history.",
+      "proposed_change_scope": [
+        "skills/research-quest/SKILL.md",
+        "skills/research-quest/references/self-improvement-protocol.md"
+      ],
+      "privacy_status": "sanitized"
+    }
+  ],
+  "candidate_mutations": [
+    {
+      "id": "mut-001",
+      "problem_event_ids": [
+        "evt-001",
+        "evt-002",
+        "evt-003"
+      ],
+      "target": "research-quest interaction and evolution policy",
+      "expected_benefit": "Less repetitive UI, higher-value Grill, and reusable experience memory.",
+      "regression_risks": [
+        "May hide too much state for users who prefer dashboards.",
+        "Meta-review could overfit to one session."
+      ],
+      "evals": [
+        "no-repeat",
+        "high-value-grill",
+        "evidence-discipline",
+        "failure-memory",
+        "user-agency"
+      ],
+      "promotion_status": "candidate"
+    }
+  ]
+}
