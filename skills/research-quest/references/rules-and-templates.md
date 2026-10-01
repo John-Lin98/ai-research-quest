@@ -267,6 +267,26 @@ opt-in sanitized signals
 - Mutable：Prompt、Grill、Search policy、Memory 格式、tool routing、workflow、非敏感 UI；通过跨用户证据 + eval 后可自动 merge/release；
 - Protected：隐私、安全、证据纪律、外部验证、evaluator integrity、telemetry、Promotion Gate、user agency；必须人工审批。
 
+### Personal Champion 真值优先
+
+Personal Challenger 只能在以下 Hard Gates 全部 PASS 后比较个性化收益：
+
+- Truth；
+- Task Success；
+- Evidence Integrity；
+- Independent Judgment；
+- Protected Layer。
+
+```text
+PROMOTE
+=
+all hard gates PASS
+AND
+personal utility improves
+```
+
+禁止用“更符合用户偏好 / 更让用户满意”补偿正确性、证据质量或必要反驳能力的下降。
+
 ## 10. Context Checkpoint
 
 只保存未来会用到的信息：
