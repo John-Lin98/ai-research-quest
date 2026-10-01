@@ -254,6 +254,23 @@ Personal Utility improves
 
 禁止通过“更让用户满意”补偿客观正确性、证据质量或独立判断能力的下降。
 
+### Risk-Tiered Non-Inferiority Gate｜已批准方案 C
+
+Objective Gates 不使用统一加权总分，而按任务风险分级：
+
+- **Critical / Protected**：零容差；任何真实回归直接拒绝；
+- **High Risk**：科研事实、研究结论、独立判断等，只允许预先明确且非常小的 non-inferiority margin；
+- **Medium Risk**：一般任务成功、workflow、tool routing，可使用任务级显式 margin；
+- **Low Risk**：格式、表达、非关键交互体验，仅在所有 Objective Gates 通过后优化 utility。
+
+规则：
+- 未声明 margin 时默认 0；
+- margin 必须记录来源和适用范围，不能由 Challenger 自己临时放宽；
+- held-out evidence 不足时状态是 `insufficient_evidence`，不得自动晋升；
+- Personal Fit 永远不能抵消 Objective Gate 的 FAIL。
+
+详细策略见 [references/risk-tiered-promotion.md](references/risk-tiered-promotion.md) 与 [references/promotion-policy.json](references/promotion-policy.json)。
+
 ### Personal Memory Write Gate
 
 Personalization 不能把用户一句未核验的陈述直接固化成长期事实或工作规则。
