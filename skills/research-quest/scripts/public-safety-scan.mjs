@@ -75,6 +75,7 @@ const trackedPublicPathPrefixes = [
   "public/demo-data/",
   "public/en/",
   "skills/research-quest/",
+  "skills/personal-memory/",
   "docs/usage/",
   "docs/maintenance/",
 ];
