@@ -141,6 +141,17 @@ Goal → relevant memory query
 
 ChatGPT Skills 是否可创建/上传取决于账号/工作空间可用性。若当前侧边栏存在 Plugins → Skills → Create，可安装私有 Personal Memory Skill；否则先用 Project instructions + Library canonical files 实现同一协议，后续再切换到 Skill。
 
+## Memory Scope Constitution｜已批准 B
+
+默认：
+- **Preference → user-global**；
+- **Verified Strategy → user-global**；
+- **Fact → project-scoped**。
+
+Fact 只有在 **Verified + 跨项目长期有用 + provenance 完整 + freshness 可判断 + 非敏感** 时，才允许显式 promote 到 user-global。
+
+这意味着“跨项目共享”对 Preference / Strategy 是默认便利，对 Fact 是受控晋升。
+
 ## 推荐第一版
 
 先只实现 Preference + Strategy 的全局用户层；Fact 默认保持 project-scoped，只有跨项目确实有价值且经过验证的事实才进入用户级 Fact Memory。
