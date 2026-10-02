@@ -16,10 +16,12 @@ for(const phrase of ["Fact","Preference","Strategy","Candidate → Confirmed →
 if(fixture.schema_version!=="1.0") fail("wrong schema version");
 if(!Array.isArray(fixture.facts)||!Array.isArray(fixture.preferences)||!Array.isArray(fixture.strategies)) fail("missing stores");
 for(const fact of fixture.facts){
-  for(const k of ["id","statement","attribution","source_ref","scope","memory_scope","evidence_status","updated_at","promotion_reason"]){
+  for(const k of ["id","statement","attribution","source_ref","scope","memory_scope","evidence_status","temporal_type","temporal_status","observed_at","last_verified_at","updated_at","promotion_reason"]){
     if(!(k in fact)) fail(`fact missing ${k}`);
   }
   if(!["candidate","confirmed","verified"].includes(fact.evidence_status)) fail("invalid fact evidence status");
+  if(!["stable","slow-changing","dynamic","version-bound","event-bound","external-current"].includes(fact.temporal_type)) fail("invalid fact temporal type");
+  if(!["active","stale","needs-revalidation","superseded","archived"].includes(fact.temporal_status)) fail("invalid fact temporal status");
   if(!["project","user-global"].includes(fact.memory_scope)) fail("invalid fact memory scope");
   if(fact.memory_scope==="user-global"){
     if(fact.evidence_status!=="verified") fail("user-global fact must be verified");
@@ -40,4 +42,6 @@ const serialized=JSON.stringify(fixture);
 if(/[A-Z]:\\|\/home\/|password|api[_-]?key|secret/i.test(serialized)) fail("fixture appears to contain sensitive data");
 
 if(!skill.includes("Preference / Strategy 的跨项目复用是默认便利；Fact 的跨项目复用是受控晋升")) fail("scope constitution missing");
+if(!skill.includes("Memory Freshness Constitution｜已批准 D-M1-C")) fail("freshness constitution missing");
+if(!skill.includes("verify-on-use")) fail("verify-on-use rule missing");
 console.log("PERSONAL_MEMORY_CONTRACT_OK");
