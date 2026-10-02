@@ -1,16 +1,16 @@
 const stores = {
   facts: {
-    fields: ["id", "statement", "attribution", "source_ref", "scope", "evidence_status", "updated_at"],
+    fields: ["id", "statement", "attribution", "source_ref", "scope", "memory_scope", "evidence_status", "updated_at"],
     statusField: "evidence_status",
     statuses: ["candidate", "confirmed", "verified"],
   },
   preferences: {
-    fields: ["id", "preference", "scope", "priority", "status", "source", "updated_at"],
+    fields: ["id", "preference", "scope", "memory_scope", "priority", "status", "source", "updated_at"],
     statusField: "status",
     statuses: ["confirmed", "superseded"],
   },
   strategies: {
-    fields: ["id", "context_pattern", "strategy", "scope", "evidence", "outcome", "cost", "do_not_repeat", "status", "updated_at"],
+    fields: ["id", "context_pattern", "strategy", "scope", "memory_scope", "evidence", "outcome", "cost", "do_not_repeat", "status", "updated_at"],
     statusField: "status",
     statuses: ["candidate", "verified", "superseded"],
   },
@@ -70,10 +70,31 @@ export function validateMemoryState(state) {
       if (!contract.statuses.includes(entry[contract.statusField])) {
         errors.push(`${location}.${contract.statusField} has an invalid status`);
       }
+      // Creation defaults are policy, never an implicit repair of supplied state.
+      // Free-text scope still describes applicability independently of this enum.
+      if (!["project", "user-global"].includes(entry.memory_scope)) {
+        errors.push(`${location}.memory_scope must be project or user-global`);
+      }
+      if (store === "strategies" && entry.memory_scope === "user-global" && entry.status !== "verified") {
+        errors.push(`${location}.memory_scope requires verified strategy status for user-global`);
+      }
       if (!Number.isFinite(dateValue(entry.updated_at))) {
         errors.push(`${location}.updated_at must be a valid ISO date or timezone-qualified timestamp`);
       }
       if (store === "facts") {
+        if (entry.promotion_reason !== null && !isText(entry.promotion_reason)) {
+          errors.push(`${location}.promotion_reason must be null or a non-empty string`);
+        }
+        if (entry.memory_scope === "user-global") {
+          if (entry.evidence_status !== "verified") {
+            errors.push(`${location}.evidence_status must be verified for user-global facts`);
+          }
+          if (!isText(entry.promotion_reason)) {
+            errors.push(`${location}.promotion_reason must be a non-empty string for user-global facts`);
+          }
+          // Provenance and updated_at are checked for every Fact above. Semantic
+          // usefulness, freshness, sensitivity, and promotion audit need a controller.
+        }
         for (const field of ["valid_from", "valid_until"]) {
           if (entry[field] !== undefined && entry[field] !== null && !Number.isFinite(dateValue(entry[field]))) {
             errors.push(`${location}.${field} must be null or a valid ISO date or timezone-qualified timestamp`);

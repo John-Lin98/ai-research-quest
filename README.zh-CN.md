@@ -68,7 +68,7 @@ ChatGPT Memory             = 软缓存 / 检索层
 Research Quest             = 消费者
 ```
 
-Personal Memory 将长期状态分成 **Fact / Preference / Strategy** 三类。当前每条记录都必须显式声明 scope；缺失时拒绝，不自动赋予全局或项目级范围。“Preference / Strategy 默认跨项目、Fact 默认项目级”仍是待批准提案。
+Personal Memory 将长期状态分成 **Fact / Preference / Strategy** 三类。已批准的 Scope B 规定：Preference 和已验证 Strategy 默认 `user-global`，用户明确限制项目时使用 `project`；未验证 Strategy 保持 `project`；Fact 默认 `project`，仅通过受控晋升才能进入 `user-global`。这些是创建/控制器层的默认策略：每条序列化记录仍须显式声明自由文本 `scope` 和独立的 `memory_scope`（`project` 或 `user-global`）。只读结构校验器会拒绝缺失字段，不自动补默认值，也不判定语义上的晋升资格或执行运行时隔离。
 
 仓库中的 `skills/personal-memory/` 只包含工作流、schema 和公开测试，不包含任何真实用户数据。
 

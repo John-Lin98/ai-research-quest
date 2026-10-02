@@ -62,9 +62,11 @@ statement
 attribution
 source_ref
 scope
+memory_scope: project | user-global
 evidence_status: candidate | confirmed | verified
 valid_from / valid_until
 updated_at
+promotion_reason
 ```
 
 规则：重复出现不等于 Verified；冲突事实并存，直到有证据解决。
@@ -77,6 +79,7 @@ updated_at
 id
 preference
 scope
+memory_scope: project | user-global
 priority
 status
 source
@@ -94,6 +97,7 @@ id
 context_pattern
 strategy
 scope
+memory_scope: project | user-global
 evidence
 outcome
 cost
@@ -142,10 +146,24 @@ Goal → relevant memory query
 
 ChatGPT Skills 是否可创建/上传取决于账号/工作空间可用性。若当前侧边栏存在 Plugins → Skills → Create，可安装私有 Personal Memory Skill；否则先用 Project instructions + Library canonical files 实现同一协议，后续再切换到 Skill。
 
-## 第一版范围方案（待批准）
+## Memory Scope Constitution｜已批准 B
 
-待批准方案：先只实现 Preference + Strategy 的全局用户层；Fact 默认保持 project-scoped，只有跨项目确实有价值且经过验证的事实才进入用户级 Fact Memory。
+创建流程/读写控制器使用以下默认策略：
+- **Preference → user-global**；用户明确限定项目时使用 `project`；
+- **Verified Strategy → user-global**；用户明确限定项目时可使用 `project`；
+- **Non-verified Strategy → project**；`candidate` 和 `superseded` 均不得使用 `user-global`；
+- **Fact → project**。
 
-该方案尚不是默认行为。当前 contract 要求每条 Fact / Preference / Strategy 显式声明 scope；缺失时拒绝，不自行赋予全局范围或跨项目复用权限。结构 validator 不代替实际读写与隔离控制器。
+Fact 只有在 **Verified + 跨项目长期有用 + provenance 完整 + freshness 可判断 + 非敏感** 时，才允许显式 promote 到 user-global。晋升须有非空 `promotion_reason`，过程可审计、可回滚，并在需要时提供 `valid_until` 或 freshness policy。范围晋升本身不升级证据状态。
 
-原因：Preference / Strategy 最能减少重复协作成本，而全局 Fact 最容易造成过期、冲突和错误传播。
+这意味着“跨项目共享”对 Preference / Strategy 是默认便利，对 Fact 是受控晋升。
+
+## 结构契约与控制器边界
+
+每条序列化 Fact / Preference / Strategy 都必须显式声明非空自由文本 `scope`（具体适用范围），以及独立的 `memory_scope` 枚举（`project` 或 `user-global`）。已批准的创建默认策略不改变此要求：缺失时拒绝，结构 validator 不从任一字段推断另一个字段，也不补默认值。
+
+每条 Fact 都必须提供 `promotion_reason`：`project` Fact 可为 null 或非空字符串；`user-global` Fact 必须为非空字符串，且 `evidence_status` 必须为 `verified`。Strategy 只有 `verified` 状态允许 `user-global`；公开 illustrative Strategy 保持 `candidate` 和 `project`。
+
+纯函数 validator 与只读 CLI 仅验证字段、类型、ID、来源文本、日期和这些 scope/status 组合。它们不证明来源真实、结果有效、跨项目用途合理或 freshness/sensitivity 条件已满足，也不执行实际读写、隔离及晋升审计/回滚控制。上述语义要求继续由控制器策略承担，执行机制仍待设计审查；synthetic fixture 通过不构成真实证据。
+
+Preference / Strategy 最能减少重复协作成本，而全局 Fact 最容易造成过期、冲突和错误传播。这里衔接已批准 Scope B 与显式结构契约，不新增 lifecycle、freshness 或隐私/导出策略。

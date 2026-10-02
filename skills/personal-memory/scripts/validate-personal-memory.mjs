@@ -33,6 +33,9 @@ if (fixtureMode) {
   for (const phrase of ["Fact", "Preference", "Strategy", "Candidate → Confirmed → Verified", "Personal Memory Write Gate"]) {
     if (!skill.includes(phrase)) fail(`SKILL missing ${phrase}`);
   }
+  if (!skill.includes("Preference / Strategy 的跨项目复用是默认便利；Fact 的跨项目复用是受控晋升")) {
+    fail("scope constitution missing");
+  }
   if (/[A-Z]:\\|\/home\/|password|api[_-]?key|secret/i.test(JSON.stringify(state))) {
     fail("fixture appears to contain sensitive data");
   }

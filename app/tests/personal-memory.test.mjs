@@ -13,27 +13,34 @@ const fixture = JSON.parse(readFileSync(path.join(skillRoot, "references/fixture
 const fresh = () => structuredClone(fixture);
 const rejects = (state, field) => assert.ok(validateMemoryState(state).some((error) => error.includes(field)), field);
 const required = {
-  facts: ["id", "statement", "attribution", "source_ref", "scope", "evidence_status", "updated_at"],
-  preferences: ["id", "preference", "scope", "priority", "status", "source", "updated_at"],
-  strategies: ["id", "context_pattern", "strategy", "scope", "evidence", "outcome", "cost", "do_not_repeat", "status", "updated_at"],
+  facts: ["id", "statement", "attribution", "source_ref", "scope", "memory_scope", "evidence_status", "updated_at"],
+  preferences: ["id", "preference", "scope", "memory_scope", "priority", "status", "source", "updated_at"],
+  strategies: ["id", "context_pattern", "strategy", "scope", "memory_scope", "evidence", "outcome", "cost", "do_not_repeat", "status", "updated_at"],
 };
 
 test("synthetic fixture is structurally valid and remains a candidate example", () => {
   assert.deepEqual(validateMemoryState(fixture), []);
   assert.equal(fixture.strategies[0].status, "candidate");
+  assert.equal(fixture.strategies[0].memory_scope, "project");
+  assert.equal(fixture.facts[0].memory_scope, "project");
+  assert.equal(fixture.facts[0].promotion_reason, null);
+  assert.equal(fixture.preferences[0].memory_scope, "user-global");
 });
 
-test("validation is pure and never fills in missing scope", () => {
-  const state = fresh();
-  delete state.strategies[0].scope;
-  const before = structuredClone(state);
-  for (const store of Object.keys(required)) {
-    state[store].forEach(Object.freeze);
-    Object.freeze(state[store]);
+test("validation is pure and never fills in either scope field", () => {
+  for (const missingField of [null, "scope", "memory_scope", "promotion_reason"]) {
+    const state = fresh();
+    if (missingField) delete state.facts[0][missingField];
+    const before = structuredClone(state);
+    for (const store of Object.keys(required)) {
+      state[store].forEach(Object.freeze);
+      Object.freeze(state[store]);
+    }
+    Object.freeze(state);
+    if (missingField) rejects(state, `facts[0].${missingField}`);
+    else assert.deepEqual(validateMemoryState(state), []);
+    assert.deepEqual(state, before);
   }
-  Object.freeze(state);
-  rejects(state, "strategies[0].scope");
-  assert.deepEqual(state, before);
 });
 
 test("rejects malformed roots, versions, stores, and entries without throwing", () => {
@@ -82,17 +89,98 @@ test("rejects old status-only preference and strategy counterexamples", () => {
 });
 
 test("verified strategy requires evidence and outcome; this is only a synthetic shape test", () => {
-  const state = fresh();
-  state.strategies[0].status = "verified";
-  // Deliberately synthetic: conformance is not real execution evidence or promotion.
-  assert.deepEqual(validateMemoryState(state), []);
-  for (const field of ["evidence", "outcome"]) {
-    for (const value of [undefined, null, "", "  ", {}, []]) {
-      const invalid = structuredClone(state);
-      invalid.strategies[0][field] = value;
-      rejects(invalid, `strategies[0].${field}`);
+  for (const memoryScope of ["project", "user-global"]) {
+    const state = fresh();
+    state.strategies[0].status = "verified";
+    state.strategies[0].memory_scope = memoryScope;
+    // Deliberately synthetic: conformance is not real execution evidence or promotion.
+    assert.deepEqual(validateMemoryState(state), []);
+    for (const field of ["evidence", "outcome"]) {
+      for (const value of [undefined, null, "", "  ", {}, []]) {
+        const invalid = structuredClone(state);
+        invalid.strategies[0][field] = value;
+        rejects(invalid, `strategies[0].${field}`);
+      }
     }
   }
+});
+
+test("memory_scope is an explicit enum independent of free-text scope in every store", () => {
+  for (const store of Object.keys(required)) {
+    for (const value of ["global", "project-scoped", "USER-GLOBAL", " project", "user-global "]) {
+      const state = fresh();
+      state[store][0].memory_scope = value;
+      rejects(state, `${store}[0].memory_scope`);
+    }
+    for (const memoryScope of ["project", "user-global"]) {
+      const state = fresh();
+      state[store][0].memory_scope = memoryScope;
+      if (store === "facts") {
+        state.facts[0].evidence_status = "verified";
+        state.facts[0].promotion_reason = "Synthetic cross-project example only.";
+      }
+      if (store === "strategies") state.strategies[0].status = "verified";
+      assert.deepEqual(validateMemoryState(state), []);
+      delete state[store][0].scope;
+      rejects(state, `${store}[0].scope`);
+    }
+  }
+});
+
+test("non-verified strategies cannot become user-global by changing memory_scope", () => {
+  for (const status of ["candidate", "superseded"]) {
+    const state = fresh();
+    state.strategies[0].status = status;
+    assert.deepEqual(validateMemoryState(state), []);
+    state.strategies[0].memory_scope = "user-global";
+    rejects(state, "strategies[0].memory_scope");
+    assert.equal(state.strategies[0].status, status);
+  }
+});
+
+test("project facts require a nullable promotion_reason without being promoted", () => {
+  for (const status of ["candidate", "confirmed", "verified"]) {
+    for (const reason of [null, "Synthetic project-only explanation."]) {
+      const state = fresh();
+      state.facts[0].evidence_status = status;
+      state.facts[0].promotion_reason = reason;
+      assert.deepEqual(validateMemoryState(state), []);
+    }
+  }
+  const missing = fresh();
+  delete missing.facts[0].promotion_reason;
+  rejects(missing, "facts[0].promotion_reason");
+  for (const reason of [undefined, "", " \n\t", false, 0, 1, {}, []]) {
+    const state = fresh();
+    state.facts[0].promotion_reason = reason;
+    rejects(state, "facts[0].promotion_reason");
+  }
+});
+
+test("user-global facts need verified status, textual promotion reason, and provenance dates", () => {
+  const state = fresh();
+  state.facts[0].memory_scope = "user-global";
+  state.facts[0].evidence_status = "verified";
+  state.facts[0].promotion_reason = "Synthetic cross-project example only.";
+  assert.deepEqual(validateMemoryState(state), []);
+  for (const status of ["candidate", "confirmed"]) {
+    const invalid = structuredClone(state);
+    invalid.facts[0].evidence_status = status;
+    rejects(invalid, "facts[0].evidence_status");
+    assert.equal(invalid.facts[0].evidence_status, status);
+  }
+  for (const reason of [undefined, null, "", " \n\t", false, 0, 1, {}, []]) {
+    const invalid = structuredClone(state);
+    invalid.facts[0].promotion_reason = reason;
+    rejects(invalid, "facts[0].promotion_reason");
+  }
+  for (const field of ["attribution", "source_ref", "scope", "updated_at"]) {
+    const invalid = structuredClone(state);
+    delete invalid.facts[0][field];
+    rejects(invalid, `facts[0].${field}`);
+  }
+  state.facts[0].updated_at = "2026-02-30";
+  rejects(state, "facts[0].updated_at");
 });
 
 test("checks each store's status enum without changing evidence or lifecycle meanings", () => {
@@ -179,6 +267,8 @@ test("diagnostics identify fields without echoing supplied values", () => {
   state.facts[0].id = "synthetic-sensitive-value";
   state.preferences[0].id = state.facts[0].id;
   state.strategies[0].status = state.facts[0].id;
+  state.facts[0].memory_scope = state.facts[0].id;
+  state.facts[0].promotion_reason = { private: state.facts[0].id };
   const errors = validateMemoryState(state);
   assert.ok(errors.length > 0);
   assert.ok(!errors.join(" ").includes(state.facts[0].id));
@@ -202,6 +292,17 @@ test("CLI retains no-argument fixture check and validates explicitly supplied JS
     invalid.preferences = [{ status: "confirmed" }];
     writeFileSync(input, JSON.stringify(invalid));
     assert.equal(run("--state", input).status, 1);
+    const invalidScope = fresh();
+    invalidScope.strategies[0].memory_scope = "user-global";
+    invalidScope.facts[0].memory_scope = "user-global";
+    writeFileSync(input, JSON.stringify(invalidScope));
+    const scopeBefore = readFileSync(input, "utf8");
+    const rejectedScope = run("--state", input);
+    assert.equal(rejectedScope.status, 1);
+    assert.match(rejectedScope.stderr, /strategies\[0\]\.memory_scope/);
+    assert.match(rejectedScope.stderr, /facts\[0\]\.promotion_reason/);
+    assert.ok(!rejectedScope.stderr.includes(input));
+    assert.equal(readFileSync(input, "utf8"), scopeBefore);
     writeFileSync(input, "not json synthetic content");
     const malformed = run("--state", input);
     assert.equal(malformed.status, 1);
@@ -211,6 +312,21 @@ test("CLI retains no-argument fixture check and validates explicitly supplied JS
     assert.equal(run("--state").status, 1);
     assert.equal(run("--unknown", input).status, 1);
     assert.equal(run("--state", input, "extra").status, 1);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("fixture CLI preserves the upstream Scope B constitution check", () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "personal-memory-scope-"));
+  try {
+    cpSync(skillRoot, dir, { recursive: true });
+    const skillPath = path.join(dir, "SKILL.md");
+    const skill = readFileSync(skillPath, "utf8");
+    writeFileSync(skillPath, skill.replace("Preference / Strategy 的跨项目复用是默认便利；Fact 的跨项目复用是受控晋升", ""));
+    const result = spawnSync(process.execPath, [path.join(dir, "scripts/validate-personal-memory.mjs")], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /scope constitution missing/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
