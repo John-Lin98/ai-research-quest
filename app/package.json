@@ -11,13 +11,15 @@
     "fixture:check": "tsx tests/generate-default-fixture.ts --check-only",
     "lint": "npm run typecheck",
     "test": "npm run test:contract && npm run test:e2e",
-    "test:contract": "npm run fixture:check && tsx tests/contract.spec.ts && tsx tests/security-contract.spec.ts && node tests/validate-fixtures.mjs && node ../skills/research-quest/scripts/generate-test-sessions.mjs --check-only && npm run test:self-improvement && npm run test:promotion-policy && npm run test:personal-memory",
+    "test:contract": "npm run fixture:check && tsx tests/contract.spec.ts && tsx tests/security-contract.spec.ts && node tests/validate-fixtures.mjs && node ../skills/research-quest/scripts/generate-test-sessions.mjs --check-only && npm run test:self-improvement && npm run test:promotion-policy && npm run test:personal-memory && npm run test:replay-policy && npm run test:quest-session",
     "test:e2e": "playwright test",
     "typecheck": "npm run typecheck:core",
     "typecheck:core": "tsc --noEmit -p tsconfig.json --pretty false",
     "test:self-improvement": "node ../skills/research-quest/scripts/validate-self-improvement.mjs",
     "test:promotion-policy": "node ../skills/research-quest/scripts/validate-promotion-policy.mjs",
-    "test:personal-memory": "node ../skills/personal-memory/scripts/validate-personal-memory.mjs"
+    "test:personal-memory": "node ../skills/personal-memory/scripts/validate-personal-memory.mjs",
+    "test:replay-policy": "node ../skills/research-quest/scripts/validate-replay-policy.mjs",
+    "test:quest-session": "node ../skills/research-quest/scripts/validate-quest-session-policy.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

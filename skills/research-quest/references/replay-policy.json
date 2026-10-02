@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "replay_policy": "rolling_three_tier",
+  "tiers": {
+    "dev": {
+      "visibility": "visible",
+      "feedback": "detailed"
+    },
+    "audit": {
+      "visibility": "hidden",
+      "feedback": "limited"
+    },
+    "promotion": {
+      "visibility": "strict-hidden",
+      "feedback": "outcome-only"
+    }
+  },
+  "required_task_fields": [
+    "id",
+    "scope",
+    "task_type",
+    "risk_tier",
+    "goal",
+    "expected_behavior",
+    "must_not_do",
+    "objective_evaluator",
+    "failure_modes",
+    "replay_tier",
+    "feedback_policy",
+    "usage_budget",
+    "usage_count",
+    "retired"
+  ],
+  "rules": {
+    "personal_global_separated": true,
+    "promotion_set_rotates": true,
+    "hidden_usage_budget_required": true,
+    "benchmark_audit_required": true,
+    "promotion_feedback_may_not_be_detailed": true
+  }
+}

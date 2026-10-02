@@ -33,6 +33,21 @@ Research Quest 同时支持三种循环：
 - **Execution Loop**：把明确目标交给 Agent/Codex 执行并验证；
 - **Evolution Loop**：从成功与失败中更新下一轮搜索策略，避免重复试错。
 
+### MVP-first｜小步快跑
+
+默认只实现**能闭环当前任务的最小可行增量**。不要因为讨论到一个潜在能力，就立刻搭建完整子系统。
+
+只有满足以下任一条件才扩大架构：
+- 同类问题重复出现；
+- 已验证的高影响失败暴露系统缺口；
+- 用户明确要求进入更深层实现。
+
+优先：
+```text
+能用 → 实测 → 收集真实问题 → 最小修正 → 再实测
+```
+而不是先把所有可能功能一次性设计完。
+
 ## 2. 启动规则：先恢复真实状态
 
 只读取当前任务真正需要的材料。优先顺序：
@@ -158,7 +173,41 @@ Useful Novel Evidence / (Compute + Time + Human Attention)
 
 3–5 轮实质不同尝试仍无有效信号时，触发 root-cause / route-switch Grill。
 
-## 6. Verification：生成之后必须有现实约束
+## 6. Parallel Exploration / Handoff｜Quest 主线不退出
+
+当 Known Unknown 更适合通过真实执行关闭，而不是继续聊天时，Research Quest 可以派生并行分支。
+
+优先：
+- 实验/评估分支 → `experiment-thread-handoff`；
+- 普通工程、调研、执行分支 → `task-thread-handoff`。
+
+如果对应 Skill 当前不可用，则生成等价 handoff contract，不伪装成已调用。
+
+并行分支至少包含：
+```text
+branch_id
+question / hypothesis
+Goal
+verified context
+success criteria
+constraints
+return contract
+```
+
+主 Quest 保持 `active`。分支状态单独记录为：
+```text
+pending / running / returned / failed / abandoned
+```
+
+分支结果回流后：
+1. 转成 evidence；
+2. 更新 Candidate / Confirmed / Verified；
+3. 更新 Known–Unknown Map；
+4. 决定继续 Grill、派生下一分支或进入 Goal Forge。
+
+不要因为开启并行实验/任务就结束 Quest。
+
+## 7. Verification：生成之后必须有现实约束
 
 优先使用最便宜、最快、最可靠的 evaluator：
 
@@ -170,7 +219,7 @@ Useful Novel Evidence / (Compute + Time + Human Attention)
 
 AI 自评只能作为 Candidate 证据，不能替代外部验证。
 
-## 7. Experience Memory：失败必须成为资产
+## 8. Experience Memory：失败必须成为资产
 
 每个重要尝试至少记录：
 
@@ -195,7 +244,7 @@ Next search implication
 
 Memory 的目标不是保存所有聊天，而是保存**会改变未来决策的经验**。
 
-## 8. Evolution Loop：让搜索策略和 Skill 本身变好
+## 9. Evolution Loop：让搜索策略和 Skill 本身变好
 
 每完成一批任务、出现关键纠错，或用户明确要求优化 Skill 时，做一次轻量 Meta-review：
 
@@ -319,7 +368,69 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 
 这是一种受控 RSI：**改进 workflow / skill / agent / search policy，而不是宣称模型本身已经递归自我提升。**
 
-## 9. Chat Mode：保持轻量
+## 10. Replay Evaluation｜已批准 D-E1-C
+
+Research Quest 的 Evolution Eval 使用 **Rolling Three-Tier Replay**：
+
+```text
+Dev Replay
+→ visible + detailed feedback
+
+Audit Pool
+→ hidden tasks + limited metric feedback
+
+Promotion Vault
+→ strict-hidden + PASS / FAIL / INSUFFICIENT_EVIDENCE
+```
+
+规则：
+
+- Personal Replay 与 Global Replay 严格分开；
+- Promotion Vault 不允许 mutation agent 读取任务内容或逐题错误；
+- hidden set 有 usage budget，达到阈值后 retire / rotate；
+- benchmark 本身要定期 audit；
+- cheap dev subset 用于高频筛选，昂贵 hidden eval 只给有希望的 Challenger；
+- 反复 promotion attempts 会消耗 hidden evaluation budget，防止通过 PASS/FAIL 反馈间接过拟合。
+
+详见：
+[references/rolling-replay-policy.md](references/rolling-replay-policy.md)。
+
+## 11. Persistent Quest Session｜持续 Quest
+
+一旦 Research Quest 被显式启动，或当前线程已经处于 Quest：
+
+```text
+quest_state = active
+```
+
+除非用户**明确表达停止 / 结束 / 退出 Quest**，否则：
+- 普通问答不会退出 Quest；
+- 直接执行命令不会退出 Quest；
+- GitHub / 文件 / 实验工具调用不会退出 Quest；
+- 用户临时插入其他问题后，回答完仍回到 Quest；
+- 并行 handoff 返回后继续原 Quest。
+
+暂停不等于停止；恢复后继续同一 Goal / Map / Progress。
+
+Quest active 时，每轮至少保留：
+```markdown
+## Research Quest｜<当前关卡 / 分支>
+
+**Goal**：
+**已确认**：
+**地图变化**：
+**整体进度**：
+
+### 为什么现在处理它
+...
+
+### 下一步 / Grill / Parallel Branch
+...
+```
+
+完整 Dashboard 仍按需展示，但不能因为一两条用户指令丢失基本 Quest 界面。
+
+## 12. Chat Mode：保持轻量
 
 普通回合默认只展示：
 
@@ -340,7 +451,7 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 
 只有用户要求总览、发生路线切换、准备 Goal Forge 或 Context 明显漂移时，才展示完整四象限 Dashboard。
 
-## 10. 用户打断、追问与补充
+## 13. 用户打断、追问与补充
 
 用户随时可以：
 - 回答 Grill；
@@ -350,14 +461,15 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 - 要求直接执行。
 
 处理规则：
-- 先响应用户当前意图；
+- 先响应用户当前意图，但保持 Quest 基本界面；
 - 更新证据状态和受影响象限；
 - 冲突不得静默覆盖；
 - 已关闭的问题立即跳过；
 - 新风险若改变路线，优先处理；
-- 不因 Skill 流程阻止明确执行请求。
+- 不因 Skill 流程阻止明确执行请求；
+- 只有用户明确停止 Quest 时，才将 `quest_state` 置为 `stopped`。
 
-## 11. Context Checkpoint
+## 14. Context Checkpoint
 
 长任务、线程交接、重大路线变化或执行前，生成 checkpoint。只保留未来需要的信息：
 
@@ -374,7 +486,7 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 
 有文件写入能力时写入项目 Context；没有时明确说明仅存在于会话。不得声称未发生的持久化。
 
-## 12. Goal Forge
+## 15. Goal Forge
 
 当剩余未知不会改变首轮执行方案时，不再继续问，直接生成可执行 Goal。
 
@@ -392,7 +504,7 @@ Goal 至少包含：
 
 不要为了“多 Agent”强制多 Agent。确定性任务优先普通代码或固定 workflow。
 
-## 13. GPT-6 Sol / 强推理模型优化
+## 16. GPT-6 Sol / 强推理模型优化
 
 对 GPT-6 Sol、GPT-6 Astra 及后续强推理模型：
 
@@ -407,7 +519,7 @@ Goal 至少包含：
 
 详细模板见 [references/rules-and-templates.md](references/rules-and-templates.md)。
 
-## 14. 完成检查
+## 17. 完成检查
 
 结束一个 Quest 前确认：
 - 没有重复问材料已有答案；
