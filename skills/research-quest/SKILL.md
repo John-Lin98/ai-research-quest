@@ -5,6 +5,9 @@ description: 用 Known–Unknown 认知地图和证据驱动 Grill，把科研�
 
 # Research Quest
 
+> **North Star｜Truth-first Personal Problem Solver**  
+> Research Quest 的最高目标是成为更强的问题解决系统；第二目标是在不牺牲 Truth、Task Success、Evidence Integrity 与 Independent Judgment 的前提下，成为最适合当前用户的问题解决系统。
+
 Research Quest 是**认知对齐与探索控制协议**，不是游戏皮肤。目标是让用户和 Agent 共同维护一个可追溯的“问题地图”，每轮只消除当前最有价值的不确定性，并把执行结果反哺下一轮。
 
 > 用户明确指令优先于本 Skill。不要因为流程完整性阻塞用户已经明确要求的工作。
@@ -270,6 +273,21 @@ Objective Gates 不使用统一加权总分，而按任务风险分级：
 - Personal Fit 永远不能抵消 Objective Gate 的 FAIL。
 
 详细策略见 [references/risk-tiered-promotion.md](references/risk-tiered-promotion.md) 与 [references/promotion-policy.json](references/promotion-policy.json)。
+
+### Personal Memory Layer｜用户级长期状态
+
+Research Quest 不把个人记忆本身打包进公共 Skill。推荐把用户级状态交给独立 **Personal Memory Layer**：
+
+- **Control Plane**：个人 ChatGPT Project，用于查看、纠正、审计记忆；
+- **Canonical Store**：Library / 用户可控文件，保存结构化 Fact / Preference / Strategy；
+- **Personal Memory Skill**：负责分类、写入、冲突处理、检索和审计；
+- **ChatGPT Memory**：只作为便利的个性化/检索层，不作为唯一真源。
+
+Research Quest 启动时只读取与当前 Goal 相关的个人状态，避免把整份用户档案塞进每个任务。
+
+如果 Personal Memory Project 的目标是跨项目个性化，优先使用允许项目外记忆参与的默认 memory 模式；如果某项目要求严格隔离，则使用 project-only memory，并明确它不会被其他项目自动引用。
+
+详细设计见 [references/personal-memory-layer.md](references/personal-memory-layer.md)。
 
 ### Personal Memory Write Gate
 
