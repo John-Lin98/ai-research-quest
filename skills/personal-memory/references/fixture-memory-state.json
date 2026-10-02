@@ -10,7 +10,9 @@
       "evidence_status": "candidate",
       "valid_from": null,
       "valid_until": null,
-      "updated_at": "2026-10-02"
+      "updated_at": "2026-10-02",
+      "memory_scope": "project",
+      "promotion_reason": null
     }
   ],
   "preferences": [
@@ -21,7 +23,8 @@
       "priority": "normal",
       "status": "confirmed",
       "source": "explicit-user-preference-demo",
-      "updated_at": "2026-10-02"
+      "updated_at": "2026-10-02",
+      "memory_scope": "user-global"
     }
   ],
   "strategies": [
@@ -34,7 +37,8 @@
       "cost": "not-measured",
       "do_not_repeat": "Do not treat this fixture as real user evidence.",
       "status": "candidate",
-      "updated_at": "2026-10-02"
+      "updated_at": "2026-10-02",
+      "memory_scope": "project"
     }
   ]
 }
