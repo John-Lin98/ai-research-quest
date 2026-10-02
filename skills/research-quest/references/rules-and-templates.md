@@ -255,7 +255,7 @@ opt-in sanitized signals
 → Champion–Challenger
 → risk gate
 → PR
-→ auto-promote mutable / human-approve protected
+→ accepted blocked until an approved, frozen executable evidence contract exists
 ```
 
 单一用户重复很多次不能等价为“很多用户都需要”。
@@ -264,7 +264,9 @@ opt-in sanitized signals
 
 ### 分级自治
 
-- Mutable：Prompt、Grill、Search policy、Memory 格式、tool routing、workflow、非敏感 UI；通过跨用户证据 + eval 后可自动 merge/release；
+当前实现 fail-closed：缺少另行批准、冻结且可执行的 evidence-sufficiency / aggregation contract 时，`accepted` 一律以 `insufficient_evidence` 拒绝。以下自治路径是该 contract 落地后的目标；测试通过本身不构成晋升或发布授权。详见 [risk-tiered-promotion.md](risk-tiered-promotion.md)。
+
+- Mutable：Prompt、Grill、Search policy、Memory 格式、tool routing、workflow、非敏感 UI；该 contract、跨用户证据、eval 与 required checks 全通过后才可能自动晋升，merge / release 仍需适当授权；
 - Protected：隐私、安全、证据纪律、外部验证、evaluator integrity、telemetry、Promotion Gate、user agency；必须人工审批。
 
 ### Personal Champion 真值优先
@@ -330,7 +332,10 @@ personal utility improves
 ## Tests / independent review
 ## Stop / rollback / escalation
 ## Outputs / Handoff
+## Authorization boundaries (approved actions / data / destination; pending approvals)
 ```
+
+Goal / Frozen Context 不产生额外执行或分享权限。交接必须携带用户已有审批边界；公开导出或对外交接前检查实际输出是否含私有原文、未公开结果、身份、凭据、私有路径或内部 URL。`sanitized` 标记与模式检查不能证明任意文本安全；不确定内容留在本地。
 
 不要为了多 Agent 而多 Agent。确定性工作优先代码或固定 workflow。
 

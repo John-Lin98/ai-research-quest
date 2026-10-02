@@ -4,10 +4,12 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { loadPromotionPolicy, validateMutationPromotion } from "./validate-promotion-policy.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const fixturePath = path.resolve(here, "../references/fixture-self-improvement.json");
 const data = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
+const promotionPolicy = loadPromotionPolicy();
 
 const allowedModes = new Set(["observe","propose","promote"]);
 const allowedPrivacy = new Set(["sanitized","private-local-only"]);
@@ -47,6 +49,8 @@ if (!Array.isArray(data.candidate_mutations) || data.candidate_mutations.length 
 }
 
 for (const mut of data.candidate_mutations) {
+  const promotionErrors=validateMutationPromotion(mut,promotionPolicy);
+  if(promotionErrors.length) fail(`mutation promotion blocked: ${promotionErrors.join("; ")}`);
   if (!Array.isArray(mut.problem_event_ids) || mut.problem_event_ids.length === 0) {
     fail(`mutation ${mut.id} must cite events`);
   }
@@ -138,6 +142,6 @@ if(report.candidate_count<1) fail("global common-pain gate smoke test failed");
 const expectedPattern=data.events[0].pattern_key;
 const pattern=report.patterns.find(x=>x.pattern_key===expectedPattern);
 if(!pattern || pattern.distinct_sources!==3 || !pattern.global_candidate) fail("global distinct-source aggregation failed");
-console.log("personal/global evolution smoke test OK");
+console.log("personal/global evolution synthetic smoke test OK; buckets are not verified independent users");
 
 fs.rmSync(tmp,{recursive:true,force:true});
