@@ -93,6 +93,7 @@ updated_at
 id
 context_pattern
 strategy
+scope
 evidence
 outcome
 cost
@@ -141,8 +142,10 @@ Goal → relevant memory query
 
 ChatGPT Skills 是否可创建/上传取决于账号/工作空间可用性。若当前侧边栏存在 Plugins → Skills → Create，可安装私有 Personal Memory Skill；否则先用 Project instructions + Library canonical files 实现同一协议，后续再切换到 Skill。
 
-## 推荐第一版
+## 第一版范围方案（待批准）
 
-先只实现 Preference + Strategy 的全局用户层；Fact 默认保持 project-scoped，只有跨项目确实有价值且经过验证的事实才进入用户级 Fact Memory。
+待批准方案：先只实现 Preference + Strategy 的全局用户层；Fact 默认保持 project-scoped，只有跨项目确实有价值且经过验证的事实才进入用户级 Fact Memory。
+
+该方案尚不是默认行为。当前 contract 要求每条 Fact / Preference / Strategy 显式声明 scope；缺失时拒绝，不自行赋予全局范围或跨项目复用权限。结构 validator 不代替实际读写与隔离控制器。
 
 原因：Preference / Strategy 最能减少重复协作成本，而全局 Fact 最容易造成过期、冲突和错误传播。

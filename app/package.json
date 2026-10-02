@@ -17,7 +17,7 @@
     "typecheck:core": "tsc --noEmit -p tsconfig.json --pretty false",
     "test:self-improvement": "node ../skills/research-quest/scripts/validate-self-improvement.mjs",
     "test:promotion-policy": "node ../skills/research-quest/scripts/validate-promotion-policy.mjs",
-    "test:personal-memory": "node ../skills/personal-memory/scripts/validate-personal-memory.mjs"
+    "test:personal-memory": "node ../skills/personal-memory/scripts/validate-personal-memory.mjs && node --test tests/personal-memory.test.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

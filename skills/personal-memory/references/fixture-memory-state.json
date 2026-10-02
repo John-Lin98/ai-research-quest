@@ -29,6 +29,7 @@
       "id": "strategy-demo",
       "context_pattern": "demo-complex-task",
       "strategy": "Use a cheap validation gate before expensive evaluation.",
+      "scope": "demo-project",
       "evidence": "synthetic-contract-example",
       "outcome": "illustrative-only",
       "cost": "not-measured",

@@ -67,6 +67,8 @@ Candidate → Confirmed → Verified
 
 没有 outcome evidence 的建议不能自动写成长期 Strategy。
 
+三类条目均须显式给出 scope；缺失时拒绝结构验证，不自动补成全局或项目范围。Preference / Strategy 默认跨项目复用的方案仍待批准。
+
 ## 3. Read Policy
 
 面对一个 Goal：
@@ -197,3 +199,9 @@ Personal Memory 允许：
 - 后续 Skills 可用时再迁移。
 
 详细架构见 Research Quest 的 `references/personal-memory-layer.md`。
+
+## 12. Contract Validation Boundary
+
+`scripts/memory-state-validator.mjs` 提供纯函数 `validateMemoryState(state)`，检查传入快照的必需非空字段、类型、状态、日期、唯一 ID、来源字段与显式 scope。CLI 无参数时仍检查公共 fixture；`--state path/to/state.json` 只读验证显式输入。
+
+验证通过只说明结构合格，不能证明来源真实、Strategy 有真实结果、已获跨项目复用授权或真实写入已受 gate 控制。公共 illustrative Strategy 必须保持 Candidate；synthetic 负例和正例不构成真实策略证据。冲突、撤回、supersession 与 provenance-preserving delta 的执行控制仍待批准设计，详见 `references/memory-schema.md`。
