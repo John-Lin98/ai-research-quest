@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { assertFeedbackBundle, assertFeedbackSignal, assertObject, assertSourceBucket } from "./global-feedback-contract.mjs";
 
 const args=process.argv.slice(2);
 const get=(name,fallback=null)=>{
@@ -18,34 +19,40 @@ if(!fs.existsSync(ledger)){
   process.exit(2);
 }
 
-fs.mkdirSync(path.dirname(sourceFile),{recursive:true});
-let sourceBucket;
-if(fs.existsSync(sourceFile)){
-  sourceBucket=fs.readFileSync(sourceFile,"utf8").trim();
-}else{
-  sourceBucket=crypto.randomUUID();
-  fs.writeFileSync(sourceFile,sourceBucket+"\n","utf8");
-}
-if(!/^[a-zA-Z0-9._-]{3,80}$/.test(sourceBucket)){
-  throw new Error("source bucket must be opaque and path/email free");
-}
+const sourceExists=fs.existsSync(sourceFile);
+const sourceBucket=sourceExists
+  ? fs.readFileSync(sourceFile,"utf8").trim()
+  : crypto.randomUUID();
+assertSourceBucket(sourceBucket);
 
-const events=fs.readFileSync(ledger,"utf8").split(/\r?\n/).filter(Boolean).map(JSON.parse);
+const events=fs.readFileSync(ledger,"utf8").split(/\r?\n/).flatMap((line,index)=>{
+  if(!line.trim()) return [];
+  try { return [JSON.parse(line)]; }
+  catch { throw new Error(`global feedback validation failed: invalid JSON at ledger line ${index+1}`); }
+});
 const signals=[];
 let skipped=0;
 
 for(const event of events){
-  const key=event.pattern_key || `coarse:${event.event_type}`;
-  if(event.privacy_status!=="sanitized" || key.startsWith("coarse:")){
+  assertObject(event,"ledger event");
+  if(event.privacy_status!=="sanitized"){
     skipped++;
     continue;
   }
-  signals.push({
-    pattern_key:key,
+  // Coarse or absent keys remain local. A sanitized flag alone is not proof.
+  if(event.pattern_key===undefined || event.pattern_key===null || event.pattern_key==="" ||
+      (typeof event.pattern_key==="string" && event.pattern_key.startsWith("coarse:"))){
+    skipped++;
+    continue;
+  }
+  const signal={
+    pattern_key:event.pattern_key,
     event_type:event.event_type,
     impact:event.impact,
-    proposed_change_scope:Array.isArray(event.proposed_change_scope) ? event.proposed_change_scope : []
-  });
+    proposed_change_scope:event.proposed_change_scope
+  };
+  assertFeedbackSignal(signal);
+  signals.push(signal);
 }
 
 const bundle={
@@ -57,6 +64,12 @@ const bundle={
   signals
 };
 
+// Validate the complete projection before creating identifiers or overwriting output.
+assertFeedbackBundle(bundle);
+if(!sourceExists){
+  fs.mkdirSync(path.dirname(sourceFile),{recursive:true});
+  fs.writeFileSync(sourceFile,sourceBucket+"\n","utf8");
+}
 fs.mkdirSync(path.dirname(output),{recursive:true});
 fs.writeFileSync(output,JSON.stringify(bundle,null,2)+"\n","utf8");
 console.log(`global feedback bundle -> ${output}; exported=${signals.length}; skipped=${skipped}`);

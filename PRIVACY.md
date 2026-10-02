@@ -23,6 +23,12 @@ Use only public, simulated, adapted or already deidentified content. Do not ente
 
 Export checks reject common email, credential, token, private-path and excessive-length patterns. Pattern checks reduce accidental disclosure but cannot prove that arbitrary text is safe. The user remains responsible for reviewing every downloaded file before sharing it.
 
+## Local Skill feedback tools
+
+The opt-in CLI exporter writes a local file; it does not upload feedback. It projects only the existing v1 signal fields and checks their types, each string (including every proposed scope and the source bucket), and bundle metadata before writing. The aggregator validates bundles again, including hand-edited inputs. A blocked export or aggregation does not overwrite an existing output file. Public source scans include JSONL ledgers as well as JSON files.
+
+`privacy_status: sanitized` is a claim, not a bypass. These checks detect known unsafe patterns; they do not anonymize arbitrary labels, relative paths, project facts or names. The v1 format still has free-text fields and has no approved semantic allowlist. Review the entire bundle before sharing it. A source bucket is a local identifier, not proof of an independent person, and synthetic aggregation tests are not cross-user research evidence.
+
 ## Demo data
 
 Bundled scenarios are illustrative only. Their provenance and privacy fields explicitly state that they contain no real research results. `privacy.sanitization.review_status: approved` means an independent audit checked a specific candidate snapshot; it is not a general guarantee for later edits or user-entered text.

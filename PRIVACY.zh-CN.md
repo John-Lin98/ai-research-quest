@@ -25,6 +25,12 @@ AI Research Quest 是一个静态、客户端运行的 Demo。
 
 导出检查会拒绝常见的邮箱、凭据、令牌、私有路径和超长文本模式。模式检查可以降低意外泄露，但不能证明任意文本一定安全。分享前，用户仍需自行检查每个下载文件。
 
+## 本地 Skill 反馈工具
+
+明确 opt-in 后，CLI exporter 只写本地文件，不上传反馈。它只投影既有 v1 信号字段，并在写入前校验类型、每个字符串（包括每项 proposed scope 与 source bucket）及 bundle 元数据。Aggregator 会再次校验 bundle，包括手动修改的输入。被阻止的导出或聚合不会覆盖已有输出文件。公开源码扫描同时检查 JSONL ledger 与 JSON 文件。
+
+`privacy_status: sanitized` 是声明，不能跳过检查。这些检查只能识别已知风险模式，不能把任意标签、相对路径、项目事实或姓名自动匿名化。v1 仍包含自由文本字段，也没有已批准的语义白名单；分享前必须检查整个 bundle。Source bucket 只是本地标识，不能证明对应独立个人；合成聚合测试也不构成跨用户科研证据。
+
 ## Demo 数据
 
 内置场景仅用于说明。其来源与隐私字段明确声明不包含真实科研结果。`privacy.sanitization.review_status: approved` 表示独立审计检查了某个特定候选快照，并不保证后续修改或用户输入自动安全。

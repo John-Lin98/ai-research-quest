@@ -370,7 +370,10 @@ Goal 至少包含：
 - Agent roles（仅在确实需要并行时）；
 - tests / independent review；
 - stop / rollback / escalation conditions；
-- output and handoff。
+- output and handoff；
+- 已获用户授权的行动、数据与目标位置，以及仍需批准的行动。
+
+生成或冻结 Goal 不授予执行、上传、发布或联系他人的额外权限；交接时保留用户已设定的审批边界。公开导出或对外 handoff 前，按 [隐私规则](../../PRIVACY.zh-CN.md) 审查实际输出：不复制私有原文、未公开结果、身份信息、凭据、私有路径或内部 URL。机器检查与 `sanitized` 标记不能代替对任意自由文本的审核；无法确认安全时保留本地并说明阻塞。
 
 不要为了“多 Agent”强制多 Agent。确定性任务优先普通代码或固定 workflow。
 

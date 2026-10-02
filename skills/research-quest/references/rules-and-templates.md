@@ -330,7 +330,10 @@ personal utility improves
 ## Tests / independent review
 ## Stop / rollback / escalation
 ## Outputs / Handoff
+## Authorization boundaries (approved actions / data / destination; pending approvals)
 ```
+
+Goal / Frozen Context 不产生额外执行或分享权限。交接必须携带用户已有审批边界；公开导出或对外交接前检查实际输出是否含私有原文、未公开结果、身份、凭据、私有路径或内部 URL。`sanitized` 标记与模式检查不能证明任意文本安全；不确定内容留在本地。
 
 不要为了多 Agent 而多 Agent。确定性工作优先代码或固定 workflow。
 

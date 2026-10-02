@@ -163,6 +163,8 @@ The webpage does not pretend to run an LLM. Real document reading, free-form que
 
 The final Goal should include the Frozen Context path, real objective and non-goals, read documents, cognition map, Q&A clues, proactive task clues, user preferences, inputs, steps, completion criteria, agent roles, tests and review, plus root-cause analysis after 3–5 repeated failures.
 
+The handoff also preserves approved actions, data and destinations, and actions still awaiting approval. Freezing a Goal does not authorize execution or sharing. Review the actual output against the [privacy rules](PRIVACY.md) before public export or external handoff; keep content local if its safety cannot be established.
+
 ## Full Dashboard
 
 The Full Dashboard preserves two seven-level campaigns, the global cognition map, scoring, examination, and Goal history. It is useful for mechanism review, teaching, and project retrospectives. The default entry remains the chat-style Demo.
