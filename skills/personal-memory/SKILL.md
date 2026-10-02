@@ -163,23 +163,139 @@ Strategy 的 freshness 主要由 context / environment 是否变化决定，而�
 
 未明确 temporal type 的 Fact 默认按更保守策略处理，不把旧 Verified 视为永久有效。
 
-## 7. Conflict Policy
+## 7. Memory Conflict Constitution｜已批准 D-M2-C
 
-遇到冲突：
+不同 Memory 类型使用不同冲突裁决，不使用统一“最新值获胜”。
+
+### Preference Conflict
+
+同一 scope 下，用户新的明确偏好可以 supersede 旧偏好。
+
+不同 scope 的偏好可以并存。例如：
+- 工作汇报偏好简洁；
+- 教学解释偏好详细。
+
+不能把局部偏好扩大成全局偏好。
+
+### Fact Conflict
+
+Fact 冲突时比较：
+- source / attribution；
+- evidence status；
+- scope match；
+- freshness / temporal status；
+- version / event applicability。
+
+若证据仍不足：
 
 ```text
-old state
-+
-new state
-→ detect conflict
-→ preserve both with provenance
-→ verify / ask only if needed
-→ supersede explicitly
+conflict_status = unresolved
 ```
+
+保留多个候选版本与 provenance，不强行选一个“当前真相”。
+
+### Strategy Conflict
+
+Strategy 可以同时保留多个版本，只要适用 context 不同。
+
+同一 context 下冲突时比较：
+- outcome evidence；
+- recent successful use；
+- environment / version match；
+- cost / failure history。
+
+只有证据足够时才 supersede。
+
+### Conflict Output
+
+调用方必须能看到：
+- 是否存在冲突；
+- 哪些 entry 冲突；
+- 当前选择的依据；
+- 是否需要 revalidation。
 
 不得静默覆盖。
 
-## 8. Memory Delta
+## 8. Memory Portfolio Retrieval｜已批准 D-M3-C
+
+Memory retrieval 不只按 semantic similarity 排序。
+
+先生成候选，再按以下因素筛选：
+
+```text
+Relevance
+× Scope match
+× Freshness
+× Evidence
+× Action usefulness
+```
+
+同时强制执行 **conflict coverage**：
+- 如果存在会改变决策的冲突记忆，Memory Pack 至少包含一条冲突/警告证据；
+- 不允许为了简洁只返回最方便的一种版本。
+
+最终生成**最小充分 Memory Pack**，而不是把整份用户档案塞入上下文。
+
+Pack 预算根据：
+- task risk；
+- task complexity；
+- available context；
+- conflict density；
+动态调整。
+
+典型复杂科研任务可优先包含：
+- 少量 relevant Preference；
+- 少量 verified Strategy；
+- 与当前 Goal 直接相关的 scoped Fact；
+- 必要的 stale/conflict warning。
+
+## 9. Forgetting / Compaction Constitution｜已批准 D-M4-C
+
+默认生命周期：
+
+```text
+Hot
+→ Warm
+→ Archive
+```
+
+### Hot
+
+当前频繁使用、对任务直接有价值的状态。
+
+### Warm
+
+较少使用、可能仍有价值，但不默认进入每次 retrieval。
+
+### Archive
+
+已 supersede、长期未使用或只用于历史审计的状态。
+
+Archive 不等于删除。
+
+### Hard Delete
+
+只在以下情况执行：
+- 用户明确要求删除；
+- privacy / retention policy 要求；
+- 明确无价值且不需要 provenance 的临时数据。
+
+### Compaction
+
+允许把多个重复 Preference / Strategy 合并成更简洁表示，但必须保留：
+- provenance；
+- source entry IDs；
+- conflict state；
+- evidence state；
+- superseded links。
+
+> 可以压缩内容，不能压缩掉来源、冲突和证据。
+
+### Re-activation
+
+Warm / Archive entry 如果再次与当前 Goal 高度相关，可以重新进入 Hot，但原始 provenance 不变。
+
+## 10. Memory Delta
 
 每次写入后生成简短 delta：
 
@@ -194,7 +310,7 @@ Reason:
 
 没有持久化能力时，只输出 proposed delta，不声称已保存。
 
-## 9. Project / Library Integration
+## 11. Project / Library Integration
 
 推荐用户建立个人 Project 作为管理界面，并在 Library 或用户控制文件中维护 canonical files：
 
@@ -207,7 +323,7 @@ personal-memory/change-log.jsonl
 
 若目标是跨项目个性化，使用允许项目外个性化参与的 memory 设置；如果需要严格隔离，则使用 project-only memory，并接受该项目的内容不会自动被其他项目引用。
 
-## 10. Research Quest Integration
+## 12. Research Quest Integration
 
 Research Quest 只通过最小查询消费 Personal Memory：
 
@@ -221,7 +337,7 @@ Goal
 
 Research Quest 不直接拥有用户长期 profile。
 
-## 11. Personal Evolution
+## 13. Personal Evolution
 
 Personal Memory 允许：
 - 更新 Preference；
@@ -235,13 +351,13 @@ Personal Memory 允许：
 - 把一次成功变成永久 Strategy；
 - 放宽隐私或用户控制权。
 
-## 12. Removal Boundary
+## 14. Removal Boundary
 
 从 canonical Personal Memory files 中移除条目，只代表从该结构化存储中移除。
 
 若用户要求彻底移除 ChatGPT 账户级 Memory，还需要使用 ChatGPT Settings → Personalization 中的 Memory 控制，并处理原始聊天/文件等来源。不要声称仅编辑本 Skill 或文件就完成账户级删除。
 
-## 13. Availability
+## 15. Availability
 
 如果 ChatGPT 当前提供 Skills/Create，可将本 Skill 作为仅自己可用的 companion Skill 安装。
 
