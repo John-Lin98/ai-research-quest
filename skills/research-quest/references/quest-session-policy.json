@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "quest_session": {
+    "default_state_on_trigger": "active",
+    "states": [
+      "active",
+      "paused",
+      "stopped"
+    ],
+    "explicit_stop_required": true,
+    "ordinary_user_instruction_keeps_active": true,
+    "branch_completion_returns_to_active": true
+  },
+  "interface": {
+    "persistent_while_active": true,
+    "required_blocks": [
+      "goal",
+      "confirmed",
+      "map_delta",
+      "progress",
+      "why_now",
+      "next_step"
+    ],
+    "full_dashboard": "on-demand"
+  },
+  "mvp_first": {
+    "default_change_scope": "minimal_viable_delta",
+    "speculative_subsystems_forbidden": true,
+    "expand_only_when": [
+      "repeated_problem",
+      "verified_high_impact_failure",
+      "explicit_user_request"
+    ]
+  },
+  "parallel_handoff": {
+    "enabled": true,
+    "main_quest_remains_active": true,
+    "branch_types": [
+      "experiment",
+      "task"
+    ],
+    "preferred_skills": [
+      "experiment-thread-handoff",
+      "task-thread-handoff"
+    ],
+    "return_contract": [
+      "branch_id",
+      "question",
+      "status",
+      "evidence",
+      "result",
+      "next_implication"
+    ]
+  },
+  "red_green_scenarios": [
+    {
+      "id": "quest-continuity-after-direct-instruction",
+      "start": "active",
+      "event": "ordinary_user_instruction",
+      "expected": "active"
+    },
+    {
+      "id": "parallel-experiment-does-not-end-quest",
+      "start": "active",
+      "event": "spawn_experiment_branch",
+      "expected": "active"
+    },
+    {
+      "id": "explicit-stop-ends-quest",
+      "start": "active",
+      "event": "explicit_user_stop",
+      "expected": "stopped"
+    }
+  ]
+}
