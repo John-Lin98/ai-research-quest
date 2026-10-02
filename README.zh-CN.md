@@ -37,7 +37,7 @@ Observe
 → Promote or rollback
 ```
 
-默认是 **Propose 模式**：可以自动发现问题、提出 Skill 修改、运行评测并生成 PR，但不能绕过测试直接修改主分支。只有通过合同测试、公开安全扫描、证据纪律和 held-out/replay 检查后，才允许升级默认行为。
+默认是 **Propose 模式**：可以自动发现问题、提出 Skill 修改、运行评测并生成 PR，但不能绕过测试直接修改主分支。当前实现 fail-closed：在另行批准并实现冻结、可执行的 evidence-sufficiency / aggregation contract 前，`accepted` mutation 一律以 `insufficient_evidence` 拒绝；合同测试或公开安全扫描通过不能解除晋升阻止。详见[当前校验边界](skills/research-quest/references/risk-tiered-promotion.md)。
 
 这使 Research Quest 从“一次性提示词/流程”变成一个可以积累经验、避免重复犯错并持续改进的受控 RSI Skill。
 
@@ -50,8 +50,8 @@ Research Quest v2.1 将自我改进拆成两级：
 
 默认不开启隐式遥测。Personal 数据留在本地；只有显式 opt-in 后才导出脱敏 global feedback bundle。
 
-同时采用分级自治：
-- **Mutable Layer** 通过跨用户证据和回放评测后可自动晋升；
+分级自治是上述 contract 落地后的目标：
+- **Mutable Layer** 只有在该 contract、跨用户证据、回放评测及 required checks 全部通过后，才可能自动晋升；merge / release 还需适当授权；
 - **Protected Layer**（隐私、安全、证据纪律、evaluator integrity、telemetry、用户控制权）必须人工审批。
 
 ## 在线入口

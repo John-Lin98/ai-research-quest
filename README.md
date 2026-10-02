@@ -217,8 +217,10 @@ Research Quest v2.1 separates self-improvement into two levels:
 
 Implicit telemetry is off by default. Personal data stays local; sanitized global feedback is exported only after explicit opt-in.
 
-Autonomy is risk-tiered:
-- the **Mutable Layer** may auto-promote after cross-user evidence and replay evaluation;
+The current implementation is fail-closed: `accepted` mutations are rejected as `insufficient_evidence` until a separately approved, frozen executable evidence-sufficiency and aggregation contract is implemented. Passing contract tests or safety scans does not unlock promotion. See the [current validation boundary](skills/research-quest/references/risk-tiered-promotion.md).
+
+Risk-tiered autonomy is a target for after that contract exists:
+- the **Mutable Layer** may auto-promote only after that contract, cross-user evidence, replay evaluation and required checks pass; merge and release also require applicable authorization;
 - the **Protected Layer** — privacy, safety, evidence discipline, evaluator integrity, telemetry scope, and user agency — always requires human approval.
 
 Personal Champion promotion also follows a truth-first constitution: personalization may improve *how* the system helps a user, but it may not trade away truth, task success, evidence integrity, independent judgment, or protected safeguards.
