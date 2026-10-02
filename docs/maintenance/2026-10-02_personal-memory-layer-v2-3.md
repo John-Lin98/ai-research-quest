@@ -46,3 +46,26 @@ Research Quest = Consumer
 ## 下一项待审批
 
 是否采用“Preference + Strategy 默认跨项目，Fact 默认项目级”的 Memory Scope Constitution；只有已验证且明确跨项目有价值的 Fact 才允许提升为 user-global Fact。
+
+## Memory Governance 已批准并实现
+
+- D-M1-C：Typed Freshness + Verify-on-use；
+- D-M2-C：Typed Conflict Adjudication；
+- D-M3-C：Memory Portfolio Retrieval；
+- D-M4-C：Hot / Warm / Archive + provenance-preserving compaction。
+
+对应内容已经写入：
+- Personal Memory SKILL；
+- memory schema；
+- public fixture；
+- contract validator；
+- Research Quest Personal Memory reference。
+
+## 剩余大 Boss
+
+Memory 子系统核心架构已收口。大改只剩三项 Evolution Engine 决策：
+1. Replay Benchmark Architecture；
+2. Mutation Trigger + Evolution Budget；
+3. Personal ↔ Global Rebase / Compatibility。
+
+三项通过后建议冻结 v3 架构，转入真实 replay 数据构建、工程实现和长期使用验证。
