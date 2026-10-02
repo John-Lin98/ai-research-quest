@@ -12,7 +12,14 @@
       "valid_until": null,
       "updated_at": "2026-10-02",
       "memory_scope": "project",
-      "promotion_reason": null
+      "promotion_reason": null,
+      "temporal_type": "dynamic",
+      "temporal_status": "active",
+      "observed_at": "2026-10-02",
+      "last_verified_at": "2026-10-02",
+      "stale_after": "2026-10-09",
+      "bound_version": null,
+      "superseded_by": null
     }
   ],
   "preferences": [
