@@ -84,7 +84,7 @@ Candidate → Confirmed → Verified
 - freshness；
 - conflict state。
 
-## 4. Write Gate
+## 4. Personal Memory Write Gate
 
 只有高价值、可复用、会影响未来行为的信息才写长期记忆。
 
