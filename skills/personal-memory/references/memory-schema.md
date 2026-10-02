@@ -10,8 +10,15 @@ source_ref:
 scope:
 memory_scope: project | user-global
 evidence_status: candidate | confirmed | verified
+temporal_type: stable | slow-changing | dynamic | version-bound | event-bound | external-current
+temporal_status: active | stale | needs-revalidation | superseded | archived
 valid_from:
 valid_until:
+observed_at:
+last_verified_at:
+stale_after:
+bound_version:
+superseded_by:
 updated_at:
 promotion_reason:
 ```
@@ -72,3 +79,15 @@ updated_at:
 - Fact defaults to `project`.
 - A Fact may be promoted to `user-global` only when it is Verified, cross-project useful, fresh enough, provenance-complete, non-sensitive, and has an explicit `promotion_reason`.
 - Scope promotion never upgrades evidence status by itself.
+
+
+## Freshness Rules
+
+- Evidence status and temporal status are independent.
+- A Verified Fact can still become `stale` or `needs-revalidation`.
+- High-risk use may require live verification even when temporal_status is `active`.
+- Version-bound Fact becomes stale when its bound version changes.
+- Event-bound Fact should expire or archive after the event.
+- External-current Fact should be reverified on consequential use.
+- Preference has no universal TTL; explicit new preference supersedes old state.
+- Strategy should be revalidated when its context/environment fingerprint changes.
