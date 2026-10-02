@@ -1,0 +1,124 @@
+name: 发布 Research Quest Skill v2.4.0
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查 Release 是否已存在
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v2.4.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 检出主分支
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: 配置 Node.js
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+
+      - name: 安装依赖
+        if: steps.release.outputs.exists != 'true'
+        run: npm ci --prefix app
+
+      - name: 运行完整发布验证
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          npm run test:contract --prefix app
+          npm run build --prefix app
+          node skills/research-quest/scripts/public-safety-scan.mjs --include-dist --require-approved
+
+      - name: 创建 Skill 发行包
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          git archive --format=zip --output=research-quest-skill-v2.4.0.zip HEAD \
+            skills/research-quest \
+            skills/personal-memory \
+            shared/game-state.schema.json \
+            LICENSE \
+            THIRD_PARTY_NOTICES
+          sha256sum research-quest-skill-v2.4.0.zip | tee research-quest-skill-v2.4.0.sha256
+
+      - name: 解包并验证核心能力
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          mkdir /tmp/research-quest-skill-v2.4.0
+          unzip -q research-quest-skill-v2.4.0.zip -d /tmp/research-quest-skill-v2.4.0
+          cd /tmp/research-quest-skill-v2.4.0
+          node skills/research-quest/scripts/generate-test-sessions.mjs --check-only
+          node skills/research-quest/scripts/validate-self-improvement.mjs
+          node skills/research-quest/scripts/validate-promotion-policy.mjs
+          node skills/research-quest/scripts/validate-replay-policy.mjs
+          node skills/research-quest/scripts/validate-quest-session-policy.mjs
+          node skills/personal-memory/scripts/validate-personal-memory.mjs
+          grep -Fq "MVP-first" skills/research-quest/SKILL.md
+          grep -Fq "Persistent Quest Session" skills/research-quest/SKILL.md
+          grep -Fq "experiment-thread-handoff" skills/research-quest/SKILL.md
+          grep -Fq "Memory Freshness Constitution" skills/personal-memory/SKILL.md
+          grep -Fq "Memory Portfolio Retrieval" skills/personal-memory/SKILL.md
+
+      - name: 写入 Release 说明
+        if: steps.release.outputs.exists != 'true'
+        shell: bash
+        run: |
+          cat > release-notes-v2.4.0.md <<'EOF'
+          ## Research Quest Skill v2.4.0
+
+          v2.4 将最近真实 Grill / Quest 使用反馈收敛为最小可用升级：持续 Quest、MVP-first 迭代、并行 handoff、Rolling Three-Tier Replay，以及独立 Personal Memory companion skill。
+
+          ### 核心更新
+
+          - **MVP-first**：先能用 → 实测 → 收集问题 → 最小修正 → 再实测；
+          - **Persistent Quest Session**：Quest 启动后，普通问答、GitHub/文件/实验执行都不会自动退出 Quest；只有用户明确停止才结束；
+          - **Parallel Exploration / Handoff**：支持 experiment-thread-handoff 与 task-thread-handoff 并行探索，结果回流 Known–Unknown Map；
+          - **Rolling Three-Tier Replay**：Dev Replay → hidden Audit → strict-hidden Promotion Vault，并限制隐藏评测重复使用；
+          - **Risk-tiered Promotion**：Protected/Critical 零容差，高/中风险使用显式 non-inferiority；
+          - **Personal Memory**：Fact / Preference / Strategy 分层，Scope/Freshness/Conflict/Retrieval/Forgetting 生命周期完整；
+          - **Truth-first Personal Problem Solver**：个性化不能牺牲事实正确性、证据完整性、独立判断和 Protected Layer。
+
+          ### 安装包
+
+          `research-quest-skill-v2.4.0.zip` 包含：
+          - `skills/research-quest/`；
+          - `skills/personal-memory/`；
+          - `shared/game-state.schema.json`；
+          - MIT License；
+          - 第三方软件说明。
+
+          Personal user overlay 不包含在公开 release 中，继续作为用户私有层维护。
+
+          ZIP SHA-256 见随附 `.sha256` 文件。
+          EOF
+
+      - name: 创建 GitHub Release
+        if: steps.release.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create v2.4.0 \
+            research-quest-skill-v2.4.0.zip \
+            research-quest-skill-v2.4.0.sha256 \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "ba9f48ef21d2a239bbc7855c2d15647313d495a2" \
+            --title "Research Quest Skill v2.4.0" \
+            --notes-file release-notes-v2.4.0.md
