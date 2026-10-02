@@ -134,7 +134,36 @@ Fact 只有同时满足以下条件才能从项目级提升：
 - reusable lesson；
 - do-not-repeat。
 
-## 6. Conflict Policy
+## 6. Memory Freshness Constitution｜已批准 D-M1-C
+
+Evidence status 与 temporal validity 是两个独立维度：
+
+```text
+Evidence:
+Candidate → Confirmed → Verified
+
+Temporal:
+Active → Stale → Revalidate → Superseded / Archive
+```
+
+Fact 按 temporal type 使用不同 freshness policy：
+
+- **Stable**：长期稳定事实；默认无 TTL，冲突时验证；
+- **Slow-changing**：长期方向、职责等；低频复核；
+- **Dynamic**：当前任务、论文状态、实验进展；短周期 freshness；
+- **Version-bound**：模型结果、benchmark、配置；绑定版本，版本变化立即 stale；
+- **Event-bound**：截止日期、会议、预约；事件结束后自动失效；
+- **External-current**：软件功能、价格、政策、当前状态；关键使用前重新验证。
+
+高风险任务采用 **verify-on-use**：即使 Fact 仍为 Active，只要它将影响高风险科研结论、关键决策或外部当前状态，就在使用前重新验证 live state。
+
+Preference 不使用统一 TTL。明确的新偏好可以 supersede 旧偏好；长期未使用只降低 retrieval priority，不自动判为 false。
+
+Strategy 的 freshness 主要由 context / environment 是否变化决定，而不是简单按天过期。环境或版本显著变化时进入 `needs-revalidation`。
+
+未明确 temporal type 的 Fact 默认按更保守策略处理，不把旧 Verified 视为永久有效。
+
+## 7. Conflict Policy
 
 遇到冲突：
 
@@ -150,7 +179,7 @@ new state
 
 不得静默覆盖。
 
-## 7. Memory Delta
+## 8. Memory Delta
 
 每次写入后生成简短 delta：
 
@@ -165,7 +194,7 @@ Reason:
 
 没有持久化能力时，只输出 proposed delta，不声称已保存。
 
-## 8. Project / Library Integration
+## 9. Project / Library Integration
 
 推荐用户建立个人 Project 作为管理界面，并在 Library 或用户控制文件中维护 canonical files：
 
@@ -178,7 +207,7 @@ personal-memory/change-log.jsonl
 
 若目标是跨项目个性化，使用允许项目外个性化参与的 memory 设置；如果需要严格隔离，则使用 project-only memory，并接受该项目的内容不会自动被其他项目引用。
 
-## 9. Research Quest Integration
+## 10. Research Quest Integration
 
 Research Quest 只通过最小查询消费 Personal Memory：
 
@@ -192,7 +221,7 @@ Goal
 
 Research Quest 不直接拥有用户长期 profile。
 
-## 10. Personal Evolution
+## 11. Personal Evolution
 
 Personal Memory 允许：
 - 更新 Preference；
@@ -206,13 +235,13 @@ Personal Memory 允许：
 - 把一次成功变成永久 Strategy；
 - 放宽隐私或用户控制权。
 
-## 11. Removal Boundary
+## 12. Removal Boundary
 
 从 canonical Personal Memory files 中移除条目，只代表从该结构化存储中移除。
 
 若用户要求彻底移除 ChatGPT 账户级 Memory，还需要使用 ChatGPT Settings → Personalization 中的 Memory 控制，并处理原始聊天/文件等来源。不要声称仅编辑本 Skill 或文件就完成账户级删除。
 
-## 12. Availability
+## 13. Availability
 
 如果 ChatGPT 当前提供 Skills/Create，可将本 Skill 作为仅自己可用的 companion Skill 安装。
 
