@@ -19,6 +19,10 @@ Real research need + documents + previous discussion
 → Codex / Agent execution, validation, and delivery
 ```
 
+## Personal Memory Companion
+
+Personal Memory separates long-term state into **Fact / Preference / Strategy**. Every entry currently requires an explicit scope; missing scope is rejected, with no automatic global or project default. Default cross-project reuse for Preference / Strategy and a project-scoped default for Fact remain proposals awaiting approval.
+
 ## Public entry points
 
 - [English chat-style Demo](https://john-lin98.github.io/ai-research-quest/en/)
