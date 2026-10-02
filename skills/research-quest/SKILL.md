@@ -319,7 +319,34 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 
 这是一种受控 RSI：**改进 workflow / skill / agent / search policy，而不是宣称模型本身已经递归自我提升。**
 
-## 9. Chat Mode：保持轻量
+## 9. Replay Evaluation｜已批准 D-E1-C
+
+Research Quest 的 Evolution Eval 使用 **Rolling Three-Tier Replay**：
+
+```text
+Dev Replay
+→ visible + detailed feedback
+
+Audit Pool
+→ hidden tasks + limited metric feedback
+
+Promotion Vault
+→ strict-hidden + PASS / FAIL / INSUFFICIENT_EVIDENCE
+```
+
+规则：
+
+- Personal Replay 与 Global Replay 严格分开；
+- Promotion Vault 不允许 mutation agent 读取任务内容或逐题错误；
+- hidden set 有 usage budget，达到阈值后 retire / rotate；
+- benchmark 本身要定期 audit；
+- cheap dev subset 用于高频筛选，昂贵 hidden eval 只给有希望的 Challenger；
+- 反复 promotion attempts 会消耗 hidden evaluation budget，防止通过 PASS/FAIL 反馈间接过拟合。
+
+详见：
+[references/rolling-replay-policy.md](references/rolling-replay-policy.md)。
+
+## 10. Chat Mode：保持轻量
 
 普通回合默认只展示：
 
@@ -340,7 +367,7 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 
 只有用户要求总览、发生路线切换、准备 Goal Forge 或 Context 明显漂移时，才展示完整四象限 Dashboard。
 
-## 10. 用户打断、追问与补充
+## 11. 用户打断、追问与补充
 
 用户随时可以：
 - 回答 Grill；
@@ -357,7 +384,7 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 - 新风险若改变路线，优先处理；
 - 不因 Skill 流程阻止明确执行请求。
 
-## 11. Context Checkpoint
+## 12. Context Checkpoint
 
 长任务、线程交接、重大路线变化或执行前，生成 checkpoint。只保留未来需要的信息：
 
@@ -374,7 +401,7 @@ Global Evolution 默认不开启隐式遥测；只有用户/部署环境明确 o
 
 有文件写入能力时写入项目 Context；没有时明确说明仅存在于会话。不得声称未发生的持久化。
 
-## 12. Goal Forge
+## 13. Goal Forge
 
 当剩余未知不会改变首轮执行方案时，不再继续问，直接生成可执行 Goal。
 
@@ -392,7 +419,7 @@ Goal 至少包含：
 
 不要为了“多 Agent”强制多 Agent。确定性任务优先普通代码或固定 workflow。
 
-## 13. GPT-6 Sol / 强推理模型优化
+## 14. GPT-6 Sol / 强推理模型优化
 
 对 GPT-6 Sol、GPT-6 Astra 及后续强推理模型：
 
@@ -407,7 +434,7 @@ Goal 至少包含：
 
 详细模板见 [references/rules-and-templates.md](references/rules-and-templates.md)。
 
-## 14. 完成检查
+## 15. 完成检查
 
 结束一个 Quest 前确认：
 - 没有重复问材料已有答案；
