@@ -54,6 +54,24 @@ Research Quest v2.1 将自我改进拆成两级：
 - **Mutable Layer** 通过跨用户证据和回放评测后可自动晋升；
 - **Protected Layer**（隐私、安全、证据纪律、evaluator integrity、telemetry、用户控制权）必须人工审批。
 
+## Personal Memory Companion
+
+v2.3 候选开始把用户级长期记忆从公共 Research Quest Skill 中解耦出来。
+
+推荐架构：
+
+```text
+ChatGPT Personal Project  = 管理界面
+Library / 用户文件         = 可审计真源
+Personal Memory Skill      = 读写控制器
+ChatGPT Memory             = 软缓存 / 检索层
+Research Quest             = 消费者
+```
+
+Personal Memory 将长期状态分成 **Fact / Preference / Strategy** 三类；其中 Preference 与 Strategy 更适合跨项目复用，Fact 默认保持项目级，避免过期或错误事实污染其他任务。
+
+仓库中的 `skills/personal-memory/` 只包含工作流、schema 和公开测试，不包含任何真实用户数据。
+
 ## 在线入口
 
 - [中文聊天式 Demo](https://john-lin98.github.io/ai-research-quest/)

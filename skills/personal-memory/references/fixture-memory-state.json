@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "facts": [
+    {
+      "id": "fact-demo",
+      "statement": "Example fact for contract validation.",
+      "attribution": "demo-source",
+      "source_ref": "reference-demo",
+      "scope": "demo-project",
+      "evidence_status": "candidate",
+      "valid_from": null,
+      "valid_until": null,
+      "updated_at": "2026-10-02",
+      "memory_scope": "project",
+      "promotion_reason": null,
+      "temporal_type": "dynamic",
+      "temporal_status": "active",
+      "observed_at": "2026-10-02",
+      "last_verified_at": "2026-10-02",
+      "stale_after": "2026-10-09",
+      "bound_version": null,
+      "superseded_by": null,
+      "storage_tier": "hot",
+      "retrieval_priority": "high",
+      "last_used_at": "2026-10-02",
+      "use_count": 1,
+      "compacted_from": [],
+      "archived_reason": null
+    }
+  ],
+  "preferences": [
+    {
+      "id": "pref-demo",
+      "preference": "Prefer concise decision summaries in this demo.",
+      "scope": "demo",
+      "priority": "normal",
+      "status": "confirmed",
+      "source": "explicit-user-preference-demo",
+      "updated_at": "2026-10-02",
+      "memory_scope": "user-global",
+      "storage_tier": "hot",
+      "retrieval_priority": "high",
+      "last_used_at": "2026-10-02",
+      "use_count": 1,
+      "compacted_from": [],
+      "archived_reason": null
+    }
+  ],
+  "strategies": [
+    {
+      "id": "strategy-demo",
+      "context_pattern": "demo-complex-task",
+      "strategy": "Use a cheap validation gate before expensive evaluation.",
+      "evidence": "synthetic-contract-example",
+      "outcome": "illustrative-only",
+      "cost": "not-measured",
+      "do_not_repeat": "Do not treat this fixture as real user evidence.",
+      "status": "candidate",
+      "updated_at": "2026-10-02",
+      "memory_scope": "project",
+      "storage_tier": "warm",
+      "retrieval_priority": "normal",
+      "last_used_at": null,
+      "use_count": 0,
+      "compacted_from": [],
+      "archived_reason": null
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-demo",
+      "memory_type": "fact",
+      "entry_ids": [
+        "fact-demo",
+        "fact-demo-alt"
+      ],
+      "conflict": "Synthetic unresolved conflict for contract validation.",
+      "conflict_status": "unresolved",
+      "resolution_status": "pending",
+      "resolution_evidence": null,
+      "updated_at": "2026-10-02"
+    }
+  ],
+  "memory_pack_contract": {
+    "ranking_factors": [
+      "relevance",
+      "scope_match",
+      "freshness",
+      "evidence",
+      "action_usefulness"
+    ],
+    "conflict_coverage": true,
+    "minimal_sufficient": true
+  }
+}

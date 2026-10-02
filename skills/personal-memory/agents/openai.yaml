@@ -1,0 +1,4 @@
+interface:
+  display_name: "Personal Memory"
+  short_description: "Maintain auditable Fact, Preference, and Strategy memory for one user"
+  default_prompt: "Use $personal-memory to retrieve only the personal context relevant to my current goal, classify new information as Fact, Preference, or Strategy, preserve provenance and evidence, and propose or apply a minimal memory delta."
