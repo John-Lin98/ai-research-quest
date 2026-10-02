@@ -67,7 +67,32 @@ Candidate → Confirmed → Verified
 
 没有 outcome evidence 的建议不能自动写成长期 Strategy。
 
-## 3. Read Policy
+## 3. Memory Scope Constitution｜已批准方案 B
+
+默认作用域按记忆类型分层：
+
+| Memory type | Default scope | Promotion rule |
+| --- | --- | --- |
+| Preference | **user-global** | 用户明确限定项目时保持 project-scoped |
+| Strategy | **user-global** | 只有有 outcome evidence 的 Strategy 才能长期生效；未验证候选先留 project-scoped |
+| Fact | **project-scoped** | 仅 Verified + 明确跨项目有价值 + freshness/provenance 完整时可提升到 user-global |
+
+### User-global Fact Promotion Gate
+
+Fact 只有同时满足以下条件才能从项目级提升：
+
+1. `evidence_status = verified`；
+2. 明确说明为什么跨项目长期有用；
+3. 有 source / attribution / scope；
+4. 有 `updated_at`，并在需要时有 `valid_until` 或 freshness policy；
+5. 不属于应隔离的敏感项目事实；
+6. promotion 过程可审计、可回滚。
+
+未满足时继续保持 project-scoped。
+
+> Preference / Strategy 的跨项目复用是默认便利；Fact 的跨项目复用是受控晋升。
+
+## 4. Read Policy
 
 面对一个 Goal：
 
@@ -84,7 +109,7 @@ Candidate → Confirmed → Verified
 - freshness；
 - conflict state。
 
-## 4. Personal Memory Write Gate
+## 5. Personal Memory Write Gate
 
 只有高价值、可复用、会影响未来行为的信息才写长期记忆。
 
@@ -109,7 +134,7 @@ Candidate → Confirmed → Verified
 - reusable lesson；
 - do-not-repeat。
 
-## 5. Conflict Policy
+## 6. Conflict Policy
 
 遇到冲突：
 
@@ -125,7 +150,7 @@ new state
 
 不得静默覆盖。
 
-## 6. Memory Delta
+## 7. Memory Delta
 
 每次写入后生成简短 delta：
 
@@ -140,7 +165,7 @@ Reason:
 
 没有持久化能力时，只输出 proposed delta，不声称已保存。
 
-## 7. Project / Library Integration
+## 8. Project / Library Integration
 
 推荐用户建立个人 Project 作为管理界面，并在 Library 或用户控制文件中维护 canonical files：
 
@@ -153,7 +178,7 @@ personal-memory/change-log.jsonl
 
 若目标是跨项目个性化，使用允许项目外个性化参与的 memory 设置；如果需要严格隔离，则使用 project-only memory，并接受该项目的内容不会自动被其他项目引用。
 
-## 8. Research Quest Integration
+## 9. Research Quest Integration
 
 Research Quest 只通过最小查询消费 Personal Memory：
 
@@ -167,7 +192,7 @@ Goal
 
 Research Quest 不直接拥有用户长期 profile。
 
-## 9. Personal Evolution
+## 10. Personal Evolution
 
 Personal Memory 允许：
 - 更新 Preference；
@@ -181,13 +206,13 @@ Personal Memory 允许：
 - 把一次成功变成永久 Strategy；
 - 放宽隐私或用户控制权。
 
-## 10. Removal Boundary
+## 11. Removal Boundary
 
 从 canonical Personal Memory files 中移除条目，只代表从该结构化存储中移除。
 
 若用户要求彻底移除 ChatGPT 账户级 Memory，还需要使用 ChatGPT Settings → Personalization 中的 Memory 控制，并处理原始聊天/文件等来源。不要声称仅编辑本 Skill 或文件就完成账户级删除。
 
-## 11. Availability
+## 12. Availability
 
 如果 ChatGPT 当前提供 Skills/Create，可将本 Skill 作为仅自己可用的 companion Skill 安装。
 
