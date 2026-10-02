@@ -157,3 +157,25 @@ Fact 只有在 **Verified + 跨项目长期有用 + provenance 完整 + freshnes
 先只实现 Preference + Strategy 的全局用户层；Fact 默认保持 project-scoped，只有跨项目确实有价值且经过验证的事实才进入用户级 Fact Memory。
 
 原因：Preference / Strategy 最能减少重复协作成本，而全局 Fact 最容易造成过期、冲突和错误传播。
+
+## Memory Governance Constitution｜已批准
+
+### D-M2-C Typed Conflict Adjudication
+- Preference：同 scope 的新明确偏好可 supersede；不同 scope 可并存。
+- Fact：按 source / evidence / scope / freshness / version-event applicability 裁决；证据不足时保留 unresolved conflict。
+- Strategy：按 context / outcome / environment / cost 比较；不同 context 可并存。
+
+### D-M3-C Memory Portfolio Retrieval
+- 不使用纯 semantic top-k；
+- 使用 relevance × scope × freshness × evidence × action usefulness；
+- consequential conflict 必须覆盖；
+- 返回 minimal sufficient Memory Pack；
+- retrieval budget 随风险、复杂度、冲突密度动态调整。
+
+### D-M4-C Hot / Warm / Archive
+- Hot：当前频繁有用；
+- Warm：可能有用但不默认检索；
+- Archive：历史审计 / superseded / 低优先级；
+- Archive ≠ delete；
+- compaction 必须保留 provenance、source IDs、evidence、conflict、superseded links；
+- hard delete 只用于明确删除、retention/privacy 要求或无需审计的临时数据。
