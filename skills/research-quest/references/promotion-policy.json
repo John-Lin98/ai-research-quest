@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "strategy": "risk_tiered_non_inferiority",
+  "principles": {
+    "protected_zero_tolerance": true,
+    "personal_fit_cannot_offset_objective_regression": true,
+    "unspecified_margin_defaults_to_zero": true,
+    "promotion_requires_held_out_evidence": true
+  },
+  "tiers": {
+    "critical": {
+      "examples": [
+        "privacy",
+        "safety",
+        "evidence_integrity",
+        "memory_write_gate",
+        "evaluator_integrity",
+        "telemetry_scope",
+        "promotion_gate",
+        "user_agency"
+      ],
+      "margin_policy": "zero",
+      "human_approval": "required_if_changed"
+    },
+    "high": {
+      "examples": [
+        "scientific_factuality",
+        "research_claim_validity",
+        "independent_judgment",
+        "high_stakes_task_success"
+      ],
+      "margin_policy": "explicit_small_non_inferiority_margin_required",
+      "human_approval": "required_for_margin_change"
+    },
+    "medium": {
+      "examples": [
+        "general_task_success",
+        "workflow_quality",
+        "tool_routing"
+      ],
+      "margin_policy": "explicit_non_inferiority_margin_required",
+      "human_approval": "not_required_if_within_approved_policy"
+    },
+    "low": {
+      "examples": [
+        "formatting",
+        "verbosity",
+        "interaction_style",
+        "noncritical_latency"
+      ],
+      "margin_policy": "utility_optimization_after_objective_gates",
+      "human_approval": "not_required_if_within_approved_policy"
+    }
+  },
+  "required_metric_fields": [
+    "metric_id",
+    "risk_tier",
+    "direction",
+    "champion_value",
+    "challenger_value",
+    "margin",
+    "margin_source",
+    "held_out",
+    "decision"
+  ],
+  "allowed_decisions": [
+    "pass",
+    "fail",
+    "insufficient_evidence"
+  ]
+}
