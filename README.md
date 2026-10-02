@@ -19,6 +19,12 @@ Real research need + documents + previous discussion
 → Codex / Agent execution, validation, and delivery
 ```
 
+## Personal Memory Companion
+
+Personal Memory separates long-term state into **Fact / Preference / Strategy**. Under approved Scope B, Preference and verified Strategy default to `user-global` unless explicitly restricted to a project; non-verified Strategy stays `project`, and Fact defaults to `project` with guarded promotion to `user-global`. These are creation/controller defaults: every serialized entry still requires an explicit free-text `scope` and a separate `memory_scope` (`project` or `user-global`). The read-only structural validator rejects missing fields and never fills defaults; it does not establish semantic promotion eligibility or enforce runtime isolation.
+
+D-M1–D-M4 freshness, conflict, retrieval, and compaction policies are approved. The repository currently verifies their documentation and synthetic fixture contracts; it does not implement runtime governance. Existing snapshots need no new governance fields, while declared temporal/storage-tier enums are checked. See the [exact validation boundary](skills/personal-memory/references/memory-schema.md#executable-state-contract).
+
 ## Public entry points
 
 - [English chat-style Demo](https://john-lin98.github.io/ai-research-quest/en/)

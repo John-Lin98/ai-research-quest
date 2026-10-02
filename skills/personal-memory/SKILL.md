@@ -43,9 +43,10 @@ ChatGPT Memory       → Soft retrieval cache
 - statement；
 - attribution；
 - source / source_ref；
-- scope；
+- scope / memory_scope；
 - evidence_status；
-- validity / updated_at。
+- validity / updated_at；
+- promotion_reason（项目级可为 null）。
 
 证据状态：
 
@@ -69,26 +70,31 @@ Candidate → Confirmed → Verified
 
 ## 3. Memory Scope Constitution｜已批准方案 B
 
-默认作用域按记忆类型分层：
+默认作用域按记忆类型分层，由创建流程/读写控制器应用：
 
-| Memory type | Default scope | Promotion rule |
+| Memory type | Default memory_scope | Scope rule |
 | --- | --- | --- |
-| Preference | **user-global** | 用户明确限定项目时保持 project-scoped |
-| Strategy | **user-global** | 只有有 outcome evidence 的 Strategy 才能长期生效；未验证候选先留 project-scoped |
-| Fact | **project-scoped** | 仅 Verified + 明确跨项目有价值 + freshness/provenance 完整时可提升到 user-global |
+| Preference | **user-global** | 用户明确限定项目时使用 `project` |
+| Verified Strategy | **user-global** | 有真实 outcome evidence；用户明确限定项目时可使用 `project` |
+| Non-verified Strategy | **project** | `candidate` 和 `superseded` 均不能使用 `user-global` |
+| Fact | **project** | 仅 Verified + 明确跨项目有价值 + freshness/provenance 完整时可受控提升到 `user-global` |
+
+三类序列化条目均须显式提供非空自由文本 `scope`（具体适用范围）和独立的 `memory_scope`（只能为 `project` 或 `user-global`）。创建默认策略不等于验证器补值：缺失任一字段均拒绝结构验证，不从另一字段推断或自动填充。
 
 ### User-global Fact Promotion Gate
 
 Fact 只有同时满足以下条件才能从项目级提升：
 
 1. `evidence_status = verified`；
-2. 明确说明为什么跨项目长期有用；
+2. 用非空 `promotion_reason` 明确说明为什么跨项目长期有用；
 3. 有 source / attribution / scope；
 4. 有 `updated_at`，并在需要时有 `valid_until` 或 freshness policy；
 5. 不属于应隔离的敏感项目事实；
 6. promotion 过程可审计、可回滚。
 
-未满足时继续保持 project-scoped。
+未满足时继续保持 project-scoped。提升范围本身不能升级证据状态。每条 Fact 都必须显式提供 `promotion_reason`：`project` Fact 可为 null 或非空字符串；`user-global` Fact 必须为非空字符串且保持 Verified。
+
+结构验证只检查可表达的字段、枚举和状态组合；跨项目 usefulness、freshness policy、敏感性及 promotion 的可审计/回滚性仍是控制器策略要求，不能从验证通过推断已满足，执行控制仍待设计审查。
 
 > Preference / Strategy 的跨项目复用是默认便利；Fact 的跨项目复用是受控晋升。
 
@@ -104,7 +110,7 @@ Fact 只有同时满足以下条件才能从项目级提升：
 
 输出给调用方时注明：
 - memory type；
-- scope；
+- scope / memory_scope；
 - evidence；
 - freshness；
 - conflict state。
@@ -367,3 +373,9 @@ Personal Memory 允许：
 - 后续 Skills 可用时再迁移。
 
 详细架构见 Research Quest 的 `references/personal-memory-layer.md`。
+
+## 16. Contract Validation Boundary
+
+`scripts/memory-state-validator.mjs` 提供纯函数 `validateMemoryState(state)`，检查传入快照的必需字段、类型、状态、日期、唯一 ID、来源字段、显式自由文本 `scope` 与 `memory_scope` 枚举，以及上述 Strategy/Fact 的结构性跨项目限制。它不修改输入，也不自动补默认值。已声明的 Fact `temporal_type` / `temporal_status` 与各类 `storage_tier` 按 schema 枚举检查，但这些扩展不成为真实快照的新必填字段。CLI 无参数时另做严格公共 fixture 检查；`--state path/to/state.json` 只读验证显式输入，不要求新增 conflicts 或 memory-pack 声明。
+
+验证通过只说明结构合格，不能证明来源真实、Strategy 有真实结果、已获跨项目复用授权或真实写入已受 gate 控制。公共 illustrative Strategy 必须保持 Candidate；synthetic 负例和正例不构成真实策略证据。Scope B 与 D-M1–D-M4 治理策略已获批准；当前实现是文档与静态契约检查，不能据此声称 live verification、冲突裁决、检索、归档/压缩或撤回已在运行时执行。对应控制器与运行时测试仍待实现。fixture 的 temporal 字段、storage tier、conflict 形状和 retrieval flags 检查不改变任意快照的必填格式；精确边界见 `references/memory-schema.md`。
