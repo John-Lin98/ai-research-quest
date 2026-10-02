@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "facts": [
+    {
+      "id": "fact-demo",
+      "statement": "Example fact for contract validation.",
+      "attribution": "demo-source",
+      "source_ref": "reference-demo",
+      "scope": "demo-project",
+      "evidence_status": "candidate",
+      "valid_from": null,
+      "valid_until": null,
+      "updated_at": "2026-10-02"
+    }
+  ],
+  "preferences": [
+    {
+      "id": "pref-demo",
+      "preference": "Prefer concise decision summaries in this demo.",
+      "scope": "demo",
+      "priority": "normal",
+      "status": "confirmed",
+      "source": "explicit-user-preference-demo",
+      "updated_at": "2026-10-02"
+    }
+  ],
+  "strategies": [
+    {
+      "id": "strategy-demo",
+      "context_pattern": "demo-complex-task",
+      "strategy": "Use a cheap validation gate before expensive evaluation.",
+      "evidence": "synthetic-contract-example",
+      "outcome": "illustrative-only",
+      "cost": "not-measured",
+      "do_not_repeat": "Do not treat this fixture as real user evidence.",
+      "status": "candidate",
+      "updated_at": "2026-10-02"
+    }
+  ]
+}
