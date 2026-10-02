@@ -19,7 +19,13 @@
       "last_verified_at": "2026-10-02",
       "stale_after": "2026-10-09",
       "bound_version": null,
-      "superseded_by": null
+      "superseded_by": null,
+      "storage_tier": "hot",
+      "retrieval_priority": "high",
+      "last_used_at": "2026-10-02",
+      "use_count": 1,
+      "compacted_from": [],
+      "archived_reason": null
     }
   ],
   "preferences": [
@@ -31,7 +37,13 @@
       "status": "confirmed",
       "source": "explicit-user-preference-demo",
       "updated_at": "2026-10-02",
-      "memory_scope": "user-global"
+      "memory_scope": "user-global",
+      "storage_tier": "hot",
+      "retrieval_priority": "high",
+      "last_used_at": "2026-10-02",
+      "use_count": 1,
+      "compacted_from": [],
+      "archived_reason": null
     }
   ],
   "strategies": [
@@ -45,7 +57,39 @@
       "do_not_repeat": "Do not treat this fixture as real user evidence.",
       "status": "candidate",
       "updated_at": "2026-10-02",
-      "memory_scope": "project"
+      "memory_scope": "project",
+      "storage_tier": "warm",
+      "retrieval_priority": "normal",
+      "last_used_at": null,
+      "use_count": 0,
+      "compacted_from": [],
+      "archived_reason": null
     }
-  ]
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-demo",
+      "memory_type": "fact",
+      "entry_ids": [
+        "fact-demo",
+        "fact-demo-alt"
+      ],
+      "conflict": "Synthetic unresolved conflict for contract validation.",
+      "conflict_status": "unresolved",
+      "resolution_status": "pending",
+      "resolution_evidence": null,
+      "updated_at": "2026-10-02"
+    }
+  ],
+  "memory_pack_contract": {
+    "ranking_factors": [
+      "relevance",
+      "scope_match",
+      "freshness",
+      "evidence",
+      "action_usefulness"
+    ],
+    "conflict_coverage": true,
+    "minimal_sufficient": true
+  }
 }
