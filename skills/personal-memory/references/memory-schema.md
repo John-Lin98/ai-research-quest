@@ -91,3 +91,54 @@ updated_at:
 - External-current Fact should be reverified on consequential use.
 - Preference has no universal TTL; explicit new preference supersedes old state.
 - Strategy should be revalidated when its context/environment fingerprint changes.
+
+
+## Governance Fields
+
+Common optional lifecycle fields:
+
+```yaml
+storage_tier: hot | warm | archive
+retrieval_priority:
+last_used_at:
+use_count:
+compacted_from:
+archived_reason:
+```
+
+## Conflict Rules
+
+### Preference
+- same scope + explicit newer user statement may supersede;
+- different scopes may coexist.
+
+### Fact
+- adjudicate with source, evidence, scope, freshness, and version/event applicability;
+- unresolved conflict is allowed;
+- never silently overwrite.
+
+### Strategy
+- context-specific strategies may coexist;
+- supersede only when outcome evidence and context match justify it.
+
+## Retrieval Rules
+
+Candidate memories should be ranked using:
+- semantic relevance;
+- scope match;
+- freshness;
+- evidence strength;
+- action usefulness.
+
+If a consequential conflict exists, retrieval must include conflict coverage rather than returning only the highest-scoring convenient entry.
+
+The output should be a minimal sufficient Memory Pack.
+
+## Forgetting / Compaction Rules
+
+- Hot: active/frequently useful.
+- Warm: lower-frequency but still potentially useful.
+- Archive: superseded, historical, or low-priority.
+- Archive is not deletion.
+- Compaction must preserve provenance, source IDs, evidence state, conflict state, and superseded links.
+- Hard delete is reserved for explicit user deletion, retention/privacy requirements, or disposable data with no audit value.
