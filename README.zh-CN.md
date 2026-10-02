@@ -70,6 +70,8 @@ Research Quest             = 消费者
 
 Personal Memory 将长期状态分成 **Fact / Preference / Strategy** 三类。已批准的 Scope B 规定：Preference 和已验证 Strategy 默认 `user-global`，用户明确限制项目时使用 `project`；未验证 Strategy 保持 `project`；Fact 默认 `project`，仅通过受控晋升才能进入 `user-global`。这些是创建/控制器层的默认策略：每条序列化记录仍须显式声明自由文本 `scope` 和独立的 `memory_scope`（`project` 或 `user-global`）。只读结构校验器会拒绝缺失字段，不自动补默认值，也不判定语义上的晋升资格或执行运行时隔离。
 
+D-M1–D-M4 的 freshness、冲突、检索和压缩策略已获批准。当前仓库只验证对应文档与 synthetic fixture 静态契约，不代表治理已在运行时执行。旧快照无需新增治理字段；已声明的 temporal/storage-tier 枚举会检查。详见[精确验证边界](skills/personal-memory/references/memory-schema.md#executable-state-contract)。
+
 仓库中的 `skills/personal-memory/` 只包含工作流、schema 和公开测试，不包含任何真实用户数据。
 
 ## 在线入口

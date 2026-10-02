@@ -6,10 +6,12 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { validateMemoryState } from "../../skills/personal-memory/scripts/memory-state-validator.mjs";
+import { validateMemoryFixture } from "../../skills/personal-memory/scripts/memory-fixture-validator.mjs";
 
 const skillRoot = fileURLToPath(new URL("../../skills/personal-memory/", import.meta.url));
 const cli = path.join(skillRoot, "scripts/validate-personal-memory.mjs");
 const fixture = JSON.parse(readFileSync(path.join(skillRoot, "references/fixture-memory-state.json"), "utf8"));
+const skillText = readFileSync(path.join(skillRoot, "SKILL.md"), "utf8");
 const fresh = () => structuredClone(fixture);
 const rejects = (state, field) => assert.ok(validateMemoryState(state).some((error) => error.includes(field)), field);
 const required = {
@@ -203,7 +205,7 @@ test("IDs are unique within and across stores", () => {
   for (const store of Object.keys(required)) {
     const state = fresh();
     state[store].push(structuredClone(state[store][0]));
-    rejects(state, `${store}[1].id`);
+    rejects(state, `${store}[${state[store].length - 1}].id`);
   }
   const state = fresh();
   state.strategies[0].id = state.facts[0].id;
@@ -342,6 +344,263 @@ test("public fixture CLI refuses to present synthetic strategies as verified", (
     const result = spawnSync(process.execPath, [path.join(dir, "scripts/validate-personal-memory.mjs")], { encoding: "utf8" });
     assert.equal(result.status, 1);
     assert.match(result.stderr, /illustrative fixture strategies must remain candidate/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+const fixtureRejects = (state, field) => assert.ok(validateMemoryFixture(state, skillText).some((error) => error.includes(field)), field);
+const temporalEnums = {
+  temporal_type: ["stable", "slow-changing", "dynamic", "version-bound", "event-bound", "external-current"],
+  temporal_status: ["active", "stale", "needs-revalidation", "superseded", "archived"],
+};
+const tiers = ["hot", "warm", "archive"];
+const legacyState = () => {
+  const state = fresh();
+  for (const store of Object.keys(required)) {
+    for (const entry of state[store]) {
+      for (const field of Object.keys(entry)) {
+        if (!required[store].includes(field) && !(store === "facts" && ["promotion_reason", "valid_from", "valid_until"].includes(field))) {
+          delete entry[field];
+        }
+      }
+    }
+  }
+  delete state.conflicts;
+  delete state.memory_pack_contract;
+  return state;
+};
+
+test("legacy arbitrary state without governance extensions remains valid without defaults", () => {
+  const state = legacyState();
+  const before = structuredClone(state);
+  const freeze = (value) => {
+    if (value && typeof value === "object") {
+      Object.values(value).forEach(freeze);
+      Object.freeze(value);
+    }
+  };
+  freeze(state);
+  assert.deepEqual(validateMemoryState(state), []);
+  assert.deepEqual(state, before);
+  fixtureRejects(state, "temporal_type");
+  fixtureRejects(state, "storage_tier");
+  fixtureRejects(state, "conflicts");
+  fixtureRejects(state, "memory_pack_contract");
+});
+
+test("declared optional temporal and storage enums are checked without coupling evidence or lifecycle", () => {
+  for (const [field, values] of Object.entries(temporalEnums)) {
+    for (const value of [...values, undefined, null, "", "invalid", "ACTIVE", 0, false, {}, []]) {
+      const state = legacyState();
+      state.facts[0][field] = value;
+      if (values.includes(value)) assert.deepEqual(validateMemoryState(state), []);
+      else rejects(state, `facts[0].${field}`);
+    }
+  }
+  for (const store of Object.keys(required)) {
+    for (const value of [...tiers, undefined, null, "", "archived", "Hot", 0, false, {}, []]) {
+      const state = legacyState();
+      state[store][0].storage_tier = value;
+      if (tiers.includes(value)) assert.deepEqual(validateMemoryState(state), []);
+      else rejects(state, `${store}[0].storage_tier`);
+    }
+  }
+  for (const evidenceStatus of ["candidate", "confirmed", "verified"]) {
+    for (const temporalStatus of temporalEnums.temporal_status) {
+      const state = fresh();
+      state.facts[0].evidence_status = evidenceStatus;
+      state.facts[0].temporal_status = temporalStatus;
+      const before = structuredClone(state);
+      assert.deepEqual(validateMemoryState(state), []);
+      assert.deepEqual(state, before);
+    }
+  }
+});
+
+test("fixture retains every upstream required temporal field and storage-tier guard", () => {
+  assert.deepEqual(validateMemoryFixture(fixture, skillText), []);
+  for (const field of ["temporal_type", "temporal_status", "observed_at", "last_verified_at"]) {
+    const state = fresh();
+    delete state.facts[0][field];
+    assert.deepEqual(validateMemoryState(state), []);
+    fixtureRejects(state, `facts[0].${field}`);
+  }
+  for (const [field, values] of Object.entries(temporalEnums)) {
+    for (const value of [...values, null, "invalid", 0, {}, []]) {
+      const state = fresh();
+      state.facts[0][field] = value;
+      if (values.includes(value)) assert.deepEqual(validateMemoryFixture(state, skillText), []);
+      else fixtureRejects(state, `facts[0].${field}`);
+    }
+  }
+  for (const store of Object.keys(required)) {
+    const missing = fresh();
+    delete missing[store][0].storage_tier;
+    assert.deepEqual(validateMemoryState(missing), []);
+    fixtureRejects(missing, `${store}[0].storage_tier`);
+    for (const value of [...tiers, null, "invalid", 0, {}, []]) {
+      const state = fresh();
+      state[store][0].storage_tier = value;
+      if (tiers.includes(value)) assert.deepEqual(validateMemoryFixture(state, skillText), []);
+      else fixtureRejects(state, `${store}[0].storage_tier`);
+    }
+  }
+});
+
+test("fixture retains conflict-store, type, status, and two-entry static checks safely", () => {
+  for (const value of [undefined, null, {}, "conflicts", false, 1]) {
+    const state = fresh();
+    state.conflicts = value;
+    fixtureRejects(state, "conflicts");
+  }
+  for (const value of [null, [], "entry", false, 1]) {
+    const state = fresh();
+    state.conflicts = [value];
+    fixtureRejects(state, "conflicts[0]");
+  }
+  for (const [field, allowed] of [
+    ["memory_type", ["fact", "preference", "strategy"]],
+    ["conflict_status", ["unresolved", "resolved", "superseded"]],
+  ]) {
+    for (const value of [...allowed, undefined, null, "", "invalid", 0, {}, []]) {
+      const state = fresh();
+      state.conflicts[0][field] = value;
+      if (allowed.includes(value)) assert.deepEqual(validateMemoryFixture(state, skillText), []);
+      else fixtureRejects(state, `conflicts[0].${field}`);
+    }
+  }
+  for (const value of [undefined, null, "two entries", {}, 2, [], ["one-entry"]]) {
+    const state = fresh();
+    state.conflicts[0].entry_ids = value;
+    fixtureRejects(state, "conflicts[0].entry_ids");
+  }
+  const empty = fresh();
+  empty.conflicts = [];
+  assert.deepEqual(validateMemoryFixture(empty, skillText), []);
+});
+
+test("fixture retains all five ranking factors and both exact-true retrieval flags", () => {
+  for (const value of [undefined, null, [], false, 1, "pack"]) {
+    const state = fresh();
+    state.memory_pack_contract = value;
+    fixtureRejects(state, "memory_pack_contract");
+  }
+  for (const value of [undefined, null, {}, false, 1, fixture.memory_pack_contract.ranking_factors.join(" ")]) {
+    const state = fresh();
+    state.memory_pack_contract.ranking_factors = value;
+    fixtureRejects(state, "ranking_factors");
+  }
+  for (const factor of ["relevance", "scope_match", "freshness", "evidence", "action_usefulness"]) {
+    const state = fresh();
+    state.memory_pack_contract.ranking_factors = state.memory_pack_contract.ranking_factors.filter((value) => value !== factor);
+    fixtureRejects(state, `missing retrieval factor ${factor}`);
+  }
+  for (const [flag, diagnostic] of [["conflict_coverage", "conflict coverage"], ["minimal_sufficient", "minimal sufficient"]]) {
+    for (const value of [undefined, null, false, 0, 1, "true", {}, []]) {
+      const state = fresh();
+      state.memory_pack_contract[flag] = value;
+      fixtureRejects(state, diagnostic);
+    }
+  }
+});
+
+test("fixture retains the complete constitution and public-data scan without leaking values", () => {
+  for (const [phrase, diagnostic] of [
+    ["Fact", "SKILL missing Fact"],
+    ["Preference", "SKILL missing Preference"],
+    ["Strategy", "SKILL missing Strategy"],
+    ["Candidate → Confirmed → Verified", "SKILL missing Candidate → Confirmed → Verified"],
+    ["Personal Memory Write Gate", "SKILL missing Personal Memory Write Gate"],
+    ["Preference / Strategy 的跨项目复用是默认便利；Fact 的跨项目复用是受控晋升", "scope constitution missing"],
+    ["Memory Freshness Constitution｜已批准 D-M1-C", "freshness constitution missing"],
+    ["verify-on-use", "verify-on-use rule missing"],
+    ["Memory Conflict Constitution｜已批准 D-M2-C", "conflict constitution missing"],
+    ["Memory Portfolio Retrieval｜已批准 D-M3-C", "portfolio retrieval constitution missing"],
+    ["Forgetting / Compaction Constitution｜已批准 D-M4-C", "forgetting constitution missing"],
+  ]) {
+    const errors = validateMemoryFixture(fixture, skillText.replaceAll(phrase, ""));
+    assert.ok(errors.includes(diagnostic), diagnostic);
+  }
+  for (const value of ["C:\\synthetic", ["", "home", "synthetic"].join("/"), "password-demo", "api_key-demo", "api-key-demo", "secret-demo"]) {
+    const state = fresh();
+    state.facts[0].statement = value;
+    const errors = validateMemoryFixture(state, skillText);
+    assert.ok(errors.includes("fixture appears to contain sensitive data"));
+    assert.ok(!errors.join(" ").includes(value));
+  }
+  const state = fresh();
+  state.facts[0].temporal_status = "synthetic-sensitive-value";
+  const errors = validateMemoryFixture(state, skillText);
+  assert.ok(errors.some((error) => error.includes("temporal_status")));
+  assert.ok(!errors.join(" ").includes("synthetic-sensitive-value"));
+});
+
+test("synthetic conflict references are coherent without inventing a state reference-integrity rule", () => {
+  for (const conflict of fixture.conflicts) {
+    const store = { fact: "facts", preference: "preferences", strategy: "strategies" }[conflict.memory_type];
+    const ids = new Set(fixture[store].map((entry) => entry.id));
+    assert.ok(conflict.entry_ids.every((id) => ids.has(id)));
+    assert.equal(new Set(conflict.entry_ids).size, conflict.entry_ids.length);
+  }
+  const state = legacyState();
+  state.conflicts = [{ entry_ids: ["absent-a", "absent-b"] }];
+  state.memory_pack_contract = {};
+  const before = structuredClone(state);
+  // Unknown governance semantics are not certified or newly rejected by --state.
+  assert.deepEqual(validateMemoryState(state), []);
+  assert.deepEqual(state, before);
+});
+
+test("fixture validation is pure, and temporal timestamps retain their presence-only boundary", () => {
+  const state = fresh();
+  state.facts[0].observed_at = null;
+  state.facts[0].last_verified_at = null;
+  const before = structuredClone(state);
+  const freeze = (value) => {
+    if (value && typeof value === "object") {
+      Object.values(value).forEach(freeze);
+      Object.freeze(value);
+    }
+  };
+  freeze(state);
+  assert.deepEqual(validateMemoryFixture(state, skillText), []);
+  assert.deepEqual(state, before);
+});
+
+test("CLI separates strict fixture governance from read-only legacy state acceptance", () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "personal-memory-governance-"));
+  try {
+    cpSync(skillRoot, dir, { recursive: true });
+    const copyCli = path.join(dir, "scripts/validate-personal-memory.mjs");
+    const fixturePath = path.join(dir, "references/fixture-memory-state.json");
+    const statePath = path.join(dir, "legacy-state.json");
+    const run = (...args) => spawnSync(process.execPath, [copyCli, ...args], { encoding: "utf8" });
+    const legacy = legacyState();
+    writeFileSync(fixturePath, JSON.stringify(legacy));
+    const rejected = run();
+    assert.equal(rejected.status, 1);
+    assert.match(rejected.stderr, /temporal_type/);
+    assert.match(rejected.stderr, /storage_tier/);
+    assert.match(rejected.stderr, /conflicts/);
+    assert.match(rejected.stderr, /memory_pack_contract/);
+    assert.ok(!rejected.stderr.includes(fixturePath));
+    writeFileSync(statePath, JSON.stringify(legacy));
+    const before = readFileSync(statePath, "utf8");
+    rmSync(path.join(dir, "SKILL.md"));
+    const accepted = run("--state", statePath);
+    assert.equal(accepted.status, 0, accepted.stderr);
+    assert.match(accepted.stdout, /PERSONAL_MEMORY_STATE_SHAPE_OK/);
+    assert.equal(readFileSync(statePath, "utf8"), before);
+    legacy.facts[0].storage_tier = "synthetic-sensitive-value";
+    writeFileSync(statePath, JSON.stringify(legacy));
+    const invalidBefore = readFileSync(statePath, "utf8");
+    const invalid = run("--state", statePath);
+    assert.equal(invalid.status, 1);
+    assert.match(invalid.stderr, /storage_tier/);
+    assert.ok(!invalid.stderr.includes("synthetic-sensitive-value"));
+    assert.ok(!invalid.stderr.includes(statePath));
+    assert.equal(readFileSync(statePath, "utf8"), invalidBefore);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

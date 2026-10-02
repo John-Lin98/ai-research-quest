@@ -164,6 +164,36 @@ Fact 只有在 **Verified + 跨项目长期有用 + provenance 完整 + freshnes
 
 每条 Fact 都必须提供 `promotion_reason`：`project` Fact 可为 null 或非空字符串；`user-global` Fact 必须为非空字符串，且 `evidence_status` 必须为 `verified`。Strategy 只有 `verified` 状态允许 `user-global`；公开 illustrative Strategy 保持 `candidate` 和 `project`。
 
-纯函数 validator 与只读 CLI 仅验证字段、类型、ID、来源文本、日期和这些 scope/status 组合。它们不证明来源真实、结果有效、跨项目用途合理或 freshness/sensitivity 条件已满足，也不执行实际读写、隔离及晋升审计/回滚控制。上述语义要求继续由控制器策略承担，执行机制仍待设计审查；synthetic fixture 通过不构成真实证据。
+纯函数 validator 与只读 CLI 仅验证字段、类型、ID、来源文本、日期和这些 scope/status 组合。它们不证明来源真实、结果有效、跨项目用途合理或 freshness/sensitivity 条件已满足，也不执行实际读写、隔离及晋升审计/回滚控制。上述语义要求继续由已批准的控制器策略承担，执行机制与运行时测试仍待实现；synthetic fixture 通过不构成真实证据。
 
-Preference / Strategy 最能减少重复协作成本，而全局 Fact 最容易造成过期、冲突和错误传播。这里衔接已批准 Scope B 与显式结构契约，不新增 lifecycle、freshness 或隐私/导出策略。
+Preference / Strategy 最能减少重复协作成本，而全局 Fact 最容易造成过期、冲突和错误传播。这里衔接已批准 Scope B、D-M1–D-M4 与显式结构契约，不另选 lifecycle、freshness 或隐私/导出策略。
+无参数 fixture 检查保留上游 temporal/storage-tier/conflict/retrieval/constitution guards；`--state` 仍接受缺少这些扩展的旧快照。若声明 Fact temporal enums 或任一 storage tier，则检查其枚举。其他治理字段、冲突引用和 Memory Pack 的运行时语义不由任意快照验证器保证，详见 Personal Memory 的 `references/memory-schema.md`。
+
+## Memory Governance Constitution｜已批准
+
+以下是已批准的控制器策略；本仓库当前落地文档、schema 示例和静态检查，尚未实现对应运行时行为。
+
+### D-M1-C Typed Freshness + Verify-on-use
+- evidence status 与 temporal validity 独立；
+- 高风险使用前 live verification；
+- 按 Fact temporal type 应用 freshness policy。
+
+### D-M2-C Typed Conflict Adjudication
+- Preference：同 scope 的新明确偏好可 supersede；不同 scope 可并存。
+- Fact：按 source / evidence / scope / freshness / version-event applicability 裁决；证据不足时保留 unresolved conflict。
+- Strategy：按 context / outcome / environment / cost 比较；不同 context 可并存。
+
+### D-M3-C Memory Portfolio Retrieval
+- 不使用纯 semantic top-k；
+- 使用 relevance × scope × freshness × evidence × action usefulness；
+- consequential conflict 必须覆盖；
+- 返回 minimal sufficient Memory Pack；
+- retrieval budget 随风险、复杂度、冲突密度动态调整。
+
+### D-M4-C Hot / Warm / Archive
+- Hot：当前频繁有用；
+- Warm：可能有用但不默认检索；
+- Archive：历史审计 / superseded / 低优先级；
+- Archive ≠ delete；
+- compaction 必须保留 provenance、source IDs、evidence、conflict、superseded links；
+- hard delete 只用于明确删除、retention/privacy 要求或无需审计的临时数据。

@@ -78,10 +78,23 @@ export function validateMemoryState(state) {
       if (store === "strategies" && entry.memory_scope === "user-global" && entry.status !== "verified") {
         errors.push(`${location}.memory_scope requires verified strategy status for user-global`);
       }
+      // Governance extensions stay optional for existing arbitrary snapshots.
+      // If declared, only the enums explicitly specified by the schema are checked.
+      if (Object.hasOwn(entry, "storage_tier") && !["hot", "warm", "archive"].includes(entry.storage_tier)) {
+        errors.push(`${location}.storage_tier has an invalid tier`);
+      }
       if (!Number.isFinite(dateValue(entry.updated_at))) {
         errors.push(`${location}.updated_at must be a valid ISO date or timezone-qualified timestamp`);
       }
       if (store === "facts") {
+        for (const [field, values] of [
+          ["temporal_type", ["stable", "slow-changing", "dynamic", "version-bound", "event-bound", "external-current"]],
+          ["temporal_status", ["active", "stale", "needs-revalidation", "superseded", "archived"]],
+        ]) {
+          if (Object.hasOwn(entry, field) && !values.includes(entry[field])) {
+            errors.push(`${location}.${field} has an invalid value`);
+          }
+        }
         if (entry.promotion_reason !== null && !isText(entry.promotion_reason)) {
           errors.push(`${location}.promotion_reason must be null or a non-empty string`);
         }

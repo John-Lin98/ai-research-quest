@@ -43,6 +43,31 @@ Research Quest = Consumer
 
 用户级全局 Fact Memory 很容易产生过期、冲突和跨项目污染。Preference / Strategy 的跨项目收益更直接，风险更低。
 
-## 下一项待审批
+## Memory Scope Constitution｜已批准 Scope B
 
-是否采用“Preference + Strategy 默认跨项目，Fact 默认项目级”的 Memory Scope Constitution；只有已验证且明确跨项目有价值的 Fact 才允许提升为 user-global Fact。
+Preference 和已验证 Strategy 默认跨项目，Fact 默认项目级；只有已验证且明确跨项目有价值的 Fact 才允许受控提升为 user-global。显式 scope / memory_scope 与结构性晋升检查仍保留，验证器不补默认值。
+
+## Memory Governance 已批准；文档与静态契约已实现
+
+- D-M1-C：Typed Freshness + Verify-on-use；
+- D-M2-C：Typed Conflict Adjudication；
+- D-M3-C：Memory Portfolio Retrieval；
+- D-M4-C：Hot / Warm / Archive + provenance-preserving compaction。
+
+对应内容已经写入：
+- Personal Memory SKILL；
+- memory schema；
+- public fixture；
+- contract validator；
+- Research Quest Personal Memory reference。
+
+此处“实现”仅指上述文档、示例和静态 guards；live verification、冲突裁决、检索排序/coverage、生命周期迁移及压缩控制器尚未运行时实现。兼容更新保留旧快照必填格式，严格 fixture 要求不自动成为真实状态要求。
+
+## 剩余大 Boss
+
+Memory 子系统核心治理策略已批准；运行时工程与验证仍待完成。另有三项 Evolution Engine 决策：
+1. Replay Benchmark Architecture；
+2. Mutation Trigger + Evolution Budget；
+3. Personal ↔ Global Rebase / Compatibility。
+
+三项通过后建议冻结 v3 架构，转入真实 replay 数据构建、工程实现和长期使用验证。
